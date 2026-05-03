@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Brand palette */
+  --color-sage-50: #f2f7f2;
+  --color-sage-100: #e0ecdf;
+  --color-sage-200: #c1d9bf;
+  --color-sage-500: #7da87b;
+  --color-sage-600: #5e8e5c;
+  --color-sage-700: #426340;
+
+  --color-sand-50: #fdf9f4;
+  --color-sand-100: #f7eed9;
+  --color-sand-200: #eeddb8;
+  --color-sand-400: #d4b07a;
+  --color-sand-600: #9e7c48;
+
+  --color-sky-50: #f0f8fd;
+  --color-sky-100: #d9eef8;
+  --color-sky-200: #aed9f0;
+  --color-sky-500: #7bbfda;
+  --color-sky-700: #3a8aad;
+
+  /* Neutrals */
+  --color-cream: #faf8f4;
+  --color-charcoal: #2c2c2c;
+  --color-muted: #6b7280;
+
+  /* Typography */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+:root {
+  --background: #faf8f4;
+  --foreground: #2c2c2c;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mapbox resets */
+.mapboxgl-map {
+  font-family: inherit !important;
+}
