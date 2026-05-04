@@ -43,7 +43,35 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Mapbox resets */
-.mapboxgl-map {
-  font-family: inherit !important;
+/* MapLibre popup */
+.kid-popup .maplibregl-popup-content {
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  font-family: var(--font-sans);
+}
+.kid-popup .maplibregl-popup-close-button {
+  right: 8px;
+  top: 8px;
+  font-size: 18px;
+  line-height: 1;
+  color: #6b7280;
+  padding: 2px;
+  border-radius: 4px;
+}
+.kid-popup .maplibregl-popup-close-button:hover {
+  background: #f3f4f6;
+  color: #2c2c2c;
+}
+.kid-popup .maplibregl-popup-tip {
+  border-top-color: white;
+}
+
+/* Hide scrollbars on card strip */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
