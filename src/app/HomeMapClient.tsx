@@ -192,12 +192,12 @@ export default function HomeMapClient({ locations }: Props) {
                 </div>
 
                 {/* Tags */}
-                {selectedLoc.tags.length > 0 && (
+                {(selectedLoc.tags?.length ?? 0) > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-3">
-                    {selectedLoc.tags.map((tag) => (
+                    {(selectedLoc.tags ?? []).map((tag) => (
                       <TagBadge key={tag} tag={tag} />
                     ))}
-                    {selectedLoc.open_times.map((t) => (
+                    {(selectedLoc.open_times ?? []).map((t) => (
                       <OpenTimeBadge key={t} time={t} />
                     ))}
                   </div>
@@ -258,7 +258,7 @@ export default function HomeMapClient({ locations }: Props) {
               ) : (
                 filtered.map((loc) => {
                   const photo = loc.photos?.[0]
-                  const meta = getPrimaryTagMeta(loc.tags)
+                  const meta = getPrimaryTagMeta(loc.tags ?? [])
                   const isSelected = loc.id === selectedId
 
                   return (

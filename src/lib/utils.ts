@@ -15,8 +15,8 @@ export function getOpenTimeMeta(time: OpenTime) {
   return OPEN_TIMES.find((t) => t.value === time) ?? OPEN_TIMES[0]
 }
 
-export function getPrimaryTagMeta(tags: Tag[]) {
-  return tags.length > 0 ? getTagMeta(tags[0]) : TAGS[0]
+export function getPrimaryTagMeta(tags: Tag[] | null | undefined) {
+  return tags && tags.length > 0 ? getTagMeta(tags[0]) : TAGS[0]
 }
 
 export function slugify(text: string): string {

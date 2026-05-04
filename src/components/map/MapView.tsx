@@ -16,7 +16,7 @@ interface MapViewProps {
 const MAP_STYLE = 'https://tiles.openfreemap.org/styles/positron'
 
 function makePinEl(loc: Location): HTMLElement {
-  const meta = getPrimaryTagMeta(loc.tags)
+  const meta = getPrimaryTagMeta(loc.tags ?? [])
   const el = document.createElement('div')
   el.dataset.locationId = loc.id
   el.style.cssText = 'cursor: pointer; z-index: 1;'
@@ -39,7 +39,7 @@ function makePinEl(loc: Location): HTMLElement {
 
 function makePopupHTML(loc: Location): string {
   const photo = loc.photos?.[0]
-  const meta = getPrimaryTagMeta(loc.tags)
+  const meta = getPrimaryTagMeta(loc.tags ?? [])
   return `
     <div style="font-family: inherit; width: 220px;">
       ${photo ? `<div style="margin: 0 0 10px; overflow: hidden; border-radius: 8px;">
