@@ -1,14 +1,22 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import type { Category } from './types'
-import { CATEGORIES } from './constants'
+import type { Tag, OpenTime } from './types'
+import { TAGS, OPEN_TIMES } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getCategoryMeta(category: Category) {
-  return CATEGORIES.find((c) => c.value === category) ?? CATEGORIES[0]
+export function getTagMeta(tag: Tag) {
+  return TAGS.find((t) => t.value === tag) ?? TAGS[0]
+}
+
+export function getOpenTimeMeta(time: OpenTime) {
+  return OPEN_TIMES.find((t) => t.value === time) ?? OPEN_TIMES[0]
+}
+
+export function getPrimaryTagMeta(tags: Tag[]) {
+  return tags.length > 0 ? getTagMeta(tags[0]) : TAGS[0]
 }
 
 export function slugify(text: string): string {

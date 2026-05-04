@@ -4,14 +4,14 @@ export type ReportTarget = 'location' | 'review'
 
 export type AgeRange = 'toddler' | 'preschool' | 'primary' | 'all_ages'
 
-export type Category =
-  | 'playground'
-  | 'food_cafe'
-  | 'activities'
-  | 'nature'
-  | 'stuff'
-  | 'entertainment'
-  | 'sport_swim'
+export type Tag =
+  | 'indoor_playground'
+  | 'kids_play_area'
+  | 'adjacent_playground'
+  | 'outdoor_run_area'
+  | 'play_centre'
+
+export type OpenTime = 'breakfast' | 'lunch' | 'dinner'
 
 export type SortOption = 'nearest' | 'highest_rated' | 'most_reviewed' | 'newest'
 
@@ -32,8 +32,8 @@ export interface Location {
   lat: number
   lng: number
   suburb: string
-  primary_category: Category
-  additional_categories: Category[]
+  tags: Tag[]
+  open_times: OpenTime[]
   age_ranges: AgeRange[]
   tips: string | null
   status: LocationStatus
@@ -97,6 +97,6 @@ export interface SearchParams {
   lat?: number
   lng?: number
   radius?: number
-  category?: Category
+  tag?: Tag
   sort?: SortOption
 }

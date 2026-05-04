@@ -4,11 +4,12 @@ import { useRouter } from 'next/navigation'
 import { Search, MapPin, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-interface NominatimResult {
-  place_id: number
-  display_name: string
-  lat: string
-  lon: string
+interface GeocodeResult {
+  id: string
+  label: string
+  lat: number
+  lng: number
+  suburb: string
 }
 
 interface SearchBarProps {
@@ -21,7 +22,7 @@ interface SearchBarProps {
 export default function SearchBar({ defaultValue = '', className, onSearch, size = 'default' }: SearchBarProps) {
   const router = useRouter()
   const [query, setQuery] = useState(defaultValue)
-  const [suggestions, setSuggestions] = useState<NominatimResult[]>([])
+  const [suggestions, setSuggestions] = useState<GeocodeResult[]>([])
   const [loading, setLoading] = useState(false)
   const [geoLoading, setGeoLoading] = useState(false)
   const [open, setOpen] = useState(false)
@@ -43,7 +44,7 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
     setLoading(true)
     try {
       const res = await fetch(`/api/geocode?q=${encodeURIComponent(q)}`)
-      const data: NominatimResult[] = await res.json()
+      const data: GeocodeResult[] = await res.json()
       setSuggestions(data)
       setOpen(true)
     } catch {
@@ -60,12 +61,12 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
     debounceRef.current = setTimeout(() => fetchSuggestions(val), 400)
   }
 
-  function handleSelect(s: NominatimResult) {
-    const label = s.display_name.split(',')[0].trim()
+  function handleSelect(s: GeocodeResult) {
+    const label = s.label.split(',')[0].trim()
     setQuery(label)
     setOpen(false)
     setSuggestions([])
-    navigate(label, parseFloat(s.lat), parseFloat(s.lon))
+    navigate(label, s.lat, s.lng)
   }
 
   function navigate(q: string, lat: number, lng: number) {
@@ -149,14 +150,14 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
       {open && suggestions.length > 0 && (
         <ul className="absolute left-0 right-0 top-full mt-2 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden z-30">
           {suggestions.map((s) => (
-            <li key={s.place_id}>
+            <li key={s.id}>
               <button
                 type="button"
                 onClick={() => handleSelect(s)}
                 className="flex items-center gap-3 w-full px-4 py-3 text-sm text-[#2c2c2c] hover:bg-[#f7eed9] transition-colors cursor-pointer text-left"
               >
                 <MapPin className="w-4 h-4 text-[#6b7280] shrink-0" />
-                <span className="truncate">{s.display_name}</span>
+                <span className="truncate">{s.label}</span>
               </button>
             </li>
           ))}

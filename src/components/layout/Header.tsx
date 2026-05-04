@@ -6,7 +6,7 @@ import { useAuth } from '@/components/auth/AuthProvider'
 import SignInModal from '@/components/auth/SignInModal'
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
-import { MapPin, PlusCircle, User, LogOut, Menu, X } from 'lucide-react'
+import { PlusCircle, User, LogOut, Menu, X } from 'lucide-react'
 
 export default function Header() {
   const pathname = usePathname()
@@ -16,7 +16,6 @@ export default function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const navLinks = [
-    { href: '/search', label: 'Explore' },
     { href: '/about', label: 'About' },
   ]
 
@@ -26,9 +25,11 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 font-bold text-lg text-charcoal">
-              <MapPin className="w-5 h-5 text-sage-500" />
-              <span>KidFriendlyEats</span>
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 bg-[#7da87b] rounded-xl flex items-center justify-center shrink-0 shadow-sm group-hover:bg-[#5e8e5c] transition-colors">
+                <span className="text-white text-base leading-none" aria-hidden>📍</span>
+              </div>
+              <span className="font-bold text-[17px] text-[#2c2c2c] tracking-tight">KidFriendly</span>
             </Link>
 
             {/* Desktop nav */}

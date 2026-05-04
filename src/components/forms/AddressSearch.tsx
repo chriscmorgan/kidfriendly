@@ -9,17 +9,12 @@ interface AddressResult {
   suburb: string
 }
 
-interface NominatimResult {
-  place_id: number
-  display_name: string
-  lat: string
-  lon: string
-  address: {
-    suburb?: string
-    city?: string
-    town?: string
-    village?: string
-  }
+interface GeocodeResult {
+  id: string
+  label: string
+  lat: number
+  lng: number
+  suburb: string
 }
 
 interface AddressSearchProps {
@@ -29,7 +24,7 @@ interface AddressSearchProps {
 
 export default function AddressSearch({ value, onChange }: AddressSearchProps) {
   const [query, setQuery] = useState(value)
-  const [suggestions, setSuggestions] = useState<NominatimResult[]>([])
+  const [suggestions, setSuggestions] = useState<GeocodeResult[]>([])
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -48,7 +43,7 @@ export default function AddressSearch({ value, onChange }: AddressSearchProps) {
     setLoading(true)
     try {
       const res = await fetch(`/api/geocode?q=${encodeURIComponent(q)}`)
-      const data: NominatimResult[] = await res.json()
+      const data: GeocodeResult[] = await res.json()
       setSuggestions(data)
       setOpen(true)
     } catch {
@@ -64,11 +59,10 @@ export default function AddressSearch({ value, onChange }: AddressSearchProps) {
     debounceRef.current = setTimeout(() => fetchSuggestions(e.target.value), 400)
   }
 
-  function handleSelect(s: NominatimResult) {
-    const suburb = s.address.suburb ?? s.address.city ?? s.address.town ?? s.address.village ?? ''
-    setQuery(s.display_name)
+  function handleSelect(s: GeocodeResult) {
+    setQuery(s.label)
     setOpen(false)
-    onChange({ place_name: s.display_name, lat: parseFloat(s.lat), lng: parseFloat(s.lon), suburb })
+    onChange({ place_name: s.label, lat: s.lat, lng: s.lng, suburb: s.suburb })
   }
 
   return (
@@ -90,14 +84,14 @@ export default function AddressSearch({ value, onChange }: AddressSearchProps) {
       {open && suggestions.length > 0 && (
         <ul className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden z-30">
           {suggestions.map((s) => (
-            <li key={s.place_id}>
+            <li key={s.id}>
               <button
                 type="button"
                 onClick={() => handleSelect(s)}
                 className="flex items-start gap-2 w-full px-4 py-3 text-sm text-[#2c2c2c] hover:bg-[#f7eed9] transition-colors cursor-pointer text-left"
               >
                 <MapPin className="w-4 h-4 text-[#6b7280] shrink-0 mt-0.5" />
-                <span>{s.display_name}</span>
+                <span>{s.label}</span>
               </button>
             </li>
           ))}

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { CategoryBadge } from '@/components/ui/Badge'
+import { TagBadge } from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import type { Location } from '@/lib/types'
 import { AGE_RANGES } from '@/lib/constants'
@@ -113,9 +113,8 @@ function AdminLocationCard({ location: loc, processingId, rejectNote, onApprove,
         {/* Content */}
         <div className="flex-1 p-5">
           <div className="flex flex-wrap gap-2 mb-2">
-            <CategoryBadge category={loc.primary_category} />
-            {loc.additional_categories?.map((cat) => (
-              <CategoryBadge key={cat} category={cat as import('@/lib/types').Category} />
+            {(loc.tags ?? []).map((tag) => (
+              <TagBadge key={tag} tag={tag} />
             ))}
           </div>
 

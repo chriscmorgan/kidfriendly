@@ -2,8 +2,8 @@
 import { useEffect, useRef } from 'react'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import type { Location, Category } from '@/lib/types'
-import { getCategoryMeta } from '@/lib/utils'
+import type { Location } from '@/lib/types'
+import { getPrimaryTagMeta } from '@/lib/utils'
 
 interface MapViewProps {
   locations: Location[]
@@ -13,27 +13,17 @@ interface MapViewProps {
   selectedId?: string | null
 }
 
-const CATEGORY_COLORS: Record<Category, string> = {
-  playground: '#5e8e5c',
-  food_cafe: '#d97706',
-  activities: '#7c3aed',
-  nature: '#059669',
-  stuff: '#db2777',
-  entertainment: '#2563eb',
-  sport_swim: '#0891b2',
-}
-
 const MAP_STYLE = 'https://tiles.openfreemap.org/styles/positron'
 
-function makePinEl(loc: Location, color: string): HTMLElement {
-  const meta = getCategoryMeta(loc.primary_category)
+function makePinEl(loc: Location): HTMLElement {
+  const meta = getPrimaryTagMeta(loc.tags)
   const el = document.createElement('div')
   el.dataset.locationId = loc.id
   el.style.cssText = 'cursor: pointer; z-index: 1;'
   el.innerHTML = `
     <div style="
       width: 36px; height: 36px;
-      background: ${color};
+      background: ${meta.pinColor};
       border-radius: 50% 50% 50% 0;
       transform: rotate(-45deg);
       border: 2px solid white;
@@ -49,7 +39,7 @@ function makePinEl(loc: Location, color: string): HTMLElement {
 
 function makePopupHTML(loc: Location): string {
   const photo = loc.photos?.[0]
-  const meta = getCategoryMeta(loc.primary_category)
+  const meta = getPrimaryTagMeta(loc.tags)
   return `
     <div style="font-family: inherit; width: 220px;">
       ${photo ? `<div style="margin: 0 0 10px; overflow: hidden; border-radius: 8px;">
@@ -84,7 +74,6 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
   const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map())
   const popupsRef = useRef<Map<string, maplibregl.Popup>>(new Map())
 
-  // Initialise map once
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
     mapRef.current = new maplibregl.Map({
@@ -100,7 +89,6 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
     }
   }, [])
 
-  // Rebuild markers when locations list changes
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
@@ -110,8 +98,7 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
     popupsRef.current.clear()
 
     for (const loc of locations) {
-      const color = CATEGORY_COLORS[loc.primary_category] ?? '#7da87b'
-      const el = makePinEl(loc, color)
+      const el = makePinEl(loc)
       el.addEventListener('click', () => onLocationClick?.(loc))
 
       const popup = new maplibregl.Popup({
@@ -131,12 +118,10 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
     }
   }, [locations, onLocationClick])
 
-  // React to selectedId: update pin sizes + open popup + fly
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
 
-    // Update all pin sizes
     markersRef.current.forEach((marker, id) => {
       setSelected(marker.getElement(), id === selectedId)
     })
@@ -147,7 +132,6 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
     const popup = popupsRef.current.get(selectedId)
     if (!marker || !popup) return
 
-    // Close any open popup first
     popupsRef.current.forEach((p, id) => {
       if (id !== selectedId && p.isOpen()) p.remove()
     })
@@ -158,7 +142,6 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
     if (!popup.isOpen()) marker.togglePopup()
   }, [selectedId])
 
-  // Pan/zoom when center prop changes
   useEffect(() => {
     mapRef.current?.flyTo({ center: [center.lng, center.lat], zoom, essential: true })
   }, [center.lat, center.lng, zoom])

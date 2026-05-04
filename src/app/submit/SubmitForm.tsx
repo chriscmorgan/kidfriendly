@@ -6,9 +6,9 @@ import SignInModal from '@/components/auth/SignInModal'
 import AddressSearch from '@/components/forms/AddressSearch'
 import Button from '@/components/ui/Button'
 import { createClient } from '@/lib/supabase/client'
-import { CATEGORIES, AGE_RANGES } from '@/lib/constants'
+import { TAGS, OPEN_TIMES, AGE_RANGES } from '@/lib/constants'
 import { slugify } from '@/lib/utils'
-import type { Category, AgeRange } from '@/lib/types'
+import type { Tag, OpenTime, AgeRange } from '@/lib/types'
 import { Upload, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -26,8 +26,8 @@ export default function SubmitForm() {
 
   const [name, setName] = useState('')
   const [address, setAddress] = useState<AddressData | null>(null)
-  const [primaryCat, setPrimaryCat] = useState<Category | ''>('')
-  const [additionalCats, setAdditionalCats] = useState<Category[]>([])
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([])
+  const [selectedOpenTimes, setSelectedOpenTimes] = useState<OpenTime[]>([])
   const [description, setDescription] = useState('')
   const [tips, setTips] = useState('')
   const [ageRanges, setAgeRanges] = useState<AgeRange[]>([])
@@ -56,17 +56,23 @@ export default function SubmitForm() {
       <p className="text-sm text-[#6b7280] mb-6">We&apos;ll have it live as soon as our team takes a look.</p>
       <div className="flex gap-3 justify-center">
         <Button variant="secondary" onClick={() => router.push('/')}>Go home</Button>
-        <Button onClick={() => { setDone(false); setName(''); setAddress(null); setPrimaryCat(''); setAdditionalCats([]); setDescription(''); setTips(''); setAgeRanges([]); setPhotos([]); setPreviews([]) }}>
+        <Button onClick={() => {
+          setDone(false); setName(''); setAddress(null); setSelectedTags([])
+          setSelectedOpenTimes([]); setDescription(''); setTips(''); setAgeRanges([])
+          setPhotos([]); setPreviews([])
+        }}>
           Add another
         </Button>
       </div>
     </div>
   )
 
-  function toggleAdditionalCat(cat: Category) {
-    setAdditionalCats((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : prev.length < 3 ? [...prev, cat] : prev
-    )
+  function toggleTag(tag: Tag) {
+    setSelectedTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag])
+  }
+
+  function toggleOpenTime(time: OpenTime) {
+    setSelectedOpenTimes((prev) => prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time])
   }
 
   function toggleAgeRange(range: AgeRange) {
@@ -94,7 +100,7 @@ export default function SubmitForm() {
 
     if (!name.trim()) { setError('Name is required'); return }
     if (!address) { setError('Address is required'); return }
-    if (!primaryCat) { setError('Primary category is required'); return }
+    if (selectedTags.length === 0) { setError('Select at least one tag'); return }
     if (!description.trim() || description.length < 50) { setError('Description must be at least 50 characters'); return }
     if (photos.length === 0) { setError('At least one photo is required'); return }
 
@@ -113,8 +119,8 @@ export default function SubmitForm() {
         lat: address.lat,
         lng: address.lng,
         suburb: address.suburb,
-        primary_category: primaryCat,
-        additional_categories: additionalCats,
+        tags: selectedTags,
+        open_times: selectedOpenTimes,
         age_ranges: ageRanges,
         tips: tips.trim() || null,
         submitted_by: user.id,
@@ -125,7 +131,6 @@ export default function SubmitForm() {
 
     if (locError || !loc) { setError('Failed to submit. Please try again.'); setSubmitting(false); return }
 
-    // Upload photos
     for (let i = 0; i < photos.length; i++) {
       const file = photos[i]
       const ext = file.name.split('.').pop()
@@ -173,48 +178,50 @@ export default function SubmitForm() {
         )}
       </div>
 
-      {/* Categories */}
+      {/* Tags */}
       <div>
         <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Primary category <span className="text-red-500">*</span>
+          What kind of place is it? <span className="text-red-500">*</span>
+          <span className="text-[#6b7280] font-normal ml-1">(select all that apply)</span>
         </label>
         <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((cat) => (
+          {TAGS.map((tag) => (
             <button
-              key={cat.value}
+              key={tag.value}
               type="button"
-              onClick={() => setPrimaryCat(cat.value)}
+              onClick={() => toggleTag(tag.value)}
               className={cn(
                 'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
-                primaryCat === cat.value
-                  ? `${cat.bgColor} ${cat.color} border-transparent`
+                selectedTags.includes(tag.value)
+                  ? `${tag.bgColor} ${tag.color} border-transparent`
                   : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#f2f7f2]'
               )}
             >
-              {cat.emoji} {cat.label}
+              {tag.emoji} {tag.label}
             </button>
           ))}
         </div>
       </div>
 
+      {/* Open times */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1">
-          Additional categories <span className="text-[#6b7280] font-normal">(up to 3)</span>
+        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+          Open for <span className="text-[#6b7280] font-normal">(optional)</span>
         </label>
         <div className="flex flex-wrap gap-2">
-          {CATEGORIES.filter((c) => c.value !== primaryCat).map((cat) => (
+          {OPEN_TIMES.map((t) => (
             <button
-              key={cat.value}
+              key={t.value}
               type="button"
-              onClick={() => toggleAdditionalCat(cat.value)}
+              onClick={() => toggleOpenTime(t.value)}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
-                additionalCats.includes(cat.value)
-                  ? `${cat.bgColor} ${cat.color} border-transparent`
+                'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
+                selectedOpenTimes.includes(t.value)
+                  ? `${t.bgColor} ${t.color} border-transparent`
                   : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#f2f7f2]'
               )}
             >
-              {cat.emoji} {cat.label}
+              {t.emoji} {t.label}
             </button>
           ))}
         </div>
@@ -315,7 +322,6 @@ export default function SubmitForm() {
         )}
       </div>
 
-      {/* Error */}
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
           {error}

@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
-import { getCategoryMeta } from '@/lib/utils'
-import type { Category } from '@/lib/types'
+import { getTagMeta, getOpenTimeMeta } from '@/lib/utils'
+import type { Tag, OpenTime } from '@/lib/types'
 
 interface BadgeProps {
   children: React.ReactNode
@@ -24,8 +24,17 @@ export function Badge({ children, className, color, bgColor }: BadgeProps) {
   )
 }
 
-export function CategoryBadge({ category }: { category: Category }) {
-  const meta = getCategoryMeta(category)
+export function TagBadge({ tag }: { tag: Tag }) {
+  const meta = getTagMeta(tag)
+  return (
+    <Badge color={meta.color} bgColor={meta.bgColor}>
+      {meta.emoji} {meta.label}
+    </Badge>
+  )
+}
+
+export function OpenTimeBadge({ time }: { time: OpenTime }) {
+  const meta = getOpenTimeMeta(time)
   return (
     <Badge color={meta.color} bgColor={meta.bgColor}>
       {meta.emoji} {meta.label}

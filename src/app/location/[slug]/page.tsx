@@ -6,8 +6,8 @@ import PhotoCarousel from '@/components/location/PhotoCarousel'
 import RatingsChart from '@/components/location/RatingsChart'
 import ReviewCard from '@/components/location/ReviewCard'
 import ReportButton from '@/components/location/ReportButton'
-import { CategoryBadge, Badge } from '@/components/ui/Badge'
-import type { Location, Review, AvgRatings } from '@/lib/types'
+import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
+import type { Location, Review, AvgRatings, Tag, OpenTime } from '@/lib/types'
 import { AGE_RANGES } from '@/lib/constants'
 import { MapPin, Navigation, User, Calendar } from 'lucide-react'
 import AddReviewSection from './AddReviewSection'
@@ -80,9 +80,11 @@ export default async function LocationPage({ params }: Props) {
           {/* Title & meta */}
           <div>
             <div className="flex flex-wrap gap-2 mb-3">
-              <CategoryBadge category={loc.primary_category} />
-              {loc.additional_categories?.map((cat: string) => (
-                <CategoryBadge key={cat} category={cat as import('@/lib/types').Category} />
+              {(loc.tags ?? []).map((tag: Tag) => (
+                <TagBadge key={tag} tag={tag} />
+              ))}
+              {(loc.open_times ?? []).map((t: OpenTime) => (
+                <OpenTimeBadge key={t} time={t} />
               ))}
             </div>
             <h1 className="text-3xl font-bold text-[#2c2c2c] leading-tight">{loc.name}</h1>

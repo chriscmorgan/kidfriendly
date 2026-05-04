@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin, Star } from 'lucide-react'
-import { CategoryBadge } from '@/components/ui/Badge'
+import { TagBadge } from '@/components/ui/Badge'
 import type { Location } from '@/lib/types'
 import { cn, formatDistance, truncate } from '@/lib/utils'
 import { AGE_RANGES } from '@/lib/constants'
@@ -49,9 +49,11 @@ export default function LocationCard({ location, className, compact = false }: L
             📍
           </div>
         )}
-        <div className="absolute top-2 left-2">
-          <CategoryBadge category={location.primary_category} />
-        </div>
+        {location.tags.length > 0 && (
+          <div className="absolute top-2 left-2">
+            <TagBadge tag={location.tags[0]} />
+          </div>
+        )}
       </div>
 
       {/* Content */}

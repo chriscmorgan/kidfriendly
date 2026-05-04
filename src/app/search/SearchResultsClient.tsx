@@ -5,8 +5,8 @@ import dynamic from 'next/dynamic'
 import SearchBar from '@/components/search/SearchBar'
 import LocationCard from '@/components/location/LocationCard'
 import { createClient } from '@/lib/supabase/client'
-import type { Location, Category, SortOption } from '@/lib/types'
-import { CATEGORIES, RADIUS_OPTIONS, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from '@/lib/constants'
+import type { Location, Tag, SortOption } from '@/lib/types'
+import { TAGS, RADIUS_OPTIONS, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { List, Map as MapIcon, SlidersHorizontal } from 'lucide-react'
 
@@ -31,7 +31,7 @@ export default function SearchResultsClient() {
   const lat = parseFloat(params.get('lat') ?? '') || DEFAULT_MAP_CENTER.lat
   const lng = parseFloat(params.get('lng') ?? '') || DEFAULT_MAP_CENTER.lng
   const radius = parseInt(params.get('radius') ?? '10') || 10
-  const categoryParam = params.get('category') as Category | null
+  const tagParam = params.get('tag') as Tag | null
   const sortParam = (params.get('sort') ?? 'nearest') as SortOption
 
   const [locations, setLocations] = useState<Location[]>([])
@@ -76,11 +76,9 @@ export default function SearchResultsClient() {
     // Filter by radius
     results = results.filter((l) => (l.distance_km ?? 999) <= radius)
 
-    // Filter by category
-    if (categoryParam) {
-      results = results.filter(
-        (l) => l.primary_category === categoryParam || l.additional_categories.includes(categoryParam)
-      )
+    // Filter by tag
+    if (tagParam) {
+      results = results.filter((l) => l.tags.includes(tagParam))
     }
 
     // Sort
@@ -91,7 +89,7 @@ export default function SearchResultsClient() {
 
     setLocations(results)
     setLoading(false)
-  }, [lat, lng, radius, categoryParam, sortParam])
+  }, [lat, lng, radius, tagParam, sortParam])
 
   useEffect(() => { fetchLocations() }, [fetchLocations])
 
@@ -168,26 +166,26 @@ export default function SearchResultsClient() {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs text-[#6b7280] font-medium">Category</span>
+            <span className="text-xs text-[#6b7280] font-medium">Tag</span>
             <button
-              onClick={() => updateParam('category', '')}
+              onClick={() => updateParam('tag', '')}
               className={cn(
                 'px-3 py-1 text-xs rounded-full border font-medium transition-colors cursor-pointer',
-                !categoryParam ? 'bg-[#7da87b] text-white border-[#7da87b]' : 'bg-white text-[#6b7280] border-gray-200 hover:bg-[#f2f7f2]'
+                !tagParam ? 'bg-[#7da87b] text-white border-[#7da87b]' : 'bg-white text-[#6b7280] border-gray-200 hover:bg-[#f2f7f2]'
               )}
             >
               All
             </button>
-            {CATEGORIES.map((cat) => (
+            {TAGS.map((tag) => (
               <button
-                key={cat.value}
-                onClick={() => updateParam('category', cat.value)}
+                key={tag.value}
+                onClick={() => updateParam('tag', tag.value)}
                 className={cn(
                   'flex items-center gap-1 px-3 py-1 text-xs rounded-full border font-medium transition-colors cursor-pointer',
-                  categoryParam === cat.value ? `${cat.bgColor} ${cat.color} border-transparent` : 'bg-white text-[#6b7280] border-gray-200 hover:bg-[#f2f7f2]'
+                  tagParam === tag.value ? `${tag.bgColor} ${tag.color} border-transparent` : 'bg-white text-[#6b7280] border-gray-200 hover:bg-[#f2f7f2]'
                 )}
               >
-                {cat.emoji} {cat.label}
+                {tag.emoji} {tag.label}
               </button>
             ))}
           </div>
