@@ -135,15 +135,22 @@ export default function SubmitForm() {
       const file = photos[i]
       const ext = file.name.split('.').pop()
       const path = `${loc.id}/${i}.${ext}`
-      const { data: uploadData } = await supabase.storage.from('Photos').upload(path, file, { upsert: true })
+      const { data: uploadData, error: uploadError } = await supabase.storage.from('Photos').upload(path, file, { upsert: true })
+      if (uploadError) {
+        console.error('[photo upload] failed:', uploadError.message, { path, bucket: 'Photos' })
+        setError(`Photo upload failed: ${uploadError.message}`)
+        setSubmitting(false)
+        return
+      }
       if (uploadData) {
         const { data: urlData } = supabase.storage.from('Photos').getPublicUrl(path)
-        await supabase.from('location_photos').insert({
+        const { error: insertError } = await supabase.from('location_photos').insert({
           location_id: loc.id,
           url: urlData.publicUrl,
           sort_order: i,
           uploaded_by: user.id,
         })
+        if (insertError) console.error('[photo insert] failed:', insertError.message)
       }
     }
 
