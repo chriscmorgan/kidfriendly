@@ -36,7 +36,7 @@ const TAG_DESCRIPTIONS: Record<string, string> = {
 
 export default function HomeLanding({ locations }: Props) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-x-hidden">
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#1e3d1c] via-[#2d5a2b] to-[#4a7a48] min-h-[56vh] flex flex-col items-center justify-center text-center px-4 py-16 sm:py-24">
@@ -54,8 +54,10 @@ export default function HomeLanding({ locations }: Props) {
             <span>👶</span> Made by parents, for parents
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-white leading-[1.1] tracking-tight">
-            Find the best spots for <span className="text-[#a8d5a6]">young kids</span> near you
+          <h1 className="text-[2rem] leading-tight sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight">
+            Find the best spots for{' '}
+            <span className="text-[#a8d5a6]">young kids</span>{' '}
+            near you
           </h1>
           <p className="text-[#c8e6c6] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
             Playgrounds, parks, cafes and more — discovered and reviewed by local parents.
@@ -66,7 +68,7 @@ export default function HomeLanding({ locations }: Props) {
           </div>
 
           {/* Stats strip */}
-          <div className="flex items-center justify-center gap-6 mt-8 text-white/70 text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-8 text-white/70 text-sm">
             <span className="flex items-center gap-1.5"><span className="text-base">📍</span> {locations.length > 0 ? `${locations.length}+ places listed` : 'Places listed'}</span>
             <span className="text-white/30">·</span>
             <span className="flex items-center gap-1.5"><span className="text-base">⭐</span> Parent reviews</span>
