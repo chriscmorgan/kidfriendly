@@ -55,8 +55,7 @@ export default function HomeLanding({ locations }: Props) {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold text-white leading-[1.1] tracking-tight">
-            Find the best spots<br />
-            <span className="text-[#a8d5a6]">for young kids</span> near you
+            Find the best spots for <span className="text-[#a8d5a6]">young kids</span> near you
           </h1>
           <p className="text-[#c8e6c6] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
             Playgrounds, parks, cafes and more — discovered and reviewed by local parents.

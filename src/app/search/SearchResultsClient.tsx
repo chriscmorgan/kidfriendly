@@ -11,6 +11,7 @@ import type { Location, Tag, SortOption } from '@/lib/types'
 import { TAGS, RADIUS_OPTIONS, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from '@/lib/constants'
 import { cn, getPrimaryTagMeta } from '@/lib/utils'
 import { Star, MapPin, ArrowLeft, X, SlidersHorizontal, ChevronRight } from 'lucide-react'
+import BodyScrollLock from '@/components/ui/BodyScrollLock'
 
 const MapView = dynamic(() => import('@/components/map/MapView'), { ssr: false })
 
@@ -322,6 +323,7 @@ export default function SearchResultsClient() {
 
   return (
     <>
+      <BodyScrollLock />
       {/* ── Mobile layout ── */}
       <div className="relative md:hidden" style={{ height: 'calc(100vh - 64px)' }}>
 
@@ -344,7 +346,7 @@ export default function SearchResultsClient() {
         {/* Floating tag legend */}
         <div
           className="absolute left-0 right-0 z-10 flex gap-2 overflow-x-auto px-3 pb-1 scrollbar-hide transition-all duration-300"
-          style={{ bottom: sheetOpen ? 'calc(65vh + 8px)' : '188px' }}
+          style={{ bottom: sheetOpen ? 'calc(65vh + 8px)' : 'calc(50vh + 8px)' }}
         >
           <TagPill label="All" active={!tagParam} onClick={() => updateParam('tag', '')} />
           {TAGS.map((t) => (
@@ -360,11 +362,15 @@ export default function SearchResultsClient() {
         {/* Bottom sheet */}
         <div
           className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] transition-all duration-300 flex flex-col"
-          style={{ height: sheetOpen ? '65vh' : '180px' }}
+          style={{ height: sheetOpen ? '65vh' : '50vh' }}
         >
-          <div className="flex justify-center pt-2.5 pb-1 shrink-0">
+          <button
+            onClick={() => !sheetOpen && setSheetOpen(true)}
+            className="flex justify-center pt-2.5 pb-1 shrink-0 w-full cursor-pointer"
+            aria-label={sheetOpen ? undefined : 'Expand'}
+          >
             <div className="w-10 h-1 bg-gray-300 rounded-full" />
-          </div>
+          </button>
           {sheetOpen && selectedLoc ? (
             <DetailPanel loc={selectedLoc} onBack={handleBack} onClose={handleClose} />
           ) : (
