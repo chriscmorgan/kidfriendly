@@ -129,7 +129,12 @@ export default function SubmitForm() {
       .select('id')
       .single()
 
-    if (locError || !loc) { setError('Failed to submit. Please try again.'); setSubmitting(false); return }
+    if (locError || !loc) {
+      console.error('[submit] location insert failed:', locError?.message, locError?.details)
+      setError(`Submission failed: ${locError?.message ?? 'unknown error'}`)
+      setSubmitting(false)
+      return
+    }
 
     for (let i = 0; i < photos.length; i++) {
       const file = photos[i]
