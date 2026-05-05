@@ -240,7 +240,7 @@ export default function SearchResultsClient() {
 
   const [locations, setLocations] = useState<Location[]>([])
   const [loading, setLoading] = useState(true)
-  const [sheetOpen, setSheetOpen] = useState(false)
+  const [sheet, setSheet] = useState<'peek' | 'strip' | 'detail'>('strip')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
@@ -307,16 +307,22 @@ export default function SearchResultsClient() {
 
   const handlePinClick = useCallback((loc: Location) => {
     setSelectedId(loc.id)
-    setSheetOpen(true)
+    setSheet('detail')
   }, [])
 
   const handleCardClick = useCallback((loc: Location) => {
     setSelectedId(loc.id)
-    setSheetOpen(true)
+    setSheet('detail')
   }, [])
 
-  const handleBack = useCallback(() => setSheetOpen(false), [])
-  const handleClose = useCallback(() => { setSheetOpen(false); setSelectedId(null) }, [])
+  const handleBack = useCallback(() => setSheet('strip'), [])
+  const handleClose = useCallback(() => { setSheet('strip'); setSelectedId(null) }, [])
+
+  function handleDragHandle() {
+    if (sheet === 'detail') setSheet('strip')
+    else if (sheet === 'strip') setSheet('peek')
+    else setSheet('strip')
+  }
 
   const selectedLoc = locations.find((l) => l.id === selectedId) ?? null
   const mapCenter = { lat, lng }
@@ -346,7 +352,11 @@ export default function SearchResultsClient() {
         {/* Floating tag legend */}
         <div
           className="absolute left-0 right-0 z-10 flex gap-2 overflow-x-auto px-3 pb-1 scrollbar-hide transition-all duration-300"
-          style={{ bottom: sheetOpen ? 'calc(65vh + 8px)' : 'calc(50vh + 8px)' }}
+          style={{
+            bottom: sheet === 'detail' ? 'calc(65vh + 8px)'
+                  : sheet === 'strip'  ? 'calc(50vh + 8px)'
+                  : '80px'
+          }}
         >
           <TagPill label="All" active={!tagParam} onClick={() => updateParam('tag', '')} />
           {TAGS.map((t) => (
@@ -362,18 +372,22 @@ export default function SearchResultsClient() {
         {/* Bottom sheet */}
         <div
           className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] transition-all duration-300 flex flex-col"
-          style={{ height: sheetOpen ? '65vh' : '50vh' }}
+          style={{
+            height: sheet === 'detail' ? '65vh'
+                  : sheet === 'strip'  ? '50vh'
+                  : '72px'
+          }}
         >
           <button
-            onClick={() => !sheetOpen && setSheetOpen(true)}
-            className="flex justify-center pt-2.5 pb-1 shrink-0 w-full cursor-pointer"
-            aria-label={sheetOpen ? undefined : 'Expand'}
+            onClick={handleDragHandle}
+            className="flex justify-center pt-2.5 pb-2 shrink-0 w-full cursor-pointer"
+            aria-label={sheet === 'peek' ? 'Expand' : 'Minimise'}
           >
             <div className="w-10 h-1 bg-gray-300 rounded-full" />
           </button>
-          {sheetOpen && selectedLoc ? (
+          {sheet === 'detail' && selectedLoc ? (
             <DetailPanel loc={selectedLoc} onBack={handleBack} onClose={handleClose} />
-          ) : (
+          ) : sheet !== 'peek' ? (
             <ListStrip
               locations={locations}
               loading={loading}
@@ -383,7 +397,7 @@ export default function SearchResultsClient() {
               sortParam={sortParam}
               onSortChange={(s) => updateParam('sort', s)}
             />
-          )}
+          ) : null}
         </div>
       </div>
 
