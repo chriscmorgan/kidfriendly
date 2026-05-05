@@ -7,7 +7,10 @@ export async function GET(request: Request) {
   if (!q) return NextResponse.json([])
 
   const apiKey = process.env.GEOAPIFY_API_KEY
-  if (!apiKey) return NextResponse.json([])
+  if (!apiKey) {
+    console.warn('[geocode] GEOAPIFY_API_KEY is not set')
+    return NextResponse.json([])
+  }
 
   const url = new URL('https://api.geoapify.com/v1/geocode/autocomplete')
   url.searchParams.set('text', q)
@@ -16,7 +19,10 @@ export async function GET(request: Request) {
   url.searchParams.set('apiKey', apiKey)
 
   const res = await fetch(url.toString())
-  if (!res.ok) return NextResponse.json([])
+  if (!res.ok) {
+    console.error('[geocode] Geoapify error', res.status, await res.text())
+    return NextResponse.json([])
+  }
 
   const data = await res.json()
   const features = data?.features ?? []
