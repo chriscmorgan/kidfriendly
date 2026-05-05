@@ -54,7 +54,7 @@ export default function HomeLanding({ locations }: Props) {
             <span>👶</span> Made by parents, for parents
           </div>
 
-          <h1 className="text-[2rem] leading-tight sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight">
+          <h1 className="text-[clamp(1.6rem,7vw,4rem)] leading-tight font-extrabold text-white tracking-tight">
             Find the best spots for{' '}
             <span className="text-[#a8d5a6]">young kids</span>{' '}
             near you
