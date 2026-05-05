@@ -323,7 +323,7 @@ export default function SearchResultsClient() {
   return (
     <>
       {/* ── Mobile layout ── */}
-      <div className="relative overflow-hidden md:hidden" style={{ height: 'calc(100vh - 64px)' }}>
+      <div className="relative md:hidden" style={{ height: 'calc(100vh - 64px)' }}>
 
         {/* Search bar */}
         <div className="absolute top-0 left-0 right-0 z-20 bg-white border-b border-gray-100 px-3 py-2">
