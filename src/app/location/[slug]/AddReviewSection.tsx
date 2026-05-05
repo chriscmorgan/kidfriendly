@@ -47,11 +47,11 @@ export default function AddReviewSection({ locationId, existingReview }: Props) 
     )
   }
 
-  async function handleSubmit() {
-    if (!user) return
-    const hasRating = Object.keys(ratings).length > 0
-    if (!hasRating) return
+  const hasComment = comment.trim().length > 0
+  const hasRating = Object.keys(ratings).length > 0
 
+  async function handleSubmit() {
+    if (!user || (!hasComment && !hasRating)) return
     setSubmitting(true)
     const supabase = createClient()
     const payload: Record<string, unknown> = {
@@ -80,6 +80,23 @@ export default function AddReviewSection({ locationId, existingReview }: Props) 
         {existingReview ? 'Update your review' : 'Write a review'}
       </h2>
 
+      {/* Comment first — lower friction */}
+      <div className="mb-5">
+        <label className="block text-sm font-medium text-[#2c2c2c] mb-1.5">
+          Your experience
+          <span className="text-[#6b7280] font-normal ml-1">(star ratings below are optional)</span>
+        </label>
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          maxLength={280}
+          placeholder="What did you think? Tips for other parents?"
+          className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-24 outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
+        />
+        <p className="text-xs text-[#6b7280] mt-1 text-right">{comment.length}/280</p>
+      </div>
+
+      {/* Ratings — optional */}
       <div className="space-y-4">
         {RATING_DIMENSIONS.map((dim) => (
           <div key={dim.key} className="flex items-center gap-3">
@@ -93,25 +110,11 @@ export default function AddReviewSection({ locationId, existingReview }: Props) 
         ))}
       </div>
 
-      <div className="mt-5">
-        <label className="block text-sm font-medium text-[#2c2c2c] mb-1.5">
-          Comment <span className="text-[#6b7280] font-normal">(optional)</span>
-        </label>
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          maxLength={280}
-          placeholder="What did you think? Tips for other parents?"
-          className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-24 outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
-        />
-        <p className="text-xs text-[#6b7280] mt-1 text-right">{comment.length}/280</p>
-      </div>
-
       <Button
-        className="mt-4 w-full justify-center"
+        className="mt-5 w-full justify-center"
         onClick={handleSubmit}
         loading={submitting}
-        disabled={Object.keys(ratings).length === 0}
+        disabled={!hasComment && !hasRating}
       >
         Submit review
       </Button>

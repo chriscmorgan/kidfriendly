@@ -9,7 +9,7 @@ import ReportButton from '@/components/location/ReportButton'
 import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
 import type { Location, Review, AvgRatings, Tag, OpenTime } from '@/lib/types'
 import { AGE_RANGES } from '@/lib/constants'
-import { MapPin, Navigation, User, Calendar } from 'lucide-react'
+import { MapPin, Navigation, User, Calendar, Star } from 'lucide-react'
 import AddReviewSection from './AddReviewSection'
 
 interface Props {
@@ -61,6 +61,11 @@ export default async function LocationPage({ params }: Props) {
     const vals = reviews.map((r) => r[`rating_${key}` as keyof Review] as number | null).filter((v): v is number => v != null)
     avg_ratings[key] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null
   }
+
+  const overallAvg = (() => {
+    const vals = Object.values(avg_ratings).filter((v): v is number => v != null)
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null
+  })()
 
   const ageLabels = AGE_RANGES.filter((a) => loc.age_ranges?.includes(a.value)).map((a) => a.label)
 
@@ -125,9 +130,23 @@ export default async function LocationPage({ params }: Props) {
 
           {/* Reviews */}
           <section>
-            <h2 className="text-lg font-semibold text-[#2c2c2c] mb-4">
-              Reviews {reviews.length > 0 && <span className="text-[#6b7280] font-normal text-base">({reviews.length})</span>}
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-lg font-semibold text-[#2c2c2c]">Reviews</h2>
+                {overallAvg != null && (
+                  <p className="text-sm text-[#6b7280] mt-0.5 flex items-center gap-1">
+                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    {overallAvg.toFixed(1)} · {reviews.length} review{reviews.length !== 1 ? 's' : ''}
+                  </p>
+                )}
+              </div>
+              <a
+                href="#write-review"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-[#7da87b] hover:bg-[#5e8e5c] px-4 py-2 rounded-xl transition-colors"
+              >
+                Write a review
+              </a>
+            </div>
             {reviews.length === 0 ? (
               <p className="text-sm text-[#6b7280]">No reviews yet. Be the first!</p>
             ) : (
@@ -140,7 +159,9 @@ export default async function LocationPage({ params }: Props) {
           </section>
 
           {/* Add review */}
-          <AddReviewSection locationId={loc.id} existingReview={reviews.find((r) => false) ?? null} />
+          <section id="write-review">
+            <AddReviewSection locationId={loc.id} existingReview={reviews.find((r) => false) ?? null} />
+          </section>
         </div>
 
         {/* Sidebar */}

@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { createClient } from '@/lib/supabase/server'
-import HomeMapClient from './HomeMapClient'
+import HomeLanding from './HomeLanding'
 import type { Location, LocationPhoto, AvgRatings } from '@/lib/types'
 
 const USE_MOCK = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true
@@ -9,7 +9,7 @@ const USE_MOCK = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?
 async function getLocations(): Promise<Location[]> {
   if (USE_MOCK) {
     const { mockLocations } = await import('@/lib/mock/locations')
-    return mockLocations
+    return mockLocations.slice().reverse().slice(0, 6)
   }
 
   const supabase = await createClient()
@@ -22,7 +22,7 @@ async function getLocations(): Promise<Location[]> {
     `)
     .eq('status', 'approved')
     .order('approved_at', { ascending: false })
-    .limit(200)
+    .limit(6)
 
   if (!data) return []
   return data.map(enrichLocation)
@@ -47,5 +47,5 @@ function enrichLocation(loc: Record<string, unknown>): Location {
 
 export default async function HomePage() {
   const locations = await getLocations()
-  return <HomeMapClient locations={locations} />
+  return <HomeLanding locations={locations} />
 }

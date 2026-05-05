@@ -27,22 +27,25 @@ export default function ReviewCard({ review }: { review: Review }) {
             </span>
           </div>
 
-          {/* Mini rating chips */}
+          {/* Comment first — primary content */}
+          {review.comment ? (
+            <p className="text-[15px] text-[#2c2c2c] mt-2 leading-relaxed">{review.comment}</p>
+          ) : (
+            <p className="text-sm text-[#6b7280] italic mt-2">Rated the experience</p>
+          )}
+
+          {/* Rating chips — secondary */}
           {ratedDimensions.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-2">
+            <div className="flex flex-wrap gap-1.5 mt-2.5">
               {ratedDimensions.map((d) => {
                 const val = review[`rating_${d.key}` as keyof Review] as number
                 return (
-                  <span key={d.key} className="inline-flex items-center gap-1 bg-[#f2f7f2] text-[#426340] text-xs px-2 py-0.5 rounded-full font-medium">
+                  <span key={d.key} className="inline-flex items-center gap-1 bg-[#f2f7f2] text-[#426340] text-[11px] px-2 py-0.5 rounded-full font-medium">
                     {d.emoji} {val}/5
                   </span>
                 )
               })}
             </div>
-          )}
-
-          {review.comment && (
-            <p className="text-sm text-[#2c2c2c] mt-2 leading-relaxed">{review.comment}</p>
           )}
         </div>
       </div>

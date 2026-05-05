@@ -16,6 +16,7 @@ export default function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const navLinks = [
+    { href: '/search', label: 'Explore' },
     { href: '/about', label: 'About' },
   ]
 
