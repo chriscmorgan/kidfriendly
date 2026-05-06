@@ -27,7 +27,7 @@ const HOW_IT_WORKS = [
 ]
 
 const TAG_DESCRIPTIONS: Record<string, string> = {
-  indoor_playground: 'Play area inside the venue',
+  indoor_playground: 'Indoor playground inside the venue',
   kids_play_area: 'Dedicated equipment on-site',
   adjacent_playground: 'Playground right next door',
   outdoor_run_area: 'Outdoor space to burn energy',

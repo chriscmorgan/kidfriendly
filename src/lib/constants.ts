@@ -8,7 +8,7 @@ export const TAGS: {
   bgColor: string
   pinColor: string
 }[] = [
-  { value: 'indoor_playground',  label: 'Has indoor play area',      emoji: '🏠', color: 'text-purple-700', bgColor: 'bg-purple-100', pinColor: '#9333ea' },
+  { value: 'indoor_playground',  label: 'Has indoor playground',     emoji: '🏠', color: 'text-purple-700', bgColor: 'bg-purple-100', pinColor: '#9333ea' },
   { value: 'kids_play_area',     label: 'Has kids play area',        emoji: '🛝', color: 'text-blue-700',   bgColor: 'bg-blue-100',   pinColor: '#2563eb' },
   { value: 'adjacent_playground',label: 'Next to a playground',      emoji: '🌳', color: 'text-green-700',  bgColor: 'bg-green-100',  pinColor: '#16a34a' },
   { value: 'outdoor_run_area',   label: 'Outdoor space for kids',    emoji: '🏃', color: 'text-orange-700', bgColor: 'bg-orange-100', pinColor: '#ea580c' },
