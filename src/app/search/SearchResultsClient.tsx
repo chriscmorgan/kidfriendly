@@ -120,7 +120,7 @@ function ListStrip({
           <div className="p-8 text-center">
             <div className="text-3xl mb-3">📍</div>
             <p className="font-semibold text-[#2c2c2c] text-sm mb-1">No spots found here yet</p>
-            <p className="text-xs text-[#6b7280] mb-5">Be the first to add a kid-friendly place in this area.</p>
+            <p className="text-xs text-[#6b7280] mb-5">Be the first to add a cafe or spot with a play area here.</p>
             <a
               href="/submit"
               className="inline-flex items-center gap-1.5 bg-[#7da87b] hover:bg-[#5e8e5c] text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-colors"

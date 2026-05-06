@@ -12,26 +12,26 @@ const HOW_IT_WORKS = [
   {
     emoji: '🔍',
     title: 'Search your area',
-    desc: 'Enter your suburb or postcode to find kid-friendly spots near you.',
+    desc: 'Search your suburb or postcode to find nearby cafes and spots with play areas.',
   },
   {
     emoji: '📍',
     title: 'Discover great spots',
-    desc: 'Browse playgrounds, cafes with play areas, parks, and more — all rated by parents.',
+    desc: 'Browse venues with on-site play areas or next to playgrounds — all rated by parents.',
   },
   {
     emoji: '⭐',
     title: 'Share your experience',
-    desc: 'Leave a review to help other families find their next favourite spot.',
+    desc: 'Leave a review to help other parents find their next great eat-and-play spot.',
   },
 ]
 
 const TAG_DESCRIPTIONS: Record<string, string> = {
-  indoor_playground: 'Perfect for rainy days',
-  kids_play_area: 'Built-in play equipment',
-  adjacent_playground: 'Playground right nearby',
-  outdoor_run_area: 'Space to burn off energy',
-  play_centre: 'Dedicated kids venues',
+  indoor_playground: 'Play area inside the venue',
+  kids_play_area: 'Dedicated equipment on-site',
+  adjacent_playground: 'Playground right next door',
+  outdoor_run_area: 'Outdoor space to burn energy',
+  play_centre: 'Dedicated play venue',
 }
 
 export default function HomeLanding({ locations }: Props) {
@@ -55,12 +55,11 @@ export default function HomeLanding({ locations }: Props) {
           </div>
 
           <h1 className="text-[clamp(1.6rem,7vw,4rem)] leading-tight font-extrabold text-white tracking-tight">
-            Find the best spots for{' '}
-            <span className="text-[#a8d5a6]">young kids</span>{' '}
-            near you
+            Find cafes &amp; spots where{' '}
+            <span className="text-[#a8d5a6]">kids can play</span>
           </h1>
           <p className="text-[#c8e6c6] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
-            Playgrounds, parks, cafes and more — discovered and reviewed by local parents.
+            Cafes, restaurants and venues with play areas — reviewed by local parents who&apos;ve been there.
           </p>
 
           <div className="w-full max-w-xl mt-8 mx-auto">
@@ -98,7 +97,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-[#faf8f4] px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Browse by type</h2>
-          <p className="text-sm text-[#6b7280] mb-6">Find exactly what you&apos;re looking for</p>
+          <p className="text-sm text-[#6b7280] mb-6">Filter by what kind of play setup the venue has</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {TAGS.map((tag) => (
               <Link

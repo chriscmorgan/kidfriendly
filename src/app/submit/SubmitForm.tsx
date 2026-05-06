@@ -177,7 +177,7 @@ export default function SubmitForm() {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Rushcutters Bay Park"
+          placeholder="e.g. The Grounds of Alexandria"
           className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
           maxLength={120}
         />
@@ -252,7 +252,7 @@ export default function SubmitForm() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           maxLength={1000}
-          placeholder="What makes this place great for kids? Describe what's there, what you can do, what to expect…"
+          placeholder="What's the play area like? What can parents eat or drink while kids play? How long can kids keep themselves busy? What to expect…"
           className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
         <div className="flex justify-between text-xs text-[#6b7280] mt-1">

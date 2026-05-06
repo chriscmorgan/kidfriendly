@@ -9,8 +9,8 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
 
 export const metadata: Metadata = {
   title: { default: 'KidFriendlyEats', template: '%s | KidFriendlyEats' },
-  description: 'Discover the best kid-friendly spots near you — parks, cafes, play centres, and more.',
-  keywords: ['kids', 'family', 'Australia', 'playground', 'cafes', 'family-friendly'],
+  description: 'Find cafes and restaurants where kids can play — on-site play areas, spots next to playgrounds, and more. Reviewed by local parents.',
+  keywords: ['kids play area', 'cafe with play area', 'family cafe', 'Australia', 'playground nearby', 'family restaurant'],
   openGraph: { siteName: 'KidFriendlyEats', type: 'website' },
 }
 

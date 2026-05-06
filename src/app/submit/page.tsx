@@ -9,7 +9,7 @@ export default function SubmitPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[#2c2c2c]">Add a place</h1>
         <p className="text-[#6b7280] mt-2">
-          Share a kid-friendly spot with the community. Your submission will be reviewed before going live.
+          Know a cafe or venue with a great play area? Add it to the map. Your submission will be reviewed before going live.
         </p>
       </div>
       <SubmitForm />
