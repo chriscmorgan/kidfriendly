@@ -36,6 +36,8 @@ export interface Location {
   open_times: OpenTime[]
   age_ranges: AgeRange[]
   tips: string | null
+  website?: string | null
+  opening_hours?: string | null
   status: LocationStatus
   submitted_by: string
   rejection_note: string | null

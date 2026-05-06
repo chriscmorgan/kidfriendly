@@ -30,6 +30,8 @@ export default function SubmitForm() {
   const [selectedOpenTimes, setSelectedOpenTimes] = useState<OpenTime[]>([])
   const [description, setDescription] = useState('')
   const [tips, setTips] = useState('')
+  const [website, setWebsite] = useState('')
+  const [openingHours, setOpeningHours] = useState('')
   const [ageRanges, setAgeRanges] = useState<AgeRange[]>([])
   const [photos, setPhotos] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
@@ -123,6 +125,8 @@ export default function SubmitForm() {
         open_times: selectedOpenTimes,
         age_ranges: ageRanges,
         tips: tips.trim() || null,
+        website: website.trim() || null,
+        opening_hours: openingHours.trim() || null,
         submitted_by: user.id,
         status: 'pending',
       })
@@ -270,6 +274,34 @@ export default function SubmitForm() {
           className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
         <p className="text-xs text-[#6b7280] mt-1 text-right">{tips.length}/280</p>
+      </div>
+
+      {/* Website */}
+      <div>
+        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+          Website <span className="text-[#6b7280] font-normal">(optional)</span>
+        </label>
+        <input
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          placeholder="https://..."
+          type="url"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
+        />
+      </div>
+
+      {/* Opening hours */}
+      <div>
+        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+          Opening hours <span className="text-[#6b7280] font-normal">(optional)</span>
+        </label>
+        <input
+          value={openingHours}
+          onChange={(e) => setOpeningHours(e.target.value)}
+          placeholder="e.g. Mon–Fri 9am–5pm, Sat–Sun 8am–6pm"
+          maxLength={200}
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
+        />
       </div>
 
       {/* Age ranges */}

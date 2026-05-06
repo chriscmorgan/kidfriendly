@@ -9,7 +9,7 @@ import ReportButton from '@/components/location/ReportButton'
 import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
 import type { Location, Review, AvgRatings, Tag, OpenTime } from '@/lib/types'
 import { AGE_RANGES } from '@/lib/constants'
-import { MapPin, Navigation, User, Calendar, Star } from 'lucide-react'
+import { MapPin, Navigation, User, Calendar, Star, Clock, ExternalLink } from 'lucide-react'
 import AddReviewSection from './AddReviewSection'
 
 interface Props {
@@ -70,7 +70,7 @@ export default async function LocationPage({ params }: Props) {
   const ageLabels = AGE_RANGES.filter((a) => loc.age_ranges?.includes(a.value)).map((a) => a.label)
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-28 md:pb-10">
       {/* Back */}
       <Link href="/search" className="inline-flex items-center gap-1 text-sm text-[#6b7280] hover:text-[#2c2c2c] mb-6 transition-colors">
         ← Back to search
@@ -106,6 +106,23 @@ export default async function LocationPage({ params }: Props) {
               <Navigation className="w-3.5 h-3.5" />
               Get directions
             </a>
+            {loc.opening_hours && (
+              <p className="flex items-center gap-1.5 text-sm text-[#4b5563] mt-1.5">
+                <Clock className="w-3.5 h-3.5 text-[#6b7280] shrink-0" />
+                {loc.opening_hours}
+              </p>
+            )}
+            {loc.website && (
+              <a
+                href={loc.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-[#5e8e5c] hover:text-[#426340] mt-1.5 font-medium transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Visit website
+              </a>
+            )}
           </div>
 
           {/* Description */}
@@ -202,6 +219,24 @@ export default async function LocationPage({ params }: Props) {
             <ReportButton locationId={loc.id} />
           </div>
         </aside>
+      </div>
+
+      {/* Sticky mobile CTA bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-white border-t border-gray-100 px-4 py-3 flex gap-3">
+        <a
+          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 flex items-center justify-center gap-2 bg-[#f2f7f2] text-[#2d5a2b] font-semibold text-sm py-3 rounded-2xl transition-colors hover:bg-[#e0ecdf]"
+        >
+          <Navigation className="w-4 h-4" /> Get Directions
+        </a>
+        <a
+          href="#write-review"
+          className="flex-1 flex items-center justify-center gap-2 bg-[#7da87b] hover:bg-[#5e8e5c] text-white font-semibold text-sm py-3 rounded-2xl transition-colors"
+        >
+          <Star className="w-4 h-4" /> Write a Review
+        </a>
       </div>
     </div>
   )

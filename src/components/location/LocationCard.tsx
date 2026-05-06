@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, Star } from 'lucide-react'
+import { MapPin, Star, Camera } from 'lucide-react'
 import { TagBadge } from '@/components/ui/Badge'
 import type { Location } from '@/lib/types'
 import { cn, formatDistance, truncate } from '@/lib/utils'
@@ -54,6 +54,12 @@ export default function LocationCard({ location, className, compact = false }: L
             <TagBadge tag={location.tags[0]} />
           </div>
         )}
+        {(location.photos?.length ?? 0) > 1 && (
+          <div className="absolute top-2 right-2 flex items-center gap-0.5 bg-black/50 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-full">
+            <Camera className="w-2.5 h-2.5" />
+            {location.photos!.length}
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -93,8 +99,8 @@ export default function LocationCard({ location, className, compact = false }: L
             <div className="flex items-center gap-1 text-sm font-medium text-charcoal">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               {rating.toFixed(1)}
-              {location.review_count != null && (
-                <span className="text-xs text-muted font-normal">({location.review_count})</span>
+              {location.review_count != null && location.review_count > 0 && (
+                <span className="text-xs text-muted font-normal">· {location.review_count} review{location.review_count !== 1 ? 's' : ''}</span>
               )}
             </div>
           )}
