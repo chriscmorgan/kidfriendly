@@ -111,7 +111,7 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
             onChange={handleInput}
             onFocus={() => suggestions.length > 0 && setOpen(true)}
             className={cn(
-              'flex-1 bg-transparent outline-none text-[#2c2c2c] placeholder:text-[#6b7280]',
+              'flex-1 min-w-0 bg-transparent outline-none text-[#2c2c2c] placeholder:text-[#6b7280]',
               isHero ? 'text-base py-1' : 'text-sm py-0.5'
             )}
             autoComplete="off"
