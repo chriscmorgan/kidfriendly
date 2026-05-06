@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import { Flag } from 'lucide-react'
 import { useAuth } from '@/components/auth/AuthProvider'
@@ -46,7 +46,7 @@ export default function ReportButton({ locationId }: { locationId: string }) {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Describe the issue…"
-              className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-24 outline-none focus:border-[#7da87b]"
+              className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-24 outline-none focus:border-[#d4907a]"
             />
             <div className="flex gap-2 mt-3 justify-end">
               <button onClick={() => setOpen(false)} className="px-4 py-2 text-sm text-[#6b7280] hover:bg-gray-100 rounded-xl cursor-pointer">

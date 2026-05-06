@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+﻿export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 
@@ -12,7 +12,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="bg-[#7da87b] text-white px-6 py-3 rounded-xl font-medium hover:bg-[#5e8e5c] transition-colors"
+        className="bg-[#d4907a] text-white px-6 py-3 rounded-xl font-medium hover:bg-[#b97260] transition-colors"
       >
         Back to map
       </Link>

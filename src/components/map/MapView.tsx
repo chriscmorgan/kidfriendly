@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useRef } from 'react'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -49,7 +49,7 @@ function makePopupHTML(loc: Location): string {
       <p style="font-weight: 700; font-size: 13px; color: #2c2c2c; margin: 0 0 3px; line-height: 1.3;">${loc.name}</p>
       <p style="font-size: 11px; color: #6b7280; margin: 0 0 10px;">${meta.emoji} ${meta.label} · ${loc.suburb}</p>
       <a href="/location/${loc.slug}" style="
-        display: inline-block; background: #7da87b; color: white;
+        display: inline-block; background: #d4907a; color: white;
         font-size: 12px; font-weight: 600; padding: 6px 14px;
         border-radius: 8px; text-decoration: none;
       ">View details →</a>
@@ -153,9 +153,8 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
   }, [selectedId])
 
   useEffect(() => {
-    if (!mapRef.current) return
     programmaticRef.current = true
-    mapRef.current.flyTo({ center: [center.lng, center.lat], zoom, essential: true })
+    mapRef.current?.flyTo({ center: [center.lng, center.lat], zoom, essential: true })
   }, [center.lat, center.lng, zoom])
 
   return <div ref={containerRef} className="w-full h-full" />

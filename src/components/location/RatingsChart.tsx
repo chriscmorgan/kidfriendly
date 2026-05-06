@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import type { AvgRatings } from '@/lib/types'
 import { RATING_DIMENSIONS } from '@/lib/constants'
@@ -36,7 +36,7 @@ export default function RatingsChart({ ratings, reviewCount }: RatingsChartProps
               <span className="text-sm text-[#2c2c2c] w-36 shrink-0">{dim.label}</span>
               <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
                 <div
-                  className="h-full bg-[#7da87b] rounded-full transition-all duration-500"
+                  className="h-full bg-[#d4907a] rounded-full transition-all duration-500"
                   style={{ width: `${(val / 5) * 100}%` }}
                 />
               </div>

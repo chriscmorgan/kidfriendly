@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import SearchBar from '@/components/search/SearchBar'
 import LocationCard from '@/components/location/LocationCard'
 import { TAGS } from '@/lib/constants'
@@ -39,14 +39,14 @@ export default function HomeLanding({ locations }: Props) {
     <div className="flex flex-col overflow-x-hidden">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#1e3d1c] via-[#2d5a2b] to-[#4a7a48] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#4d1e12] via-[#7a3020] to-[#a84530] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
 
         {/* Decorative floating emojis */}
         <span className="absolute top-8 left-[8%] text-4xl opacity-20 rotate-[-15deg] select-none" aria-hidden>🛝</span>
-        <span className="absolute top-16 right-[10%] text-5xl opacity-15 rotate-[12deg] select-none" aria-hidden>🌳</span>
-        <span className="absolute bottom-12 left-[15%] text-3xl opacity-20 rotate-[8deg] select-none" aria-hidden>🎪</span>
-        <span className="absolute bottom-8 right-[12%] text-4xl opacity-20 rotate-[-10deg] select-none" aria-hidden>🏃</span>
-        <span className="absolute top-1/2 left-[3%] text-2xl opacity-10 select-none" aria-hidden>📍</span>
+        <span className="absolute top-16 right-[10%] text-5xl opacity-15 rotate-[12deg] select-none" aria-hidden>☕</span>
+        <span className="absolute bottom-12 left-[15%] text-3xl opacity-20 rotate-[8deg] select-none" aria-hidden>🍰</span>
+        <span className="absolute bottom-8 right-[12%] text-4xl opacity-20 rotate-[-10deg] select-none" aria-hidden>🧒</span>
+        <span className="absolute top-1/2 left-[3%] text-2xl opacity-10 select-none" aria-hidden>🍴</span>
 
         <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
           {/* Badge */}
@@ -56,9 +56,9 @@ export default function HomeLanding({ locations }: Props) {
 
           <h1 className="text-[clamp(1.6rem,7vw,4rem)] leading-tight font-extrabold text-white tracking-tight">
             Find cafes &amp; spots where{' '}
-            <span className="text-[#a8d5a6]">kids can play</span>
+            <span className="text-[#f5c0b0]">kids can play</span>
           </h1>
-          <p className="text-[#c8e6c6] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
+          <p className="text-[#fad8d0] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
             Cafes, restaurants and venues with play areas — reviewed by local parents who&apos;ve been there.
           </p>
 
@@ -82,7 +82,7 @@ export default function HomeLanding({ locations }: Props) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {HOW_IT_WORKS.map((step, i) => (
               <div key={i} className="flex flex-col items-center text-center px-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#f2f7f2] flex items-center justify-center text-2xl mb-3 shadow-sm">
+                <div className="w-14 h-14 rounded-2xl bg-[#fdf0ed] flex items-center justify-center text-2xl mb-3 shadow-sm">
                   {step.emoji}
                 </div>
                 <h3 className="font-semibold text-[#2c2c2c] mb-1">{step.title}</h3>
@@ -132,19 +132,19 @@ export default function HomeLanding({ locations }: Props) {
       )}
 
       {/* ── Add a place CTA ── */}
-      <section className="bg-gradient-to-br from-[#2d5a2b] to-[#4a7a48] px-4 py-16 text-center">
+      <section className="bg-gradient-to-br from-[#7a3020] to-[#a84530] px-4 py-16 text-center">
         <div className="max-w-lg mx-auto">
           <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
             📍
           </div>
           <h2 className="text-2xl font-bold text-white">Know a great spot?</h2>
-          <p className="text-[#c8e6c6] mt-3 text-sm leading-relaxed max-w-sm mx-auto">
+          <p className="text-[#fad8d0] mt-3 text-sm leading-relaxed max-w-sm mx-auto">
             Help other families discover it. Takes 2 minutes to add a place to the map.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
             <Link
               href="/submit"
-              className="inline-flex items-center gap-2 bg-white text-[#2d5a2b] font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#f2f7f2] transition-colors shadow-lg"
+              className="inline-flex items-center gap-2 bg-white text-[#7a3020] font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#fdf0ed] transition-colors shadow-lg"
             >
               <span>📍</span> Add a place
             </Link>

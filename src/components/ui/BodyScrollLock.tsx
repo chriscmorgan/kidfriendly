@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 
 export default function BodyScrollLock() {
   useEffect(() => {
-    const prev = document.body.style.overflow
+    const original = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = prev }
+    return () => { document.body.style.overflow = original }
   }, [])
   return null
 }

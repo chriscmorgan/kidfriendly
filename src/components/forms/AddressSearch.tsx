@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useRef, useEffect } from 'react'
 import { MapPin, Loader2 } from 'lucide-react'
 
@@ -67,7 +67,7 @@ export default function AddressSearch({ value, onChange }: AddressSearchProps) {
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="flex items-center border border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-[#7da87b] bg-white">
+      <div className="flex items-center border border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-[#d4907a] bg-white">
         <MapPin className="w-4 h-4 text-[#6b7280] shrink-0 mr-2" />
         <input
           type="text"
