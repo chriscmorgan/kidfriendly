@@ -11,6 +11,7 @@ interface MapViewProps {
   zoom?: number
   onLocationClick?: (location: Location) => void
   selectedId?: string | null
+  onMapMove?: (center: { lat: number; lng: number }) => void
 }
 
 const MAP_STYLE = 'https://tiles.openfreemap.org/styles/positron'
@@ -68,11 +69,14 @@ function setSelected(el: HTMLElement, selected: boolean) {
   el.style.zIndex = selected ? '10' : '1'
 }
 
-export default function MapView({ locations, center, zoom = 12, onLocationClick, selectedId }: MapViewProps) {
+export default function MapView({ locations, center, zoom = 12, onLocationClick, selectedId, onMapMove }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<maplibregl.Map | null>(null)
   const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map())
   const popupsRef = useRef<Map<string, maplibregl.Popup>>(new Map())
+  const onMapMoveRef = useRef(onMapMove)
+  const programmaticRef = useRef(false)
+  useEffect(() => { onMapMoveRef.current = onMapMove }, [onMapMove])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -83,6 +87,11 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
       zoom,
     })
     mapRef.current.addControl(new maplibregl.NavigationControl(), 'bottom-right')
+    mapRef.current.on('moveend', () => {
+      if (programmaticRef.current) { programmaticRef.current = false; return }
+      const c = mapRef.current?.getCenter()
+      if (c) onMapMoveRef.current?.({ lat: c.lat, lng: c.lng })
+    })
     return () => {
       mapRef.current?.remove()
       mapRef.current = null
@@ -137,13 +146,16 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
     })
 
     const lngLat = marker.getLngLat()
+    programmaticRef.current = true
     map.flyTo({ center: [lngLat.lng, lngLat.lat], zoom: Math.max(map.getZoom(), 14), essential: true })
 
     if (!popup.isOpen()) marker.togglePopup()
   }, [selectedId])
 
   useEffect(() => {
-    mapRef.current?.flyTo({ center: [center.lng, center.lat], zoom, essential: true })
+    if (!mapRef.current) return
+    programmaticRef.current = true
+    mapRef.current.flyTo({ center: [center.lng, center.lat], zoom, essential: true })
   }, [center.lat, center.lng, zoom])
 
   return <div ref={containerRef} className="w-full h-full" />

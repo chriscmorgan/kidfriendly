@@ -39,7 +39,7 @@ export default function HomeLanding({ locations }: Props) {
     <div className="flex flex-col overflow-x-hidden">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#1e3d1c] via-[#2d5a2b] to-[#4a7a48] min-h-[56vh] flex flex-col items-center justify-center text-center px-4 py-16 sm:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#1e3d1c] via-[#2d5a2b] to-[#4a7a48] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
 
         {/* Decorative floating emojis */}
         <span className="absolute top-8 left-[8%] text-4xl opacity-20 rotate-[-15deg] select-none" aria-hidden>🛝</span>
@@ -48,7 +48,7 @@ export default function HomeLanding({ locations }: Props) {
         <span className="absolute bottom-8 right-[12%] text-4xl opacity-20 rotate-[-10deg] select-none" aria-hidden>🏃</span>
         <span className="absolute top-1/2 left-[3%] text-2xl opacity-10 select-none" aria-hidden>📍</span>
 
-        <div className="relative z-10 w-full max-w-2xl mx-auto">
+        <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 text-white/90 text-xs font-semibold px-3 py-1.5 rounded-full mb-5">
             <span>👶</span> Made by parents, for parents
@@ -63,7 +63,7 @@ export default function HomeLanding({ locations }: Props) {
             Playgrounds, parks, cafes and more — discovered and reviewed by local parents.
           </p>
 
-          <div className="w-[calc(100vw-2rem)] max-w-xl mt-8 mx-auto">
+          <div className="w-full max-w-xl mt-8 mx-auto">
             <SearchBar size="hero" />
           </div>
 
@@ -72,8 +72,6 @@ export default function HomeLanding({ locations }: Props) {
             <span className="flex items-center gap-1.5"><span className="text-base">📍</span> {locations.length > 0 ? `${locations.length}+ places listed` : 'Places listed'}</span>
             <span className="text-white/30">·</span>
             <span className="flex items-center gap-1.5"><span className="text-base">⭐</span> Parent reviews</span>
-            <span className="text-white/30">·</span>
-            <span className="flex items-center gap-1.5"><span className="text-base">🆓</span> Always free</span>
           </div>
         </div>
       </section>
@@ -121,17 +119,9 @@ export default function HomeLanding({ locations }: Props) {
       {locations.length > 0 && (
         <section className="bg-white px-4 py-12">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-[#2c2c2c]">Recently added</h2>
-                <p className="text-sm text-[#6b7280] mt-0.5">Fresh spots added by the community</p>
-              </div>
-              <Link
-                href="/search"
-                className="flex items-center gap-1 text-sm font-semibold text-[#5e8e5c] hover:text-[#426340] transition-colors"
-              >
-                View all →
-              </Link>
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-[#2c2c2c]">Recently added</h2>
+              <p className="text-sm text-[#6b7280] mt-0.5">Fresh spots added by the community</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {locations.map((loc) => (
