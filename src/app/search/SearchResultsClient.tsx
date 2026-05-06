@@ -23,6 +23,11 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 
 const IS_MOCK = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true
 
+// Sheet snap heights (fractions of innerHeight)
+const SNAP_PEEK = 72
+const snapStrip = () => Math.round(window.innerHeight * 0.5)
+const snapDetail = () => Math.round(window.innerHeight * 0.75)
+
 function TagPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
@@ -115,7 +120,7 @@ function ListStrip({
           <div className="p-8 text-center">
             <div className="text-3xl mb-2">🔍</div>
             <p className="font-medium text-[#2c2c2c] text-sm">No spots found here yet</p>
-            <p className="text-xs text-[#6b7280] mt-1">Try a different area or tap Search this area</p>
+            <p className="text-xs text-[#6b7280] mt-1">Try searching or tapping Search this area</p>
           </div>
         ) : (
           locations.map((loc) => (
@@ -212,10 +217,56 @@ export default function SearchResultsClient() {
 
   const [locations, setLocations] = useState<Location[]>([])
   const [loading, setLoading] = useState(true)
-  const [sheet, setSheet] = useState<'peek' | 'strip' | 'detail'>('strip')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [movedCenter, setMovedCenter] = useState<{ lat: number; lng: number } | null>(null)
   const [showSearchArea, setShowSearchArea] = useState(false)
+
+  // Sheet height in px — driven by drag + snap
+  const [sheetPx, setSheetPx] = useState(() =>
+    typeof window !== 'undefined' ? snapStrip() : 300
+  )
+  const [isDragging, setIsDragging] = useState(false)
+  const sheetPxRef = useRef(sheetPx)
+  useEffect(() => { sheetPxRef.current = sheetPx }, [sheetPx])
+
+  const draggingRef = useRef(false)
+  const dragStartY = useRef(0)
+  const dragStartH = useRef(0)
+
+  function onHandlePointerDown(e: React.PointerEvent<HTMLButtonElement>) {
+    draggingRef.current = true
+    setIsDragging(true)
+    dragStartY.current = e.clientY
+    dragStartH.current = sheetPxRef.current
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+
+  function onHandlePointerMove(e: React.PointerEvent<HTMLButtonElement>) {
+    if (!draggingRef.current) return
+    const delta = dragStartY.current - e.clientY
+    const maxH = Math.round(window.innerHeight * 0.9)
+    setSheetPx(Math.max(SNAP_PEEK, Math.min(maxH, dragStartH.current + delta)))
+  }
+
+  function onHandlePointerUp() {
+    if (!draggingRef.current) return
+    draggingRef.current = false
+    setIsDragging(false)
+    // Snap to nearest stop
+    const h = sheetPxRef.current
+    const strip = snapStrip()
+    const detail = snapDetail()
+    const dPeek = Math.abs(h - SNAP_PEEK)
+    const dStrip = Math.abs(h - strip)
+    const dDetail = Math.abs(h - detail)
+    if (dPeek <= dStrip && dPeek <= dDetail) setSheetPx(SNAP_PEEK)
+    else if (dStrip <= dDetail) setSheetPx(strip)
+    else setSheetPx(detail)
+  }
+
+  // Derived from px height
+  const showContent = sheetPx > SNAP_PEEK + 40
+  const showDetail = showContent && selectedId !== null
 
   const searchCenterRef = useRef({ lat, lng })
   useEffect(() => { searchCenterRef.current = { lat, lng } }, [lat, lng])
@@ -266,6 +317,9 @@ export default function SearchResultsClient() {
 
   useEffect(() => { fetchLocations() }, [fetchLocations])
 
+  // Initialise sheet to strip height after mount (window available)
+  useEffect(() => { setSheetPx(snapStrip()) }, [])
+
   function updateParam(key: string, value: string) {
     const p = new URLSearchParams(params.toString())
     if (value) p.set(key, value)
@@ -302,28 +356,26 @@ export default function SearchResultsClient() {
 
   const handlePinClick = useCallback((loc: Location) => {
     setSelectedId(loc.id)
-    setSheet('detail')
+    setSheetPx(snapDetail())
   }, [])
 
   const handleCardClick = useCallback((loc: Location) => {
     setSelectedId(loc.id)
-    setSheet('detail')
+    setSheetPx(snapDetail())
   }, [])
 
-  const handleBack = useCallback(() => setSheet('strip'), [])
-  const handleClose = useCallback(() => { setSheet('strip'); setSelectedId(null) }, [])
+  const handleBack = useCallback(() => {
+    setSelectedId(null)
+    setSheetPx(snapStrip())
+  }, [])
 
-  function handleDragHandle() {
-    if (sheet === 'detail') setSheet('strip')
-    else if (sheet === 'strip') setSheet('peek')
-    else setSheet('strip')
-  }
+  const handleClose = useCallback(() => {
+    setSelectedId(null)
+    setSheetPx(snapStrip())
+  }, [])
 
   const selectedLoc = locations.find((l) => l.id === selectedId) ?? null
   const mapCenter = { lat, lng }
-
-  const sheetHeight = sheet === 'detail' ? '65vh' : sheet === 'strip' ? '50vh' : '72px'
-  const legendBottom = sheet === 'detail' ? 'calc(65vh + 8px)' : sheet === 'strip' ? 'calc(50vh + 8px)' : '80px'
 
   return (
     <>
@@ -342,11 +394,9 @@ export default function SearchResultsClient() {
           />
         </div>
 
-        {/* Floating search bar */}
+        {/* Floating search bar — no overflow-hidden so dropdown isn't clipped */}
         <div className="absolute top-3 left-3 right-3 z-20 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-full md:max-w-md">
-          <div className="shadow-lg rounded-2xl overflow-hidden">
-            <SearchBar defaultValue={q} onSearch={handleSearch} />
-          </div>
+          <SearchBar defaultValue={q} onSearch={handleSearch} />
         </div>
 
         {/* Search this area button */}
@@ -362,10 +412,10 @@ export default function SearchResultsClient() {
           </div>
         )}
 
-        {/* Floating tag legend */}
+        {/* Floating tag legend — sits above the bottom sheet */}
         <div
-          className="absolute left-0 right-0 z-10 flex gap-2 overflow-x-auto px-3 pb-1 scrollbar-hide transition-all duration-300"
-          style={{ bottom: legendBottom }}
+          className="absolute left-0 right-0 z-10 flex gap-2 overflow-x-auto px-3 pb-1 scrollbar-hide"
+          style={{ bottom: `${sheetPx + 8}px`, transition: isDragging ? 'none' : 'bottom 0.3s' }}
         >
           <TagPill label="All" active={!tagParam} onClick={() => updateParam('tag', '')} />
           {TAGS.map((t) => (
@@ -378,31 +428,42 @@ export default function SearchResultsClient() {
           ))}
         </div>
 
-        {/* Bottom sheet */}
+        {/* Bottom sheet — drag to resize */}
         <div
-          className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] transition-all duration-300 flex flex-col md:max-w-lg md:left-auto md:right-4 md:rounded-3xl md:bottom-4"
-          style={{ height: sheetHeight }}
+          className={cn(
+            'absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] flex flex-col',
+            !isDragging && 'transition-[height] duration-300'
+          )}
+          style={{ height: `${sheetPx}px` }}
         >
+          {/* Drag handle */}
           <button
-            onClick={handleDragHandle}
-            className="flex justify-center pt-2.5 pb-2 shrink-0 w-full cursor-pointer"
-            aria-label={sheet === 'peek' ? 'Expand' : 'Minimise'}
+            className="flex justify-center pt-2.5 pb-2 shrink-0 w-full touch-none select-none cursor-ns-resize"
+            style={{ touchAction: 'none' }}
+            onPointerDown={onHandlePointerDown}
+            onPointerMove={onHandlePointerMove}
+            onPointerUp={onHandlePointerUp}
+            onPointerCancel={onHandlePointerUp}
+            aria-label="Resize panel"
           >
             <div className="w-10 h-1 bg-gray-300 rounded-full" />
           </button>
-          {sheet === 'detail' && selectedLoc ? (
-            <DetailPanel loc={selectedLoc} onBack={handleBack} onClose={handleClose} />
-          ) : sheet !== 'peek' ? (
-            <ListStrip
-              locations={locations}
-              loading={loading}
-              selectedId={selectedId}
-              onSelect={handleCardClick}
-              q={q}
-              sortParam={sortParam}
-              onSortChange={(s) => updateParam('sort', s)}
-            />
-          ) : null}
+
+          {showContent && (
+            showDetail && selectedLoc ? (
+              <DetailPanel loc={selectedLoc} onBack={handleBack} onClose={handleClose} />
+            ) : (
+              <ListStrip
+                locations={locations}
+                loading={loading}
+                selectedId={selectedId}
+                onSelect={handleCardClick}
+                q={q}
+                sortParam={sortParam}
+                onSortChange={(s) => updateParam('sort', s)}
+              />
+            )
+          )}
         </div>
       </div>
     </>
