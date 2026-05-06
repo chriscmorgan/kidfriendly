@@ -221,11 +221,10 @@ export default function SearchResultsClient() {
   const [movedCenter, setMovedCenter] = useState<{ lat: number; lng: number } | null>(null)
   const [showSearchArea, setShowSearchArea] = useState(false)
 
-  // Sheet height in px — driven by drag + snap
-  const [sheetPx, setSheetPx] = useState(() =>
-    typeof window !== 'undefined' ? snapStrip() : 300
-  )
+  // Sheet height in px — 300 matches SSR; useEffect corrects to viewport-relative after hydration
+  const [sheetPx, setSheetPx] = useState(300)
   const [isDragging, setIsDragging] = useState(false)
+  const [hydrated, setHydrated] = useState(false)
   const sheetPxRef = useRef(sheetPx)
   useEffect(() => { sheetPxRef.current = sheetPx }, [sheetPx])
 
@@ -317,8 +316,8 @@ export default function SearchResultsClient() {
 
   useEffect(() => { fetchLocations() }, [fetchLocations])
 
-  // Initialise sheet to strip height after mount (window available)
-  useEffect(() => { setSheetPx(snapStrip()) }, [])
+  // Correct sheet height after hydration (window now available)
+  useEffect(() => { setSheetPx(snapStrip()); setHydrated(true) }, [])
 
   function updateParam(key: string, value: string) {
     const p = new URLSearchParams(params.toString())
@@ -414,8 +413,8 @@ export default function SearchResultsClient() {
 
         {/* Floating tag legend — sits above the bottom sheet */}
         <div
-          className="absolute left-0 right-0 z-10 flex gap-2 overflow-x-auto px-3 pb-1 scrollbar-hide"
-          style={{ bottom: `${sheetPx + 8}px`, transition: isDragging ? 'none' : 'bottom 0.3s' }}
+          className={cn('absolute left-0 right-0 z-10 flex gap-2 overflow-x-auto px-3 pb-1 scrollbar-hide', hydrated && !isDragging && '[transition:bottom_0.3s]')}
+          style={{ bottom: `${sheetPx + 8}px` }}
         >
           <TagPill label="All" active={!tagParam} onClick={() => updateParam('tag', '')} />
           {TAGS.map((t) => (
@@ -432,7 +431,7 @@ export default function SearchResultsClient() {
         <div
           className={cn(
             'absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] flex flex-col',
-            !isDragging && 'transition-[height] duration-300'
+            hydrated && !isDragging && '[transition:height_0.3s]'
           )}
           style={{ height: `${sheetPx}px` }}
         >
