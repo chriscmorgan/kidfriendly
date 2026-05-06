@@ -4,12 +4,13 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth/AuthProvider'
 import SignInModal from '@/components/auth/SignInModal'
 import AddressSearch from '@/components/forms/AddressSearch'
+import VenueSearch, { type PlaceResult } from '@/components/forms/VenueSearch'
 import Button from '@/components/ui/Button'
 import { createClient } from '@/lib/supabase/client'
 import { TAGS, OPEN_TIMES, AGE_RANGES } from '@/lib/constants'
 import { slugify } from '@/lib/utils'
 import type { Tag, OpenTime, AgeRange } from '@/lib/types'
-import { Upload, X } from 'lucide-react'
+import { Upload, X, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface AddressData {
@@ -33,6 +34,7 @@ export default function SubmitForm() {
   const [website, setWebsite] = useState('')
   const [openingHours, setOpeningHours] = useState('')
   const [ageRanges, setAgeRanges] = useState<AgeRange[]>([])
+  const [venueSelected, setVenueSelected] = useState(false)
   const [photos, setPhotos] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
@@ -68,6 +70,22 @@ export default function SubmitForm() {
       </div>
     </div>
   )
+
+  function handleVenueSelect(result: PlaceResult) {
+    setName(result.name)
+    setAddress({ place_name: result.address, lat: result.lat, lng: result.lng, suburb: result.suburb })
+    if (result.website) setWebsite(result.website)
+    if (result.opening_hours) setOpeningHours(result.opening_hours)
+    setVenueSelected(true)
+  }
+
+  function clearVenue() {
+    setName('')
+    setAddress(null)
+    setWebsite('')
+    setOpeningHours('')
+    setVenueSelected(false)
+  }
 
   function toggleTag(tag: Tag) {
     setSelectedTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag])
@@ -169,6 +187,22 @@ export default function SubmitForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Venue search shortcut */}
+      <div className="bg-[#f0fbfb] border border-[#b5e6e6] rounded-2xl p-4">
+        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1">
+          Find your venue <span className="text-[#6b7280] font-normal">(optional shortcut)</span>
+        </label>
+        <p className="text-xs text-[#6b7280] mb-2.5">Search by business name to auto-fill details below.</p>
+        {venueSelected ? (
+          <div className="flex items-center justify-between bg-white border border-[#a5dede] rounded-xl px-3 py-2.5">
+            <span className="text-sm text-[#38a5a0] font-medium truncate">✓ Auto-filled from &ldquo;{name}&rdquo;</span>
+            <button type="button" onClick={clearVenue} className="text-xs text-[#6b7280] hover:text-red-500 transition-colors ml-3 shrink-0 cursor-pointer">Clear ×</button>
+          </div>
+        ) : (
+          <VenueSearch onSelect={handleVenueSelect} />
+        )}
+      </div>
+
       {/* Name */}
       <div>
         <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
@@ -188,7 +222,17 @@ export default function SubmitForm() {
         <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
           Address / location <span className="text-red-500">*</span>
         </label>
-        <AddressSearch value={address?.place_name ?? ''} onChange={setAddress} />
+        {venueSelected && address ? (
+          <div className="flex items-center justify-between border border-gray-200 rounded-xl px-3 py-2.5 bg-gray-50">
+            <div className="flex items-center gap-2 min-w-0">
+              <MapPin className="w-4 h-4 text-[#6b7280] shrink-0" />
+              <span className="text-sm text-[#2c2c2c] truncate">{address.place_name}</span>
+            </div>
+            <button type="button" onClick={clearVenue} className="text-xs text-[#38a5a0] hover:underline ml-3 shrink-0 cursor-pointer">Change</button>
+          </div>
+        ) : (
+          <AddressSearch value={address?.place_name ?? ''} onChange={setAddress} />
+        )}
         {address && (
           <p className="text-xs text-[#38a5a0] mt-1">✓ Geocoded: {address.lat.toFixed(5)}, {address.lng.toFixed(5)}</p>
         )}
@@ -280,6 +324,7 @@ export default function SubmitForm() {
       <div>
         <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
           Website <span className="text-[#6b7280] font-normal">(optional)</span>
+          {venueSelected && website && <span className="text-xs text-[#38a5a0] ml-2">✓ auto-filled</span>}
         </label>
         <input
           value={website}
@@ -294,6 +339,7 @@ export default function SubmitForm() {
       <div>
         <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
           Opening hours <span className="text-[#6b7280] font-normal">(optional)</span>
+          {venueSelected && openingHours && <span className="text-xs text-[#38a5a0] ml-2">✓ auto-filled</span>}
         </label>
         <input
           value={openingHours}
