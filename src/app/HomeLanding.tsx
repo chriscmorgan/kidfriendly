@@ -48,7 +48,7 @@ export default function HomeLanding({ locations }: Props) {
         <span className="absolute bottom-8 right-[12%] text-4xl opacity-20 rotate-[-10deg] select-none" aria-hidden>🏃</span>
         <span className="absolute top-1/2 left-[3%] text-2xl opacity-10 select-none" aria-hidden>📍</span>
 
-        <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
+        <div className="relative z-10 w-full max-w-2xl mx-auto">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 text-white/90 text-xs font-semibold px-3 py-1.5 rounded-full mb-5">
             <span>👶</span> Made by parents, for parents
