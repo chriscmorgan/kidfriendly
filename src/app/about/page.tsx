@@ -11,7 +11,7 @@ export default function AboutPage() {
 
       <div className="space-y-8 text-[15px] leading-relaxed text-[#2c2c2c]">
 
-        <div className="bg-[#fdf0ed] border border-[#f0b9ae] rounded-2xl p-6">
+        <div className="bg-[#fef1ee] border border-[#fabfb0] rounded-2xl p-6">
           <p className="text-base leading-relaxed">
             When we had our first baby, I thought going out would stay roughly the same — just with a pram.
             It was not. You realise pretty quickly that most recommendations assume you can walk in anywhere,
@@ -43,19 +43,19 @@ export default function AboutPage() {
           <h2 className="text-lg font-semibold mb-3">Community guidelines</h2>
           <ul className="space-y-2 text-[#4b5563]">
             <li className="flex items-start gap-2">
-              <span className="text-[#d4907a] font-bold mt-0.5">✓</span>
+              <span className="text-[#e8674a] font-bold mt-0.5">✓</span>
               Only add real, publicly accessible places
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[#d4907a] font-bold mt-0.5">✓</span>
+              <span className="text-[#e8674a] font-bold mt-0.5">✓</span>
               Photos must be your own or ones you have permission to share
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[#d4907a] font-bold mt-0.5">✓</span>
+              <span className="text-[#e8674a] font-bold mt-0.5">✓</span>
               Reviews should be honest and genuinely helpful to other families
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[#d4907a] font-bold mt-0.5">✓</span>
+              <span className="text-[#e8674a] font-bold mt-0.5">✓</span>
               No promotional or commercial content
             </li>
           </ul>
@@ -75,7 +75,7 @@ export default function AboutPage() {
       <div className="mt-10 flex gap-3">
         <Link
           href="/"
-          className="bg-[#d4907a] text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-[#b97260] transition-colors"
+          className="bg-[#e8674a] text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-[#cc5235] transition-colors"
         >
           Find spots near me
         </Link>

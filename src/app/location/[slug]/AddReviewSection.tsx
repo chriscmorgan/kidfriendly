@@ -28,7 +28,7 @@ export default function AddReviewSection({ locationId, existingReview }: Props) 
   if (!user) {
     return (
       <>
-        <div className="bg-[#fdf0ed] border border-[#f0b9ae] rounded-2xl p-6 text-center">
+        <div className="bg-[#fef1ee] border border-[#fabfb0] rounded-2xl p-6 text-center">
           <p className="text-[#2c2c2c] font-medium mb-1">Share your experience</p>
           <p className="text-sm text-[#6b7280] mb-4">Sign in to leave a rating and review</p>
           <Button onClick={() => setShowSignIn(true)}>Sign in to review</Button>
@@ -40,7 +40,7 @@ export default function AddReviewSection({ locationId, existingReview }: Props) 
 
   if (submitted) {
     return (
-      <div className="bg-[#fdf0ed] border border-[#f0b9ae] rounded-2xl p-6 text-center">
+      <div className="bg-[#fef1ee] border border-[#fabfb0] rounded-2xl p-6 text-center">
         <div className="text-3xl mb-2">🎉</div>
         <p className="font-medium text-[#2c2c2c]">Thanks for your review!</p>
       </div>
@@ -91,7 +91,7 @@ export default function AddReviewSection({ locationId, existingReview }: Props) 
           onChange={(e) => setComment(e.target.value)}
           maxLength={280}
           placeholder="What did you think? Tips for other parents?"
-          className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-24 outline-none focus:border-[#d4907a] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-24 outline-none focus:border-[#e8674a] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
         <p className="text-xs text-[#6b7280] mt-1 text-right">{comment.length}/280</p>
       </div>

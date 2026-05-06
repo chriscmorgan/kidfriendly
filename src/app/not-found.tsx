@@ -12,7 +12,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="bg-[#d4907a] text-white px-6 py-3 rounded-xl font-medium hover:bg-[#b97260] transition-colors"
+        className="bg-[#e8674a] text-white px-6 py-3 rounded-xl font-medium hover:bg-[#cc5235] transition-colors"
       >
         Back to map
       </Link>

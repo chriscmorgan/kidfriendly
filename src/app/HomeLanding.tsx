@@ -39,7 +39,7 @@ export default function HomeLanding({ locations }: Props) {
     <div className="flex flex-col overflow-x-hidden">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#4d1e12] via-[#7a3020] to-[#a84530] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#5c1a0c] via-[#8c2818] to-[#c03828] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
 
         {/* Decorative floating emojis */}
         <span className="absolute top-8 left-[8%] text-4xl opacity-20 rotate-[-15deg] select-none" aria-hidden>🛝</span>
@@ -55,10 +55,10 @@ export default function HomeLanding({ locations }: Props) {
           </div>
 
           <h1 className="text-[clamp(1.6rem,7vw,4rem)] leading-tight font-extrabold text-white tracking-tight">
-            Find cafes &amp; spots where{' '}
-            <span className="text-[#f5c0b0]">kids can play</span>
+            Find a place you can eat and{' '}
+            <span className="text-[#fbbcb0]">the kids can play</span>
           </h1>
-          <p className="text-[#fad8d0] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
+          <p className="text-[#fdd8d0] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
             Cafes, restaurants and venues with play areas — reviewed by local parents who&apos;ve been there.
           </p>
 
@@ -82,7 +82,7 @@ export default function HomeLanding({ locations }: Props) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {HOW_IT_WORKS.map((step, i) => (
               <div key={i} className="flex flex-col items-center text-center px-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#fdf0ed] flex items-center justify-center text-2xl mb-3 shadow-sm">
+                <div className="w-14 h-14 rounded-2xl bg-[#fef1ee] flex items-center justify-center text-2xl mb-3 shadow-sm">
                   {step.emoji}
                 </div>
                 <h3 className="font-semibold text-[#2c2c2c] mb-1">{step.title}</h3>
@@ -132,19 +132,19 @@ export default function HomeLanding({ locations }: Props) {
       )}
 
       {/* ── Add a place CTA ── */}
-      <section className="bg-gradient-to-br from-[#7a3020] to-[#a84530] px-4 py-16 text-center">
+      <section className="bg-gradient-to-br from-[#8c2818] to-[#c03828] px-4 py-16 text-center">
         <div className="max-w-lg mx-auto">
           <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
             📍
           </div>
           <h2 className="text-2xl font-bold text-white">Know a great spot?</h2>
-          <p className="text-[#fad8d0] mt-3 text-sm leading-relaxed max-w-sm mx-auto">
+          <p className="text-[#fdd8d0] mt-3 text-sm leading-relaxed max-w-sm mx-auto">
             Help other families discover it. Takes 2 minutes to add a place to the map.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
             <Link
               href="/submit"
-              className="inline-flex items-center gap-2 bg-white text-[#7a3020] font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#fdf0ed] transition-colors shadow-lg"
+              className="inline-flex items-center gap-2 bg-white text-[#8c2818] font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#fef1ee] transition-colors shadow-lg"
             >
               <span>📍</span> Add a place
             </Link>

@@ -2,12 +2,12 @@
 
 @theme inline {
   /* Brand palette */
-  --color-sage-50: #fdf0ed;
-  --color-sage-100: #f8d9d2;
-  --color-sage-200: #f0b9ae;
-  --color-sage-500: #d4907a;
-  --color-sage-600: #b97260;
-  --color-sage-700: #8b4e3c;
+  --color-sage-50: #fef1ee;
+  --color-sage-100: #fdddd5;
+  --color-sage-200: #fabfb0;
+  --color-sage-500: #e8674a;
+  --color-sage-600: #cc5235;
+  --color-sage-700: #9e3520;
 
   --color-sand-50: #fdf9f4;
   --color-sand-100: #f7eed9;

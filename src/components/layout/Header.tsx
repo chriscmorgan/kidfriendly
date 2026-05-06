@@ -27,12 +27,12 @@ export default function Header() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 bg-[#d4907a] rounded-full flex items-center justify-center shrink-0 shadow-sm group-hover:bg-[#b97260] transition-colors">
+              <div className="w-9 h-9 bg-[#e8674a] rounded-full flex items-center justify-center shrink-0 shadow-sm group-hover:bg-[#cc5235] transition-colors">
                 <span className="text-white text-sm leading-none" aria-hidden>🍴</span>
               </div>
               <div className="flex flex-col leading-none">
                 <span className="font-black text-[13px] tracking-[0.15em] uppercase text-[#2c2c2c]">Kid Friendly</span>
-                <span className="font-semibold text-[10px] tracking-[0.3em] uppercase text-[#d4907a] mt-0.5">Eats</span>
+                <span className="font-semibold text-[10px] tracking-[0.3em] uppercase text-[#e8674a] mt-0.5">Eats</span>
               </div>
             </Link>
 

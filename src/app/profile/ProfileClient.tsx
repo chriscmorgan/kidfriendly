@@ -58,8 +58,8 @@ export default function ProfileClient() {
         {profile.avatar_url ? (
           <Image src={profile.avatar_url} alt="" width={64} height={64} className="rounded-full object-cover" />
         ) : (
-          <div className="w-16 h-16 rounded-full bg-[#f8d9d2] flex items-center justify-center">
-            <User className="w-8 h-8 text-[#b97260]" />
+          <div className="w-16 h-16 rounded-full bg-[#fdddd5] flex items-center justify-center">
+            <User className="w-8 h-8 text-[#cc5235]" />
           </div>
         )}
         <div>
@@ -80,7 +80,7 @@ export default function ProfileClient() {
             className={cn(
               'px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg',
               tab === t
-                ? 'text-[#b97260] border-b-2 border-[#d4907a]'
+                ? 'text-[#cc5235] border-b-2 border-[#e8674a]'
                 : 'text-[#6b7280] hover:text-[#2c2c2c]'
             )}
           >
@@ -101,7 +101,7 @@ export default function ProfileClient() {
             <div className="text-4xl mb-3">📍</div>
             <p className="font-semibold text-[#2c2c2c]">No places added yet</p>
             <p className="text-sm text-[#6b7280] mt-1 mb-4">Share your favourite kid-friendly spots!</p>
-            <Link href="/submit" className="inline-flex items-center gap-1.5 bg-[#d4907a] text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-[#b97260] transition-colors">
+            <Link href="/submit" className="inline-flex items-center gap-1.5 bg-[#e8674a] text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-[#cc5235] transition-colors">
               + Add a place
             </Link>
           </div>
@@ -134,7 +134,7 @@ export default function ProfileClient() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <Link href={`/location/${r.location?.slug}`} className="font-semibold text-[#2c2c2c] hover:text-[#b97260] transition-colors">
+                  <Link href={`/location/${r.location?.slug}`} className="font-semibold text-[#2c2c2c] hover:text-[#cc5235] transition-colors">
                     {r.location?.name}
                   </Link>
                   <div className="flex items-center gap-1 mt-0.5 text-xs text-[#6b7280]">
@@ -156,7 +156,7 @@ export default function ProfileClient() {
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     pending: 'bg-[#f7eed9] text-[#9e7c48]',
-    approved: 'bg-[#fdf0ed] text-[#8b4e3c]',
+    approved: 'bg-[#fef1ee] text-[#9e3520]',
     rejected: 'bg-red-50 text-red-600',
   }
   const labels: Record<string, string> = {
