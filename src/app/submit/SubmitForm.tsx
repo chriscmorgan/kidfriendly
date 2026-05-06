@@ -41,7 +41,7 @@ export default function SubmitForm() {
 
   if (!user) return (
     <>
-      <div className="bg-[#fef1ee] border border-[#fabfb0] rounded-2xl p-8 text-center">
+      <div className="bg-[#edf8f8] border border-[#aadbd8] rounded-2xl p-8 text-center">
         <div className="text-4xl mb-3">🔒</div>
         <p className="font-semibold text-[#2c2c2c] mb-1">Sign in to add a place</p>
         <p className="text-sm text-[#6b7280] mb-4">You need an account to submit new locations.</p>
@@ -52,7 +52,7 @@ export default function SubmitForm() {
   )
 
   if (done) return (
-    <div className="bg-[#fef1ee] border border-[#fabfb0] rounded-2xl p-8 text-center">
+    <div className="bg-[#edf8f8] border border-[#aadbd8] rounded-2xl p-8 text-center">
       <div className="text-4xl mb-3">🎉</div>
       <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Thanks! Your submission is under review.</h2>
       <p className="text-sm text-[#6b7280] mb-6">We&apos;ll have it live as soon as our team takes a look.</p>
@@ -178,7 +178,7 @@ export default function SubmitForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. The Grounds of Alexandria"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#e8674a] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
           maxLength={120}
         />
       </div>
@@ -190,7 +190,7 @@ export default function SubmitForm() {
         </label>
         <AddressSearch value={address?.place_name ?? ''} onChange={setAddress} />
         {address && (
-          <p className="text-xs text-[#cc5235] mt-1">✓ Geocoded: {address.lat.toFixed(5)}, {address.lng.toFixed(5)}</p>
+          <p className="text-xs text-[#38a5a0] mt-1">✓ Geocoded: {address.lat.toFixed(5)}, {address.lng.toFixed(5)}</p>
         )}
       </div>
 
@@ -210,7 +210,7 @@ export default function SubmitForm() {
                 'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
                 selectedTags.includes(tag.value)
                   ? `${tag.bgColor} ${tag.color} border-transparent`
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#fef1ee]'
+                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#edf8f8]'
               )}
             >
               {tag.emoji} {tag.label}
@@ -234,7 +234,7 @@ export default function SubmitForm() {
                 'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
                 selectedOpenTimes.includes(t.value)
                   ? `${t.bgColor} ${t.color} border-transparent`
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#fef1ee]'
+                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#edf8f8]'
               )}
             >
               {t.emoji} {t.label}
@@ -253,7 +253,7 @@ export default function SubmitForm() {
           onChange={(e) => setDescription(e.target.value)}
           maxLength={1000}
           placeholder="What's the play area like? What can parents eat or drink while kids play? How long can kids keep themselves busy? What to expect…"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-[#e8674a] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
         <div className="flex justify-between text-xs text-[#6b7280] mt-1">
           <span>{description.length < 50 ? `${50 - description.length} more characters needed` : '✓ Good to go'}</span>
@@ -271,7 +271,7 @@ export default function SubmitForm() {
           onChange={(e) => setTips(e.target.value)}
           maxLength={280}
           placeholder="e.g. 'Bring your own food', 'Parking tricky on weekends', 'Arrive before 10am'…"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-[#e8674a] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
         <p className="text-xs text-[#6b7280] mt-1 text-right">{tips.length}/280</p>
       </div>
@@ -286,7 +286,7 @@ export default function SubmitForm() {
           onChange={(e) => setWebsite(e.target.value)}
           placeholder="https://..."
           type="url"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#e8674a] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
       </div>
 
@@ -300,7 +300,7 @@ export default function SubmitForm() {
           onChange={(e) => setOpeningHours(e.target.value)}
           placeholder="e.g. Mon–Fri 9am–5pm, Sat–Sun 8am–6pm"
           maxLength={200}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#e8674a] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
       </div>
 
@@ -351,7 +351,7 @@ export default function SubmitForm() {
         )}
 
         {photos.length < 10 && (
-          <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-[#e8674a] hover:bg-[#fef1ee] transition-colors">
+          <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-[#4abfc0] hover:bg-[#edf8f8] transition-colors">
             <Upload className="w-6 h-6 text-[#6b7280] mb-2" />
             <span className="text-sm text-[#6b7280]">Click to upload photos</span>
             <span className="text-xs text-[#6b7280] mt-0.5">JPEG, PNG, WEBP</span>

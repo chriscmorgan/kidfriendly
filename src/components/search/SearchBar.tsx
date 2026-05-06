@@ -100,7 +100,7 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
     <div ref={containerRef} className={cn('relative w-full', className)}>
       <form onSubmit={handleSubmit}>
         <div className={cn(
-          'flex items-center gap-2 bg-white border border-gray-200 rounded-2xl shadow-sm transition-shadow focus-within:shadow-md focus-within:border-[#e8674a]',
+          'flex items-center gap-2 bg-white border border-gray-200 rounded-2xl shadow-sm transition-shadow focus-within:shadow-md focus-within:border-[#4abfc0]',
           isHero ? 'p-3 pr-3' : 'p-2 pr-2'
         )}>
           <Search className={cn('shrink-0 text-[#6b7280]', isHero ? 'w-5 h-5 ml-1' : 'w-4 h-4 ml-1')} />
@@ -125,8 +125,8 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
             className={cn(
               'shrink-0 flex items-center gap-1 font-medium rounded-xl transition-colors cursor-pointer disabled:opacity-50',
               isHero
-                ? 'px-3 py-2 text-sm text-[#cc5235] hover:bg-[#fef1ee]'
-                : 'px-2 py-1 text-xs text-[#cc5235] hover:bg-[#fef1ee]'
+                ? 'px-3 py-2 text-sm text-[#38a5a0] hover:bg-[#edf8f8]'
+                : 'px-2 py-1 text-xs text-[#38a5a0] hover:bg-[#edf8f8]'
             )}
           >
             {geoLoading
@@ -138,7 +138,7 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
           <button
             type="submit"
             className={cn(
-              'shrink-0 bg-[#e8674a] text-white font-medium rounded-xl hover:bg-[#cc5235] transition-colors cursor-pointer',
+              'shrink-0 bg-[#4abfc0] text-white font-medium rounded-xl hover:bg-[#38a5a0] transition-colors cursor-pointer',
               isHero ? 'px-5 py-2 text-sm' : 'px-3 py-1.5 text-xs'
             )}
           >

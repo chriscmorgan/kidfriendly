@@ -34,7 +34,7 @@ function TagPill({ label, active, onClick }: { label: string; active: boolean; o
       onClick={onClick}
       className={cn(
         'shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer whitespace-nowrap',
-        active ? 'bg-[#e8674a] text-white border-transparent' : 'bg-white text-[#2c2c2c] border-gray-200 shadow-sm'
+        active ? 'bg-[#4abfc0] text-white border-transparent' : 'bg-white text-[#2c2c2c] border-gray-200 shadow-sm'
       )}
     >
       {label}
@@ -51,7 +51,7 @@ function ListRow({ loc, selected, onClick }: { loc: Location; selected: boolean;
       onClick={onClick}
       className={cn(
         'flex items-center gap-3 w-full px-4 py-3 text-left transition-colors cursor-pointer',
-        selected ? 'bg-[#fef1ee]' : 'hover:bg-gray-50'
+        selected ? 'bg-[#edf8f8]' : 'hover:bg-gray-50'
       )}
     >
       <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0">
@@ -68,7 +68,7 @@ function ListRow({ loc, selected, onClick }: { loc: Location; selected: boolean;
           <span>·</span>
           <span>{loc.suburb}</span>
           {loc.distance_km != null && (
-            <span className="text-[#cc5235] font-medium ml-1">{loc.distance_km.toFixed(1)}km</span>
+            <span className="text-[#38a5a0] font-medium ml-1">{loc.distance_km.toFixed(1)}km</span>
           )}
         </p>
       </div>
@@ -123,7 +123,7 @@ function ListStrip({
             <p className="text-xs text-[#6b7280] mb-5">Be the first to add a cafe or spot with a play area here.</p>
             <a
               href="/submit"
-              className="inline-flex items-center gap-1.5 bg-[#e8674a] hover:bg-[#cc5235] text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-colors"
+              className="inline-flex items-center gap-1.5 bg-[#4abfc0] hover:bg-[#38a5a0] text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-colors"
             >
               📍 Add a place
             </a>
@@ -173,7 +173,7 @@ function DetailPanel({ loc, onBack, onClose }: { loc: Location; onBack: () => vo
               {loc.suburb}
             </span>
             {loc.distance_km != null && (
-              <span className="text-[#cc5235] font-medium">{loc.distance_km.toFixed(1)}km away</span>
+              <span className="text-[#38a5a0] font-medium">{loc.distance_km.toFixed(1)}km away</span>
             )}
             {rating > 0 && (
               <span className="flex items-center gap-1 ml-auto font-medium text-[#2c2c2c]">
@@ -200,7 +200,7 @@ function DetailPanel({ loc, onBack, onClose }: { loc: Location; onBack: () => vo
           )}
           <a
             href={`/location/${loc.slug}`}
-            className="flex items-center justify-center gap-2 mt-5 w-full bg-[#e8674a] hover:bg-[#cc5235] text-white font-semibold text-sm py-3 rounded-2xl transition-colors"
+            className="flex items-center justify-center gap-2 mt-5 w-full bg-[#4abfc0] hover:bg-[#38a5a0] text-white font-semibold text-sm py-3 rounded-2xl transition-colors"
           >
             View full details →
           </a>

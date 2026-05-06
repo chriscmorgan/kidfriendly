@@ -181,7 +181,7 @@ function AdminLocationCard({ location: loc, processingId, rejectNote, onApprove,
                 placeholder="Rejection note (optional, sent to contributor)…"
                 value={rejectNote?.note ?? ''}
                 onChange={(e) => onRejectNoteChange(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20 outline-none focus:border-[#e8674a]"
+                className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20 outline-none focus:border-[#4abfc0]"
               />
               <div className="flex gap-2">
                 <Button variant="danger" size="sm" loading={isProcessing} onClick={onRejectConfirm}>

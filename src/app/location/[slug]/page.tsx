@@ -101,7 +101,7 @@ export default async function LocationPage({ params }: Props) {
               href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-[#cc5235] hover:text-[#9e3520] mt-2 font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-[#38a5a0] hover:text-[#2a8a85] mt-2 font-medium transition-colors"
             >
               <Navigation className="w-3.5 h-3.5" />
               Get directions
@@ -117,7 +117,7 @@ export default async function LocationPage({ params }: Props) {
                 href={loc.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-[#cc5235] hover:text-[#9e3520] mt-1.5 font-medium transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm text-[#38a5a0] hover:text-[#2a8a85] mt-1.5 font-medium transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 Visit website
@@ -159,7 +159,7 @@ export default async function LocationPage({ params }: Props) {
               </div>
               <a
                 href="#write-review"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-[#e8674a] hover:bg-[#cc5235] px-4 py-2 rounded-xl transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-[#4abfc0] hover:bg-[#38a5a0] px-4 py-2 rounded-xl transition-colors"
               >
                 Write a review
               </a>
@@ -201,8 +201,8 @@ export default async function LocationPage({ params }: Props) {
           <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
             <h3 className="text-sm font-semibold text-[#2c2c2c] mb-3">Submitted by</h3>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#fdddd5] flex items-center justify-center">
-                <User className="w-4 h-4 text-[#cc5235]" />
+              <div className="w-8 h-8 rounded-full bg-[#c8eded] flex items-center justify-center">
+                <User className="w-4 h-4 text-[#38a5a0]" />
               </div>
               <div>
                 <p className="text-sm font-medium text-[#2c2c2c]">{loc.submitter?.display_name ?? 'Community member'}</p>
@@ -227,13 +227,13 @@ export default async function LocationPage({ params }: Props) {
           href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 bg-[#fef1ee] text-[#8c2818] font-semibold text-sm py-3 rounded-2xl transition-colors hover:bg-[#fdddd5]"
+          className="flex-1 flex items-center justify-center gap-2 bg-[#edf8f8] text-[#1a5f5f] font-semibold text-sm py-3 rounded-2xl transition-colors hover:bg-[#c8eded]"
         >
           <Navigation className="w-4 h-4" /> Get Directions
         </a>
         <a
           href="#write-review"
-          className="flex-1 flex items-center justify-center gap-2 bg-[#e8674a] hover:bg-[#cc5235] text-white font-semibold text-sm py-3 rounded-2xl transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 bg-[#4abfc0] hover:bg-[#38a5a0] text-white font-semibold text-sm py-3 rounded-2xl transition-colors"
         >
           <Star className="w-4 h-4" /> Write a Review
         </a>

@@ -39,26 +39,26 @@ export default function HomeLanding({ locations }: Props) {
     <div className="flex flex-col overflow-x-hidden">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#5c1a0c] via-[#8c2818] to-[#c03828] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#e8f7f7] via-[#f0fbfb] to-[#faf5f0] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
 
         {/* Decorative floating emojis */}
-        <span className="absolute top-8 left-[8%] text-4xl opacity-20 rotate-[-15deg] select-none" aria-hidden>🛝</span>
-        <span className="absolute top-16 right-[10%] text-5xl opacity-15 rotate-[12deg] select-none" aria-hidden>☕</span>
-        <span className="absolute bottom-12 left-[15%] text-3xl opacity-20 rotate-[8deg] select-none" aria-hidden>🍰</span>
-        <span className="absolute bottom-8 right-[12%] text-4xl opacity-20 rotate-[-10deg] select-none" aria-hidden>🧒</span>
+        <span className="absolute top-8 left-[8%] text-4xl opacity-15 rotate-[-15deg] select-none" aria-hidden>🛝</span>
+        <span className="absolute top-16 right-[10%] text-5xl opacity-10 rotate-[12deg] select-none" aria-hidden>☕</span>
+        <span className="absolute bottom-12 left-[15%] text-3xl opacity-15 rotate-[8deg] select-none" aria-hidden>🍰</span>
+        <span className="absolute bottom-8 right-[12%] text-4xl opacity-15 rotate-[-10deg] select-none" aria-hidden>🧒</span>
         <span className="absolute top-1/2 left-[3%] text-2xl opacity-10 select-none" aria-hidden>🍴</span>
 
         <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 text-white/90 text-xs font-semibold px-3 py-1.5 rounded-full mb-5">
+          <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-xs font-semibold px-3 py-1.5 rounded-full mb-5">
             <span>👶</span> Made by parents, for parents
           </div>
 
-          <h1 className="text-[clamp(1.6rem,7vw,4rem)] leading-tight font-extrabold text-white tracking-tight">
+          <h1 className="text-[clamp(1.6rem,7vw,4rem)] leading-tight font-extrabold text-[#2c2c2c] tracking-tight">
             Find a place you can eat and{' '}
-            <span className="text-[#fbbcb0]">the kids can play</span>
+            <span className="text-[#e8756a]">the kids can play</span>
           </h1>
-          <p className="text-[#fdd8d0] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
+          <p className="text-[#4a7a7a] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
             Cafes, restaurants and venues with play areas — reviewed by local parents who&apos;ve been there.
           </p>
 
@@ -67,9 +67,9 @@ export default function HomeLanding({ locations }: Props) {
           </div>
 
           {/* Stats strip */}
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-8 text-white/70 text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-8 text-[#4a7a7a] text-sm">
             <span className="flex items-center gap-1.5"><span className="text-base">📍</span> {locations.length > 0 ? `${locations.length}+ places listed` : 'Places listed'}</span>
-            <span className="text-white/30">·</span>
+            <span className="text-[#b5e6e6]">·</span>
             <span className="flex items-center gap-1.5"><span className="text-base">⭐</span> Parent reviews</span>
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function HomeLanding({ locations }: Props) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {HOW_IT_WORKS.map((step, i) => (
               <div key={i} className="flex flex-col items-center text-center px-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#fef1ee] flex items-center justify-center text-2xl mb-3 shadow-sm">
+                <div className="w-14 h-14 rounded-2xl bg-[#edf8f8] flex items-center justify-center text-2xl mb-3 shadow-sm">
                   {step.emoji}
                 </div>
                 <h3 className="font-semibold text-[#2c2c2c] mb-1">{step.title}</h3>
@@ -132,25 +132,25 @@ export default function HomeLanding({ locations }: Props) {
       )}
 
       {/* ── Add a place CTA ── */}
-      <section className="bg-gradient-to-br from-[#8c2818] to-[#c03828] px-4 py-16 text-center">
+      <section className="bg-gradient-to-br from-[#5ecece] to-[#4abfc0] px-4 py-16 text-center">
         <div className="max-w-lg mx-auto">
-          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+          <div className="w-16 h-16 bg-white/30 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
             📍
           </div>
           <h2 className="text-2xl font-bold text-white">Know a great spot?</h2>
-          <p className="text-[#fdd8d0] mt-3 text-sm leading-relaxed max-w-sm mx-auto">
+          <p className="text-white/80 mt-3 text-sm leading-relaxed max-w-sm mx-auto">
             Help other families discover it. Takes 2 minutes to add a place to the map.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
             <Link
               href="/submit"
-              className="inline-flex items-center gap-2 bg-white text-[#8c2818] font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#fef1ee] transition-colors shadow-lg"
+              className="inline-flex items-center gap-2 bg-white text-[#38a5a0] font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#f0fbfb] transition-colors shadow-lg"
             >
               <span>📍</span> Add a place
             </Link>
             <Link
               href="/search"
-              className="inline-flex items-center gap-2 bg-white/15 border border-white/30 text-white font-semibold text-sm px-7 py-3.5 rounded-2xl hover:bg-white/25 transition-colors"
+              className="inline-flex items-center gap-2 bg-white/20 border border-white/40 text-white font-semibold text-sm px-7 py-3.5 rounded-2xl hover:bg-white/30 transition-colors"
             >
               Explore the map →
             </Link>
