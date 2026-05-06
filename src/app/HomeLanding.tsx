@@ -63,7 +63,7 @@ export default function HomeLanding({ locations }: Props) {
             Playgrounds, parks, cafes and more — discovered and reviewed by local parents.
           </p>
 
-          <div className="w-full max-w-xl mt-8 mx-auto">
+          <div className="w-[calc(100vw-2rem)] max-w-xl mt-8 mx-auto">
             <SearchBar size="hero" />
           </div>
 
