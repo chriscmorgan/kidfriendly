@@ -1,8 +1,14 @@
-﻿'use client'
+'use client'
 import { useState } from 'react'
 import { Flag } from 'lucide-react'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { createClient } from '@/lib/supabase/client'
+
+const QUICK_REASONS = [
+  { label: '🚫 Venue is closed or no longer open', value: 'Venue is closed or no longer open' },
+  { label: '🛝 Play area is closed or unavailable', value: 'Play area is closed or unavailable' },
+  { label: '📝 Information is incorrect', value: 'Information is incorrect' },
+]
 
 export default function ReportButton({ locationId }: { locationId: string }) {
   const { user } = useAuth()
@@ -41,12 +47,31 @@ export default function ReportButton({ locationId }: { locationId: string }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
           <div className="relative bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-            <h3 className="font-semibold text-[#2c2c2c] mb-3">Report this listing</h3>
+            <h3 className="font-semibold text-[#2c2c2c] mb-1">Report this listing</h3>
+            <p className="text-xs text-[#6b7280] mb-4">Select a reason or describe the issue below.</p>
+
+            <div className="flex flex-col gap-2 mb-4">
+              {QUICK_REASONS.map((r) => (
+                <button
+                  key={r.value}
+                  type="button"
+                  onClick={() => setReason(r.value)}
+                  className={`text-left text-sm px-3 py-2.5 rounded-xl border transition-colors cursor-pointer ${
+                    reason === r.value
+                      ? 'border-[#4abfc0] bg-[#f0fbfb] text-[#2a8a85]'
+                      : 'border-gray-200 hover:bg-gray-50 text-[#2c2c2c]'
+                  }`}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="Describe the issue…"
-              className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-24 outline-none focus:border-[#4abfc0]"
+              placeholder="Or describe the issue…"
+              className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20 outline-none focus:border-[#4abfc0]"
             />
             <div className="flex gap-2 mt-3 justify-end">
               <button onClick={() => setOpen(false)} className="px-4 py-2 text-sm text-[#6b7280] hover:bg-gray-100 rounded-xl cursor-pointer">

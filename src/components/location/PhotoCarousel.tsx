@@ -31,28 +31,30 @@ export default function PhotoCarousel({ photos }: { photos: LocationPhoto[] }) {
         <>
           <button
             onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-sm hover:bg-white"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer shadow-sm hover:bg-white"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-sm hover:bg-white"
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer shadow-sm hover:bg-white"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
 
-          {/* Dots */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {/* Dots — padded for larger tap targets on mobile */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex">
             {photos.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setIndex(i)}
-                className={cn(
-                  'w-2 h-2 rounded-full transition-all cursor-pointer',
-                  i === index ? 'bg-white w-4' : 'bg-white/60 hover:bg-white/80'
-                )}
-              />
+                className="p-2 cursor-pointer"
+              >
+                <div className={cn(
+                  'h-2 rounded-full transition-all duration-200',
+                  i === index ? 'w-4 bg-white' : 'w-2 bg-white/60'
+                )} />
+              </button>
             ))}
           </div>
 
