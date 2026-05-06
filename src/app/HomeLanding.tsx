@@ -39,7 +39,7 @@ export default function HomeLanding({ locations }: Props) {
     <div className="flex flex-col overflow-x-hidden">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#e8f7f7] via-[#f0fbfb] to-[#faf5f0] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#b8e4e4] via-[#cceece] to-[#e8f5f0] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
 
         {/* Decorative floating emojis */}
         <span className="absolute top-8 left-[8%] text-4xl opacity-15 rotate-[-15deg] select-none" aria-hidden>🛝</span>
@@ -132,7 +132,7 @@ export default function HomeLanding({ locations }: Props) {
       )}
 
       {/* ── Add a place CTA ── */}
-      <section className="bg-gradient-to-br from-[#5ecece] to-[#4abfc0] px-4 py-16 text-center">
+      <section className="bg-gradient-to-br from-[#3aaeae] to-[#2a9494] px-4 py-16 text-center">
         <div className="max-w-lg mx-auto">
           <div className="w-16 h-16 bg-white/30 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
             📍
