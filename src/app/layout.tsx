@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/components/auth/AuthProvider'
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geist.variable} h-full`}>
-      <body className="min-h-full flex flex-col antialiased bg-[#faf8f4] text-[#2c2c2c]">
+      <body className="min-h-full flex flex-col antialiased bg-[#faf6f4] text-[#2c2c2c]">
         <AuthProvider>
           <Header />
           <main className="flex-1">{children}</main>

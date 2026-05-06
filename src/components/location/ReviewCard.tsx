@@ -1,4 +1,4 @@
-import { User } from 'lucide-react'
+﻿import { User } from 'lucide-react'
 import type { Review } from '@/lib/types'
 import { RATING_DIMENSIONS } from '@/lib/constants'
 
@@ -13,8 +13,8 @@ export default function ReviewCard({ review }: { review: Review }) {
         {review.user?.avatar_url ? (
           <img src={review.user.avatar_url} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
         ) : (
-          <div className="w-9 h-9 rounded-full bg-[#e0ecdf] flex items-center justify-center shrink-0">
-            <User className="w-4 h-4 text-[#5e8e5c]" />
+          <div className="w-9 h-9 rounded-full bg-[#f8d9d2] flex items-center justify-center shrink-0">
+            <User className="w-4 h-4 text-[#b97260]" />
           </div>
         )}
         <div className="flex-1 min-w-0">
@@ -40,7 +40,7 @@ export default function ReviewCard({ review }: { review: Review }) {
               {ratedDimensions.map((d) => {
                 const val = review[`rating_${d.key}` as keyof Review] as number
                 return (
-                  <span key={d.key} className="inline-flex items-center gap-1 bg-[#f2f7f2] text-[#426340] text-[11px] px-2 py-0.5 rounded-full font-medium">
+                  <span key={d.key} className="inline-flex items-center gap-1 bg-[#fdf0ed] text-[#8b4e3c] text-[11px] px-2 py-0.5 rounded-full font-medium">
                     {d.emoji} {val}/5
                   </span>
                 )

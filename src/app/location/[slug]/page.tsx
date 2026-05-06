@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+﻿import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
@@ -9,7 +9,7 @@ import ReportButton from '@/components/location/ReportButton'
 import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
 import type { Location, Review, AvgRatings, Tag, OpenTime } from '@/lib/types'
 import { AGE_RANGES } from '@/lib/constants'
-import { MapPin, Navigation, User, Calendar, Star } from 'lucide-react'
+import { MapPin, Navigation, User, Calendar, Star, Clock, ExternalLink } from 'lucide-react'
 import AddReviewSection from './AddReviewSection'
 
 interface Props {
@@ -70,7 +70,7 @@ export default async function LocationPage({ params }: Props) {
   const ageLabels = AGE_RANGES.filter((a) => loc.age_ranges?.includes(a.value)).map((a) => a.label)
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-28 md:pb-10">
       {/* Back */}
       <Link href="/search" className="inline-flex items-center gap-1 text-sm text-[#6b7280] hover:text-[#2c2c2c] mb-6 transition-colors">
         ← Back to search
@@ -101,11 +101,28 @@ export default async function LocationPage({ params }: Props) {
               href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-[#5e8e5c] hover:text-[#426340] mt-2 font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-[#b97260] hover:text-[#8b4e3c] mt-2 font-medium transition-colors"
             >
               <Navigation className="w-3.5 h-3.5" />
               Get directions
             </a>
+            {loc.opening_hours && (
+              <p className="flex items-center gap-1.5 text-sm text-[#4b5563] mt-1.5">
+                <Clock className="w-3.5 h-3.5 text-[#6b7280] shrink-0" />
+                {loc.opening_hours}
+              </p>
+            )}
+            {loc.website && (
+              <a
+                href={loc.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-[#b97260] hover:text-[#8b4e3c] mt-1.5 font-medium transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Visit website
+              </a>
+            )}
           </div>
 
           {/* Description */}
@@ -142,7 +159,7 @@ export default async function LocationPage({ params }: Props) {
               </div>
               <a
                 href="#write-review"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-[#7da87b] hover:bg-[#5e8e5c] px-4 py-2 rounded-xl transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-[#d4907a] hover:bg-[#b97260] px-4 py-2 rounded-xl transition-colors"
               >
                 Write a review
               </a>
@@ -184,8 +201,8 @@ export default async function LocationPage({ params }: Props) {
           <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
             <h3 className="text-sm font-semibold text-[#2c2c2c] mb-3">Submitted by</h3>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#e0ecdf] flex items-center justify-center">
-                <User className="w-4 h-4 text-[#5e8e5c]" />
+              <div className="w-8 h-8 rounded-full bg-[#f8d9d2] flex items-center justify-center">
+                <User className="w-4 h-4 text-[#b97260]" />
               </div>
               <div>
                 <p className="text-sm font-medium text-[#2c2c2c]">{loc.submitter?.display_name ?? 'Community member'}</p>
@@ -202,6 +219,24 @@ export default async function LocationPage({ params }: Props) {
             <ReportButton locationId={loc.id} />
           </div>
         </aside>
+      </div>
+
+      {/* Sticky mobile CTA bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-white border-t border-gray-100 px-4 py-3 flex gap-3">
+        <a
+          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 flex items-center justify-center gap-2 bg-[#fdf0ed] text-[#7a3020] font-semibold text-sm py-3 rounded-2xl transition-colors hover:bg-[#f8d9d2]"
+        >
+          <Navigation className="w-4 h-4" /> Get Directions
+        </a>
+        <a
+          href="#write-review"
+          className="flex-1 flex items-center justify-center gap-2 bg-[#d4907a] hover:bg-[#b97260] text-white font-semibold text-sm py-3 rounded-2xl transition-colors"
+        >
+          <Star className="w-4 h-4" /> Write a Review
+        </a>
       </div>
     </div>
   )

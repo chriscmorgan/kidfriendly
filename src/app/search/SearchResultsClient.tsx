@@ -1,16 +1,16 @@
-'use client'
-import { useEffect, useState, useCallback } from 'react'
+﻿'use client'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import SearchBar from '@/components/search/SearchBar'
-import LocationCard from '@/components/location/LocationCard'
 import { TagBadge, OpenTimeBadge } from '@/components/ui/Badge'
 import { createClient } from '@/lib/supabase/client'
 import type { Location, Tag, SortOption } from '@/lib/types'
-import { TAGS, RADIUS_OPTIONS, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from '@/lib/constants'
+import { TAGS, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from '@/lib/constants'
 import { cn, getPrimaryTagMeta } from '@/lib/utils'
-import { Star, MapPin, ArrowLeft, X, SlidersHorizontal, ChevronRight } from 'lucide-react'
+import { Star, MapPin, ArrowLeft, X, Search } from 'lucide-react'
+import BodyScrollLock from '@/components/ui/BodyScrollLock'
 
 const MapView = dynamic(() => import('@/components/map/MapView'), { ssr: false })
 
@@ -23,13 +23,18 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 
 const IS_MOCK = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true
 
+// Sheet snap heights (fractions of innerHeight)
+const SNAP_PEEK = 72
+const snapStrip = () => Math.round(window.innerHeight * 0.5)
+const snapDetail = () => Math.round(window.innerHeight * 0.75)
+
 function TagPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
       className={cn(
         'shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer whitespace-nowrap',
-        active ? 'bg-[#7da87b] text-white border-transparent' : 'bg-white text-[#2c2c2c] border-gray-200'
+        active ? 'bg-[#d4907a] text-white border-transparent' : 'bg-white text-[#2c2c2c] border-gray-200 shadow-sm'
       )}
     >
       {label}
@@ -37,15 +42,7 @@ function TagPill({ label, active, onClick }: { label: string; active: boolean; o
   )
 }
 
-function ListRow({
-  loc,
-  selected,
-  onClick,
-}: {
-  loc: Location
-  selected: boolean
-  onClick: () => void
-}) {
+function ListRow({ loc, selected, onClick }: { loc: Location; selected: boolean; onClick: () => void }) {
   const meta = getPrimaryTagMeta(loc.tags ?? [])
   const photo = loc.photos?.[0]
   const rating = avgRating(loc)
@@ -54,7 +51,7 @@ function ListRow({
       onClick={onClick}
       className={cn(
         'flex items-center gap-3 w-full px-4 py-3 text-left transition-colors cursor-pointer',
-        selected ? 'bg-[#f2f7f2]' : 'hover:bg-gray-50'
+        selected ? 'bg-[#fdf0ed]' : 'hover:bg-gray-50'
       )}
     >
       <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0">
@@ -71,7 +68,7 @@ function ListRow({
           <span>·</span>
           <span>{loc.suburb}</span>
           {loc.distance_km != null && (
-            <span className="text-[#5e8e5c] font-medium ml-1">{loc.distance_km.toFixed(1)}km</span>
+            <span className="text-[#b97260] font-medium ml-1">{loc.distance_km.toFixed(1)}km</span>
           )}
         </p>
       </div>
@@ -86,13 +83,7 @@ function ListRow({
 }
 
 function ListStrip({
-  locations,
-  loading,
-  selectedId,
-  onSelect,
-  q,
-  sortParam,
-  onSortChange,
+  locations, loading, selectedId, onSelect, q, sortParam, onSortChange,
 }: {
   locations: Location[]
   loading: boolean
@@ -127,9 +118,15 @@ function ListStrip({
           </div>
         ) : locations.length === 0 ? (
           <div className="p-8 text-center">
-            <div className="text-3xl mb-2">🔍</div>
-            <p className="font-medium text-[#2c2c2c] text-sm">No spots found here yet</p>
-            <p className="text-xs text-[#6b7280] mt-1">Try a different area or category</p>
+            <div className="text-3xl mb-3">📍</div>
+            <p className="font-semibold text-[#2c2c2c] text-sm mb-1">No spots found here yet</p>
+            <p className="text-xs text-[#6b7280] mb-5">Be the first to add a cafe or spot with a play area here.</p>
+            <a
+              href="/submit"
+              className="inline-flex items-center gap-1.5 bg-[#d4907a] hover:bg-[#b97260] text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-colors"
+            >
+              📍 Add a place
+            </a>
           </div>
         ) : (
           locations.map((loc) => (
@@ -141,15 +138,7 @@ function ListStrip({
   )
 }
 
-function DetailPanel({
-  loc,
-  onBack,
-  onClose,
-}: {
-  loc: Location
-  onBack: () => void
-  onClose: () => void
-}) {
+function DetailPanel({ loc, onBack, onClose }: { loc: Location; onBack: () => void; onClose: () => void }) {
   const rating = avgRating(loc)
   return (
     <div className="flex flex-col flex-1 min-h-0">
@@ -184,7 +173,7 @@ function DetailPanel({
               {loc.suburb}
             </span>
             {loc.distance_km != null && (
-              <span className="text-[#5e8e5c] font-medium">{loc.distance_km.toFixed(1)}km away</span>
+              <span className="text-[#b97260] font-medium">{loc.distance_km.toFixed(1)}km away</span>
             )}
             {rating > 0 && (
               <span className="flex items-center gap-1 ml-auto font-medium text-[#2c2c2c]">
@@ -198,12 +187,8 @@ function DetailPanel({
           </div>
           {(loc.tags?.length ?? 0) > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-3">
-              {(loc.tags ?? []).map((tag) => (
-                <TagBadge key={tag} tag={tag} />
-              ))}
-              {(loc.open_times ?? []).map((t) => (
-                <OpenTimeBadge key={t} time={t} />
-              ))}
+              {(loc.tags ?? []).map((tag) => <TagBadge key={tag} tag={tag} />)}
+              {(loc.open_times ?? []).map((t) => <OpenTimeBadge key={t} time={t} />)}
             </div>
           )}
           <p className="text-sm text-[#4b5563] leading-relaxed mt-4">{loc.description}</p>
@@ -215,10 +200,9 @@ function DetailPanel({
           )}
           <a
             href={`/location/${loc.slug}`}
-            className="flex items-center justify-center gap-2 mt-5 w-full bg-[#7da87b] hover:bg-[#5e8e5c] text-white font-semibold text-sm py-3 rounded-2xl transition-colors"
+            className="flex items-center justify-center gap-2 mt-5 w-full bg-[#d4907a] hover:bg-[#b97260] text-white font-semibold text-sm py-3 rounded-2xl transition-colors"
           >
-            View full details
-            <ChevronRight className="w-4 h-4" />
+            View full details →
           </a>
         </div>
       </div>
@@ -233,15 +217,64 @@ export default function SearchResultsClient() {
   const q = params.get('q') ?? ''
   const lat = parseFloat(params.get('lat') ?? '') || DEFAULT_MAP_CENTER.lat
   const lng = parseFloat(params.get('lng') ?? '') || DEFAULT_MAP_CENTER.lng
-  const radius = parseInt(params.get('radius') ?? '10') || 10
+  const radius = parseInt(params.get('radius') ?? '50') || 50
   const tagParam = params.get('tag') as Tag | null
   const sortParam = (params.get('sort') ?? 'nearest') as SortOption
 
   const [locations, setLocations] = useState<Location[]>([])
   const [loading, setLoading] = useState(true)
-  const [sheetOpen, setSheetOpen] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [showFilters, setShowFilters] = useState(false)
+  const [movedCenter, setMovedCenter] = useState<{ lat: number; lng: number } | null>(null)
+  const [showSearchArea, setShowSearchArea] = useState(false)
+
+  // Sheet height in px — 300 matches SSR; useEffect corrects to viewport-relative after hydration
+  const [sheetPx, setSheetPx] = useState(300)
+  const [isDragging, setIsDragging] = useState(false)
+  const [hydrated, setHydrated] = useState(false)
+  const sheetPxRef = useRef(sheetPx)
+  useEffect(() => { sheetPxRef.current = sheetPx }, [sheetPx])
+
+  const draggingRef = useRef(false)
+  const dragStartY = useRef(0)
+  const dragStartH = useRef(0)
+
+  function onHandlePointerDown(e: React.PointerEvent<HTMLButtonElement>) {
+    draggingRef.current = true
+    setIsDragging(true)
+    dragStartY.current = e.clientY
+    dragStartH.current = sheetPxRef.current
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+
+  function onHandlePointerMove(e: React.PointerEvent<HTMLButtonElement>) {
+    if (!draggingRef.current) return
+    const delta = dragStartY.current - e.clientY
+    const maxH = Math.round(window.innerHeight * 0.9)
+    setSheetPx(Math.max(SNAP_PEEK, Math.min(maxH, dragStartH.current + delta)))
+  }
+
+  function onHandlePointerUp() {
+    if (!draggingRef.current) return
+    draggingRef.current = false
+    setIsDragging(false)
+    // Snap to nearest stop
+    const h = sheetPxRef.current
+    const strip = snapStrip()
+    const detail = snapDetail()
+    const dPeek = Math.abs(h - SNAP_PEEK)
+    const dStrip = Math.abs(h - strip)
+    const dDetail = Math.abs(h - detail)
+    if (dPeek <= dStrip && dPeek <= dDetail) setSheetPx(SNAP_PEEK)
+    else if (dStrip <= dDetail) setSheetPx(strip)
+    else setSheetPx(detail)
+  }
+
+  // Derived from px height
+  const showContent = sheetPx > SNAP_PEEK + 40
+  const showDetail = showContent && selectedId !== null
+
+  const searchCenterRef = useRef({ lat, lng })
+  useEffect(() => { searchCenterRef.current = { lat, lng } }, [lat, lng])
 
   const supabase = createClient()
 
@@ -276,9 +309,7 @@ export default function SearchResultsClient() {
     let results = base.map((loc) => ({ ...loc, distance_km: haversine(lat, lng, loc.lat, loc.lng) }))
     results = results.filter((l) => (l.distance_km ?? 999) <= radius)
 
-    if (tagParam) {
-      results = results.filter((l) => l.tags.includes(tagParam))
-    }
+    if (tagParam) results = results.filter((l) => l.tags.includes(tagParam))
 
     if (sortParam === 'nearest') results.sort((a, b) => (a.distance_km ?? 999) - (b.distance_km ?? 999))
     else if (sortParam === 'highest_rated') results.sort((a, b) => avgRating(b) - avgRating(a))
@@ -291,6 +322,9 @@ export default function SearchResultsClient() {
 
   useEffect(() => { fetchLocations() }, [fetchLocations])
 
+  // Correct sheet height after hydration (window now available)
+  useEffect(() => { setSheetPx(snapStrip()); setHydrated(true) }, [])
+
   function updateParam(key: string, value: string) {
     const p = new URLSearchParams(params.toString())
     if (value) p.set(key, value)
@@ -302,49 +336,91 @@ export default function SearchResultsClient() {
     const p = new URLSearchParams(params.toString())
     p.set('q', searchQ); p.set('lat', searchLat.toString()); p.set('lng', searchLng.toString())
     router.push(`/search?${p.toString()}`)
+    setShowSearchArea(false)
+  }
+
+  const handleMapMove = useCallback((newCenter: { lat: number; lng: number }) => {
+    const dist = haversine(searchCenterRef.current.lat, searchCenterRef.current.lng, newCenter.lat, newCenter.lng)
+    if (dist > 0.3) {
+      setMovedCenter(newCenter)
+      setShowSearchArea(true)
+    } else {
+      setShowSearchArea(false)
+    }
+  }, [])
+
+  function handleSearchArea() {
+    if (!movedCenter) return
+    const p = new URLSearchParams(params.toString())
+    p.set('lat', movedCenter.lat.toFixed(5))
+    p.set('lng', movedCenter.lng.toFixed(5))
+    p.delete('q')
+    router.push(`/search?${p.toString()}`)
+    setShowSearchArea(false)
   }
 
   const handlePinClick = useCallback((loc: Location) => {
     setSelectedId(loc.id)
-    setSheetOpen(true)
+    setSheetPx(snapDetail())
   }, [])
 
   const handleCardClick = useCallback((loc: Location) => {
     setSelectedId(loc.id)
-    setSheetOpen(true)
+    setSheetPx(snapDetail())
   }, [])
 
-  const handleBack = useCallback(() => setSheetOpen(false), [])
-  const handleClose = useCallback(() => { setSheetOpen(false); setSelectedId(null) }, [])
+  const handleBack = useCallback(() => {
+    setSelectedId(null)
+    setSheetPx(snapStrip())
+  }, [])
+
+  const handleClose = useCallback(() => {
+    setSelectedId(null)
+    setSheetPx(snapStrip())
+  }, [])
 
   const selectedLoc = locations.find((l) => l.id === selectedId) ?? null
   const mapCenter = { lat, lng }
 
   return (
     <>
-      {/* ── Mobile layout ── */}
-      <div className="relative md:hidden" style={{ height: 'calc(100vh - 64px)' }}>
+      <BodyScrollLock />
+      <div className="relative" style={{ height: 'calc(100vh - 64px)' }}>
 
-        {/* Search bar */}
-        <div className="absolute top-0 left-0 right-0 z-20 bg-white border-b border-gray-100 px-3 py-2">
-          <SearchBar defaultValue={q} onSearch={handleSearch} />
-        </div>
-
-        {/* Map */}
-        <div className="absolute inset-0" style={{ paddingTop: '56px' }}>
+        {/* Map fills background */}
+        <div className="absolute inset-0">
           <MapView
             locations={locations}
             center={mapCenter}
             zoom={DEFAULT_MAP_ZOOM}
             selectedId={selectedId}
             onLocationClick={handlePinClick}
+            onMapMove={handleMapMove}
           />
         </div>
 
-        {/* Floating tag legend */}
+        {/* Floating search bar — no overflow-hidden so dropdown isn't clipped */}
+        <div className="absolute top-3 left-3 right-3 z-20 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-full md:max-w-md">
+          <SearchBar defaultValue={q} onSearch={handleSearch} />
+        </div>
+
+        {/* Search this area button */}
+        {showSearchArea && (
+          <div className="absolute z-20 left-1/2 -translate-x-1/2" style={{ top: '68px' }}>
+            <button
+              onClick={handleSearchArea}
+              className="flex items-center gap-1.5 bg-white text-[#2c2c2c] text-xs font-semibold px-4 py-2 rounded-full shadow-lg border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors whitespace-nowrap"
+            >
+              <Search className="w-3.5 h-3.5" />
+              Search this area
+            </button>
+          </div>
+        )}
+
+        {/* Floating tag legend — sits above the bottom sheet */}
         <div
-          className="absolute left-0 right-0 z-10 flex gap-2 overflow-x-auto px-3 pb-1 scrollbar-hide transition-all duration-300"
-          style={{ bottom: sheetOpen ? 'calc(65vh + 8px)' : '188px' }}
+          className={cn('absolute left-0 right-0 z-10 flex gap-2 overflow-x-auto px-3 pb-1 scrollbar-hide', hydrated && !isDragging && '[transition:bottom_0.3s]')}
+          style={{ bottom: `${sheetPx + 8}px` }}
         >
           <TagPill label="All" active={!tagParam} onClick={() => updateParam('tag', '')} />
           {TAGS.map((t) => (
@@ -357,164 +433,42 @@ export default function SearchResultsClient() {
           ))}
         </div>
 
-        {/* Bottom sheet */}
+        {/* Bottom sheet — drag to resize */}
         <div
-          className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] transition-all duration-300 flex flex-col"
-          style={{ height: sheetOpen ? '65vh' : '180px' }}
-        >
-          <div className="flex justify-center pt-2.5 pb-1 shrink-0">
-            <div className="w-10 h-1 bg-gray-300 rounded-full" />
-          </div>
-          {sheetOpen && selectedLoc ? (
-            <DetailPanel loc={selectedLoc} onBack={handleBack} onClose={handleClose} />
-          ) : (
-            <ListStrip
-              locations={locations}
-              loading={loading}
-              selectedId={selectedId}
-              onSelect={handleCardClick}
-              q={q}
-              sortParam={sortParam}
-              onSortChange={(s) => updateParam('sort', s)}
-            />
+          className={cn(
+            'absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] flex flex-col',
+            hydrated && !isDragging && '[transition:height_0.3s]'
           )}
-        </div>
-      </div>
-
-      {/* ── Desktop layout ── */}
-      <div className="hidden md:flex flex-col" style={{ height: 'calc(100vh - 64px)' }}>
-
-        {/* Top bar */}
-        <div className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3">
-          <div className="flex-1 max-w-md">
-            <SearchBar defaultValue={q} onSearch={handleSearch} />
-          </div>
+          style={{ height: `${sheetPx}px` }}
+        >
+          {/* Drag handle */}
           <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={cn(
-              'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
-              showFilters ? 'bg-[#f2f7f2] border-[#7da87b] text-[#426340]' : 'border-gray-200 text-[#6b7280] hover:bg-[#f7eed9]'
-            )}
+            className="flex justify-center pt-2.5 pb-2 shrink-0 w-full touch-none select-none cursor-ns-resize"
+            style={{ touchAction: 'none' }}
+            onPointerDown={onHandlePointerDown}
+            onPointerMove={onHandlePointerMove}
+            onPointerUp={onHandlePointerUp}
+            onPointerCancel={onHandlePointerUp}
+            aria-label="Resize panel"
           >
-            <SlidersHorizontal className="w-4 h-4" />
-            <span className="hidden sm:inline">Filters</span>
+            <div className="w-10 h-1 bg-gray-300 rounded-full" />
           </button>
-        </div>
 
-        {/* Filter panel */}
-        {showFilters && (
-          <div className="bg-white border-b border-gray-100 px-4 py-3 flex flex-wrap gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-[#6b7280] font-medium">Radius</span>
-              <div className="flex rounded-lg border border-gray-200 overflow-hidden">
-                {RADIUS_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => updateParam('radius', opt.value.toString())}
-                    className={cn(
-                      'px-3 py-1 text-xs font-medium transition-colors cursor-pointer',
-                      radius === opt.value ? 'bg-[#7da87b] text-white' : 'bg-white text-[#6b7280] hover:bg-[#f2f7f2]'
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-[#6b7280] font-medium">Tag</span>
-              <button
-                onClick={() => updateParam('tag', '')}
-                className={cn(
-                  'px-3 py-1 text-xs rounded-full border font-medium transition-colors cursor-pointer',
-                  !tagParam ? 'bg-[#7da87b] text-white border-[#7da87b]' : 'bg-white text-[#6b7280] border-gray-200 hover:bg-[#f2f7f2]'
-                )}
-              >
-                All
-              </button>
-              {TAGS.map((tag) => (
-                <button
-                  key={tag.value}
-                  onClick={() => updateParam('tag', tag.value)}
-                  className={cn(
-                    'flex items-center gap-1 px-3 py-1 text-xs rounded-full border font-medium transition-colors cursor-pointer',
-                    tagParam === tag.value ? `${tag.bgColor} ${tag.color} border-transparent` : 'bg-white text-[#6b7280] border-gray-200 hover:bg-[#f2f7f2]'
-                  )}
-                >
-                  {tag.emoji} {tag.label}
-                </button>
-              ))}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-[#6b7280] font-medium">Sort</span>
-              <select
-                value={sortParam}
-                onChange={(e) => updateParam('sort', e.target.value)}
-                className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white text-[#2c2c2c] cursor-pointer"
-              >
-                {SORT_OPTIONS.map((s) => (
-                  <option key={s.value} value={s.value}>{s.label}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        )}
-
-        {/* Status bar */}
-        <div className="bg-white px-4 py-2 text-xs text-[#6b7280] border-b border-gray-100">
-          {loading ? 'Searching…' : `${locations.length} place${locations.length !== 1 ? 's' : ''} found${q ? ` near ${q}` : ''}`}
-        </div>
-
-        <div className="flex-1 flex overflow-hidden">
-          {/* List panel */}
-          <div className="overflow-y-auto bg-[#faf8f4] md:w-96 lg:w-[420px] shrink-0">
-            {loading ? (
-              <div className="p-6 space-y-4">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="bg-white rounded-2xl h-48 animate-pulse" />
-                ))}
-              </div>
-            ) : locations.length === 0 ? (
-              <div className="p-8 text-center">
-                <div className="text-4xl mb-3">🔍</div>
-                <p className="font-medium text-[#2c2c2c]">No spots found here yet</p>
-                <p className="text-sm text-[#6b7280] mt-1">Try a larger radius or different category</p>
-              </div>
+          {showContent && (
+            showDetail && selectedLoc ? (
+              <DetailPanel loc={selectedLoc} onBack={handleBack} onClose={handleClose} />
             ) : (
-              <div className="p-4 space-y-3">
-                {locations.map((loc) => (
-                  <LocationCard
-                    key={loc.id}
-                    location={loc}
-                    compact
-                    className={cn(selectedId === loc.id && 'ring-2 ring-[#7da87b]')}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Map panel with floating tag legend */}
-          <div className="relative flex-1">
-            <MapView
-              locations={locations}
-              center={mapCenter}
-              zoom={DEFAULT_MAP_ZOOM}
-              onLocationClick={(loc) => setSelectedId(loc.id === selectedId ? null : loc.id)}
-              selectedId={selectedId}
-            />
-            <div className="absolute bottom-4 left-0 right-0 z-10 flex gap-2 overflow-x-auto px-3 scrollbar-hide">
-              <TagPill label="All" active={!tagParam} onClick={() => updateParam('tag', '')} />
-              {TAGS.map((t) => (
-                <TagPill
-                  key={t.value}
-                  label={`${t.emoji} ${t.label}`}
-                  active={tagParam === t.value}
-                  onClick={() => updateParam('tag', t.value)}
-                />
-              ))}
-            </div>
-          </div>
+              <ListStrip
+                locations={locations}
+                loading={loading}
+                selectedId={selectedId}
+                onSelect={handleCardClick}
+                q={q}
+                sortParam={sortParam}
+                onSortChange={(s) => updateParam('sort', s)}
+              />
+            )
+          )}
         </div>
       </div>
     </>

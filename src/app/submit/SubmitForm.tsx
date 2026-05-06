@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth/AuthProvider'
@@ -30,6 +30,8 @@ export default function SubmitForm() {
   const [selectedOpenTimes, setSelectedOpenTimes] = useState<OpenTime[]>([])
   const [description, setDescription] = useState('')
   const [tips, setTips] = useState('')
+  const [website, setWebsite] = useState('')
+  const [openingHours, setOpeningHours] = useState('')
   const [ageRanges, setAgeRanges] = useState<AgeRange[]>([])
   const [photos, setPhotos] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
@@ -39,7 +41,7 @@ export default function SubmitForm() {
 
   if (!user) return (
     <>
-      <div className="bg-[#f2f7f2] border border-[#c1d9bf] rounded-2xl p-8 text-center">
+      <div className="bg-[#fdf0ed] border border-[#f0b9ae] rounded-2xl p-8 text-center">
         <div className="text-4xl mb-3">🔒</div>
         <p className="font-semibold text-[#2c2c2c] mb-1">Sign in to add a place</p>
         <p className="text-sm text-[#6b7280] mb-4">You need an account to submit new locations.</p>
@@ -50,7 +52,7 @@ export default function SubmitForm() {
   )
 
   if (done) return (
-    <div className="bg-[#f2f7f2] border border-[#c1d9bf] rounded-2xl p-8 text-center">
+    <div className="bg-[#fdf0ed] border border-[#f0b9ae] rounded-2xl p-8 text-center">
       <div className="text-4xl mb-3">🎉</div>
       <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Thanks! Your submission is under review.</h2>
       <p className="text-sm text-[#6b7280] mb-6">We&apos;ll have it live as soon as our team takes a look.</p>
@@ -123,27 +125,41 @@ export default function SubmitForm() {
         open_times: selectedOpenTimes,
         age_ranges: ageRanges,
         tips: tips.trim() || null,
+        website: website.trim() || null,
+        opening_hours: openingHours.trim() || null,
         submitted_by: user.id,
         status: 'pending',
       })
       .select('id')
       .single()
 
-    if (locError || !loc) { setError('Failed to submit. Please try again.'); setSubmitting(false); return }
+    if (locError || !loc) {
+      console.error('[submit] location insert failed:', locError?.message, locError?.details)
+      setError(`Submission failed: ${locError?.message ?? 'unknown error'}`)
+      setSubmitting(false)
+      return
+    }
 
     for (let i = 0; i < photos.length; i++) {
       const file = photos[i]
       const ext = file.name.split('.').pop()
       const path = `${loc.id}/${i}.${ext}`
-      const { data: uploadData } = await supabase.storage.from('location-photos').upload(path, file, { upsert: true })
+      const { data: uploadData, error: uploadError } = await supabase.storage.from('Photos').upload(path, file, { upsert: true })
+      if (uploadError) {
+        console.error('[photo upload] failed:', uploadError.message, { path, bucket: 'Photos' })
+        setError(`Photo upload failed: ${uploadError.message}`)
+        setSubmitting(false)
+        return
+      }
       if (uploadData) {
-        const { data: urlData } = supabase.storage.from('location-photos').getPublicUrl(path)
-        await supabase.from('location_photos').insert({
+        const { data: urlData } = supabase.storage.from('Photos').getPublicUrl(path)
+        const { error: insertError } = await supabase.from('location_photos').insert({
           location_id: loc.id,
           url: urlData.publicUrl,
           sort_order: i,
           uploaded_by: user.id,
         })
+        if (insertError) console.error('[photo insert] failed:', insertError.message)
       }
     }
 
@@ -161,8 +177,8 @@ export default function SubmitForm() {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Rushcutters Bay Park"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          placeholder="e.g. The Grounds of Alexandria"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#d4907a] text-[#2c2c2c] placeholder:text-[#6b7280]"
           maxLength={120}
         />
       </div>
@@ -174,7 +190,7 @@ export default function SubmitForm() {
         </label>
         <AddressSearch value={address?.place_name ?? ''} onChange={setAddress} />
         {address && (
-          <p className="text-xs text-[#5e8e5c] mt-1">✓ Geocoded: {address.lat.toFixed(5)}, {address.lng.toFixed(5)}</p>
+          <p className="text-xs text-[#b97260] mt-1">✓ Geocoded: {address.lat.toFixed(5)}, {address.lng.toFixed(5)}</p>
         )}
       </div>
 
@@ -194,7 +210,7 @@ export default function SubmitForm() {
                 'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
                 selectedTags.includes(tag.value)
                   ? `${tag.bgColor} ${tag.color} border-transparent`
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#f2f7f2]'
+                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#fdf0ed]'
               )}
             >
               {tag.emoji} {tag.label}
@@ -218,7 +234,7 @@ export default function SubmitForm() {
                 'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
                 selectedOpenTimes.includes(t.value)
                   ? `${t.bgColor} ${t.color} border-transparent`
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#f2f7f2]'
+                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#fdf0ed]'
               )}
             >
               {t.emoji} {t.label}
@@ -236,8 +252,8 @@ export default function SubmitForm() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           maxLength={1000}
-          placeholder="What makes this place great for kids? Describe what's there, what you can do, what to expect…"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          placeholder="What's the play area like? What can parents eat or drink while kids play? How long can kids keep themselves busy? What to expect…"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-[#d4907a] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
         <div className="flex justify-between text-xs text-[#6b7280] mt-1">
           <span>{description.length < 50 ? `${50 - description.length} more characters needed` : '✓ Good to go'}</span>
@@ -255,9 +271,37 @@ export default function SubmitForm() {
           onChange={(e) => setTips(e.target.value)}
           maxLength={280}
           placeholder="e.g. 'Bring your own food', 'Parking tricky on weekends', 'Arrive before 10am'…"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-[#7da87b] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-[#d4907a] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
         <p className="text-xs text-[#6b7280] mt-1 text-right">{tips.length}/280</p>
+      </div>
+
+      {/* Website */}
+      <div>
+        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+          Website <span className="text-[#6b7280] font-normal">(optional)</span>
+        </label>
+        <input
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          placeholder="https://..."
+          type="url"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#d4907a] text-[#2c2c2c] placeholder:text-[#6b7280]"
+        />
+      </div>
+
+      {/* Opening hours */}
+      <div>
+        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+          Opening hours <span className="text-[#6b7280] font-normal">(optional)</span>
+        </label>
+        <input
+          value={openingHours}
+          onChange={(e) => setOpeningHours(e.target.value)}
+          placeholder="e.g. Mon–Fri 9am–5pm, Sat–Sun 8am–6pm"
+          maxLength={200}
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#d4907a] text-[#2c2c2c] placeholder:text-[#6b7280]"
+        />
       </div>
 
       {/* Age ranges */}
@@ -307,7 +351,7 @@ export default function SubmitForm() {
         )}
 
         {photos.length < 10 && (
-          <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-[#7da87b] hover:bg-[#f2f7f2] transition-colors">
+          <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-[#d4907a] hover:bg-[#fdf0ed] transition-colors">
             <Upload className="w-6 h-6 text-[#6b7280] mb-2" />
             <span className="text-sm text-[#6b7280]">Click to upload photos</span>
             <span className="text-xs text-[#6b7280] mt-0.5">JPEG, PNG, WEBP</span>

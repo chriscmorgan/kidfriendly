@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, MapPin, Loader2 } from 'lucide-react'
@@ -100,7 +100,7 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
     <div ref={containerRef} className={cn('relative w-full', className)}>
       <form onSubmit={handleSubmit}>
         <div className={cn(
-          'flex items-center gap-2 bg-white border border-gray-200 rounded-2xl shadow-sm transition-shadow focus-within:shadow-md focus-within:border-[#7da87b]',
+          'flex items-center gap-2 bg-white border border-gray-200 rounded-2xl shadow-sm transition-shadow focus-within:shadow-md focus-within:border-[#d4907a]',
           isHero ? 'p-3 pr-3' : 'p-2 pr-2'
         )}>
           <Search className={cn('shrink-0 text-[#6b7280]', isHero ? 'w-5 h-5 ml-1' : 'w-4 h-4 ml-1')} />
@@ -125,8 +125,8 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
             className={cn(
               'shrink-0 flex items-center gap-1 font-medium rounded-xl transition-colors cursor-pointer disabled:opacity-50',
               isHero
-                ? 'px-3 py-2 text-sm text-[#5e8e5c] hover:bg-[#f2f7f2]'
-                : 'px-2 py-1 text-xs text-[#5e8e5c] hover:bg-[#f2f7f2]'
+                ? 'px-3 py-2 text-sm text-[#b97260] hover:bg-[#fdf0ed]'
+                : 'px-2 py-1 text-xs text-[#b97260] hover:bg-[#fdf0ed]'
             )}
           >
             {geoLoading
@@ -138,7 +138,7 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
           <button
             type="submit"
             className={cn(
-              'shrink-0 bg-[#7da87b] text-white font-medium rounded-xl hover:bg-[#5e8e5c] transition-colors cursor-pointer',
+              'shrink-0 bg-[#d4907a] text-white font-medium rounded-xl hover:bg-[#b97260] transition-colors cursor-pointer',
               isHero ? 'px-5 py-2 text-sm' : 'px-3 py-1.5 text-xs'
             )}
           >

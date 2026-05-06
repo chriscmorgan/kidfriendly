@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -181,7 +181,7 @@ function AdminLocationCard({ location: loc, processingId, rejectNote, onApprove,
                 placeholder="Rejection note (optional, sent to contributor)…"
                 value={rejectNote?.note ?? ''}
                 onChange={(e) => onRejectNoteChange(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20 outline-none focus:border-[#7da87b]"
+                className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20 outline-none focus:border-[#d4907a]"
               />
               <div className="flex gap-2">
                 <Button variant="danger" size="sm" loading={isProcessing} onClick={onRejectConfirm}>
