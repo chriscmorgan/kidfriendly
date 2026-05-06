@@ -122,7 +122,6 @@ export default function SubmitForm() {
     if (!address) { setError('Address is required'); return }
     if (selectedTags.length === 0) { setError('Select at least one tag'); return }
     if (!description.trim() || description.length < 50) { setError('Description must be at least 50 characters'); return }
-    if (photos.length === 0) { setError('At least one photo is required'); return }
 
     if (!user) return
     setSubmitting(true)
@@ -375,8 +374,7 @@ export default function SubmitForm() {
       {/* Photos */}
       <div>
         <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Photos <span className="text-red-500">*</span>{' '}
-          <span className="text-[#6b7280] font-normal">(min 1, max 10, ≤5MB each)</span>
+          Photos <span className="text-[#6b7280] font-normal">(optional, max 10, ≤5MB each)</span>
         </label>
 
         {previews.length > 0 && (
