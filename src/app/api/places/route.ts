@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { checkRateLimit } from '@/lib/rateLimit'
 
-// Uses Geoapify Geocoding Autocomplete with type=amenity to search businesses/POIs by name.
-// To switch to Google Places API, replace this handler body — response shape stays identical.
 export async function GET(request: Request) {
   const ip = (await headers()).get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
   if (!checkRateLimit(ip)) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
@@ -13,49 +11,69 @@ export async function GET(request: Request) {
 
   if (!q || q.length < 2) return NextResponse.json([])
 
-  const apiKey = process.env.GEOAPIFY_API_KEY
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY
   if (!apiKey) {
-    console.warn('[places] GEOAPIFY_API_KEY is not set')
+    console.warn('[places] GOOGLE_PLACES_API_KEY is not set')
     return NextResponse.json([])
   }
 
-  const url = new URL('https://api.geoapify.com/v1/geocode/autocomplete')
-  url.searchParams.set('text', q)
-  url.searchParams.set('filter', 'countrycode:au')
-  url.searchParams.set('type', 'amenity')
-  url.searchParams.set('limit', '5')
-  url.searchParams.set('apiKey', apiKey)
-
   try {
-    const res = await fetch(url.toString())
+    const res = await fetch('https://places.googleapis.com/v1/places:searchText', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey,
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.websiteUri,places.regularOpeningHours,places.addressComponents',
+      },
+      body: JSON.stringify({
+        textQuery: q,
+        languageCode: 'en',
+        regionCode: 'AU',
+        maxResultCount: 5,
+      }),
+    })
+
     if (!res.ok) {
-      console.error('[places] Geoapify error', res.status)
+      console.error('[places] Google Places error', res.status, await res.text())
       return NextResponse.json([])
     }
 
     const data = await res.json()
-    const features: Record<string, unknown>[] = data?.features ?? []
+    const places: Record<string, unknown>[] = data?.places ?? []
 
-    const results = features
-      .map((f, i) => {
-        const p = f.properties as Record<string, unknown>
-        const name = String(p.name ?? '')
+    const results = places
+      .map((place, i) => {
+        const displayName = place.displayName as { text?: string } | undefined
+        const location = place.location as { latitude?: number; longitude?: number } | undefined
+        const addressComponents = (place.addressComponents as { longText: string; types: string[] }[] | undefined) ?? []
+        const openingHours = place.regularOpeningHours as { weekdayDescriptions?: string[] } | undefined
+
+        const name = displayName?.text ?? ''
         if (!name) return null
+
+        // Prefer sublocality (suburb) over locality (city/LGA) for Australian addresses
+        const suburb =
+          addressComponents.find((c) => c.types.includes('sublocality_level_1'))?.longText ??
+          addressComponents.find((c) => c.types.includes('sublocality'))?.longText ??
+          addressComponents.find((c) => c.types.includes('locality'))?.longText ??
+          ''
+
         return {
-          id: String(p.place_id ?? i),
+          id: String(place.id ?? i),
           name,
-          address: String(p.formatted ?? ''),
-          lat: Number(p.lat),
-          lng: Number(p.lon),
-          suburb: String(p.suburb ?? p.city ?? p.town ?? p.village ?? ''),
-          website: typeof p.website === 'string' ? p.website : null,
-          opening_hours: typeof p.opening_hours === 'string' ? p.opening_hours : null,
+          address: String(place.formattedAddress ?? '').replace(/, Australia$/, ''),
+          lat: location?.latitude ?? 0,
+          lng: location?.longitude ?? 0,
+          suburb,
+          website: typeof place.websiteUri === 'string' ? place.websiteUri : null,
+          opening_hours: openingHours?.weekdayDescriptions?.join('\n') ?? null,
         }
       })
       .filter(Boolean)
 
     return NextResponse.json(results)
-  } catch {
+  } catch (err) {
+    console.error('[places] fetch error', err)
     return NextResponse.json([])
   }
 }
