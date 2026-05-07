@@ -142,12 +142,20 @@ export default async function LocationPage({ params }: Props) {
       },
     }),
     ...(reviews.length > 0 && {
-      review: reviews.slice(0, 5).map((r) => ({
-        '@type': 'Review',
-        author: { '@type': 'Person', name: (r.user as { display_name?: string } | undefined)?.display_name ?? 'Community member' },
-        datePublished: r.created_at.split('T')[0],
-        ...(r.comment && { reviewBody: r.comment }),
-      })),
+      review: reviews.slice(0, 5).map((r) => {
+        const ratingFields = ['rating_food', 'rating_noise', 'rating_safety', 'rating_cleanliness', 'rating_access', 'rating_weather', 'rating_age_suitability'] as const
+        const rVals = ratingFields.map((k) => r[k as keyof Review] as number | null).filter((v): v is number => v != null)
+        const rAvg = rVals.length ? rVals.reduce((a, b) => a + b, 0) / rVals.length : null
+        return {
+          '@type': 'Review',
+          author: { '@type': 'Person', name: (r.user as { display_name?: string } | undefined)?.display_name ?? 'Community member' },
+          datePublished: r.created_at.split('T')[0],
+          ...(r.comment && { reviewBody: r.comment }),
+          ...(rAvg != null && {
+            reviewRating: { '@type': 'Rating', ratingValue: rAvg.toFixed(1), bestRating: 5, worstRating: 1 },
+          }),
+        }
+      }),
     }),
   }
 

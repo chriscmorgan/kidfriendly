@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
 import SubmitForm from './SubmitForm'
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
+
 export const metadata: Metadata = {
   title: 'Add a Kid-Friendly Place',
   description: 'Know a cafe or venue in Australia with a kids play area? Add it to the map in 2 minutes — help other parents find it.',
+  alternates: { canonical: `${SITE_URL}/submit` },
 }
 
 export default function SubmitPage() {

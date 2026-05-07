@@ -23,9 +23,14 @@ export const metadata: Metadata = {
     type: 'website',
     url: SITE_URL,
     locale: 'en_AU',
+    title: 'Kid-Friendly Cafes with Play Areas in Australia | KidFriendlyEats',
+    description: 'Find cafes, restaurants and venues with kids play areas across Australia — reviewed by local parents. Discover indoor playgrounds, spots next to parks, and family-friendly cafes in Melbourne, Sydney, Brisbane and beyond.',
   },
-  twitter: { card: 'summary_large_image' },
-  alternates: { canonical: SITE_URL },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kid-Friendly Cafes with Play Areas in Australia | KidFriendlyEats',
+    description: 'Find cafes, restaurants and venues with kids play areas across Australia — reviewed by local parents.',
+  },
 }
 
 const organizationSchema = {
@@ -55,7 +60,7 @@ const websiteSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} h-full`}>
+    <html lang="en-AU" className={`${geist.variable} h-full`}>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(organizationSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteSchema) }} />
