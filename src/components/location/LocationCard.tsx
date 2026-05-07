@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, Star, Camera } from 'lucide-react'
+import { MapPin, Camera } from 'lucide-react'
 import { TagBadge } from '@/components/ui/Badge'
 import type { Location } from '@/lib/types'
 import { cn, formatDistance, truncate } from '@/lib/utils'
@@ -12,16 +12,8 @@ interface LocationCardProps {
   compact?: boolean
 }
 
-function overallRating(location: Location): number | null {
-  const r = location.avg_ratings
-  if (!r) return null
-  const vals = Object.values(r).filter((v): v is number => v != null)
-  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null
-}
-
 export default function LocationCard({ location, className, compact = false }: LocationCardProps) {
   const heroPhoto = location.photos?.[0]
-  const rating = overallRating(location)
   const ageLabels = AGE_RANGES
     .filter((a) => location.age_ranges.includes(a.value))
     .map((a) => a.label)
@@ -85,29 +77,15 @@ export default function LocationCard({ location, className, compact = false }: L
           </p>
         )}
 
-        <div className="flex items-center justify-between mt-3 flex-wrap gap-2">
-          {/* Age tags */}
-          <div className="flex flex-wrap gap-1">
+        {ageLabels.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-3">
             {ageLabels.slice(0, 2).map((label) => (
               <span key={label} className="text-xs bg-[#edf8f8] text-[#38a5a0] px-2 py-1 rounded-full font-medium">
                 {label}
               </span>
             ))}
           </div>
-
-          {/* Rating or "Be first to review" prompt */}
-          {rating != null ? (
-            <div className="flex items-center gap-1 text-sm font-medium text-charcoal">
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              {rating.toFixed(1)}
-              {location.review_count != null && location.review_count > 0 && (
-                <span className="text-xs text-muted font-normal">({location.review_count})</span>
-              )}
-            </div>
-          ) : (
-            <span className="text-xs text-[#9ca3af]">No reviews yet</span>
-          )}
-        </div>
+        )}
       </div>
     </Link>
   )

@@ -4,15 +4,12 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import PhotoCarousel from '@/components/location/PhotoCarousel'
-import RatingsChart from '@/components/location/RatingsChart'
-import ReviewCard from '@/components/location/ReviewCard'
 import ReportButton from '@/components/location/ReportButton'
 import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
 import type { Location, Review, AvgRatings, Tag, OpenTime } from '@/lib/types'
 import { AGE_RANGES, TAGS } from '@/lib/constants'
 import { safeJsonLd } from '@/lib/utils'
-import { MapPin, Navigation, User, Calendar, Star, Clock, ExternalLink } from 'lucide-react'
-import AddReviewSection from './AddReviewSection'
+import { MapPin, Navigation, User, Calendar, Clock, ExternalLink } from 'lucide-react'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
@@ -231,46 +228,6 @@ export default async function LocationPage({ params }: Props) {
             </section>
           )}
 
-          {/* Ratings */}
-          <section>
-            <h2 className="text-lg font-semibold text-[#2c2c2c] mb-4">Community ratings</h2>
-            <RatingsChart ratings={avg_ratings} reviewCount={reviews.length} />
-          </section>
-
-          {/* Reviews */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-lg font-semibold text-[#2c2c2c]">Reviews</h2>
-                {overallAvg != null && (
-                  <p className="text-sm text-[#6b7280] mt-0.5 flex items-center gap-1">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    {overallAvg.toFixed(1)} · {reviews.length} review{reviews.length !== 1 ? 's' : ''}
-                  </p>
-                )}
-              </div>
-              <a
-                href="#write-review"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-[#4abfc0] hover:bg-[#38a5a0] px-4 py-2 rounded-xl transition-colors"
-              >
-                Write a review
-              </a>
-            </div>
-            {reviews.length === 0 ? (
-              <p className="text-sm text-[#6b7280]">No reviews yet. Be the first!</p>
-            ) : (
-              <div className="space-y-3">
-                {reviews.map((review) => (
-                  <ReviewCard key={review.id} review={review} />
-                ))}
-              </div>
-            )}
-          </section>
-
-          {/* Add review */}
-          <section id="write-review">
-            <AddReviewSection locationId={loc.id} existingReview={reviews.find((r) => false) ?? null} />
-          </section>
         </div>
 
         {/* Sidebar */}
@@ -309,20 +266,14 @@ export default async function LocationPage({ params }: Props) {
       </div>
 
       {/* Sticky mobile CTA bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-3 flex gap-3 safe-area-inset-bottom">
+      <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-3 safe-area-inset-bottom">
         <a
           href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 bg-[#edf8f8] text-[#1a5f5f] font-semibold text-sm py-3.5 rounded-2xl transition-colors hover:bg-[#c8eded] min-h-[52px]"
+          className="flex items-center justify-center gap-2 bg-[#4abfc0] hover:bg-[#38a5a0] text-white font-semibold text-sm py-3.5 rounded-2xl transition-colors min-h-[52px] w-full"
         >
-          <Navigation className="w-4 h-4" /> Directions
-        </a>
-        <a
-          href="#write-review"
-          className="flex-1 flex items-center justify-center gap-2 bg-[#4abfc0] hover:bg-[#38a5a0] text-white font-semibold text-sm py-3.5 rounded-2xl transition-colors min-h-[52px]"
-        >
-          <Star className="w-4 h-4" /> Write a Review
+          <Navigation className="w-4 h-4" /> Get Directions
         </a>
       </div>
     </div>

@@ -18,34 +18,27 @@ const HOW_IT_WORKS = [
   {
     emoji: '📍',
     title: 'Discover great spots',
-    desc: 'Browse venues with on-site play areas or next to playgrounds — all rated by parents.',
+    desc: 'Browse venues with on-site play areas or right next to a playground.',
   },
   {
-    emoji: '⭐',
-    title: 'Share your experience',
-    desc: 'Leave a review to help other parents find their next great eat-and-play spot.',
+    emoji: '📸',
+    title: 'Add a missing place',
+    desc: 'Know a spot that\'s not listed? Add it in two minutes and help other families find it.',
   },
 ]
 
 const CITY_LINKS = [
   { city: 'Melbourne', href: '/melbourne', emoji: '☕' },
-  { city: 'Sydney', href: '/sydney', emoji: '🌞' },
-  { city: 'Brisbane', href: '/search?q=Brisbane', emoji: '🌴' },
-  { city: 'Perth', href: '/search?q=Perth', emoji: '🏖️' },
 ]
 
 const FAQS = [
   {
     q: 'What is KidFriendlyEats?',
-    a: 'KidFriendlyEats is a free community directory of cafes, restaurants and venues across Australia that have dedicated play areas for kids — like indoor playgrounds, on-site equipment, or spots right next to a public playground.',
+    a: 'KidFriendlyEats is a free community directory of cafes, restaurants and venues in Melbourne that have dedicated play areas for kids — like indoor playgrounds, on-site equipment, or spots right next to a public playground.',
   },
   {
-    q: 'How do I find kid-friendly cafes near me?',
+    q: 'How do I find kid-friendly venues near me?',
     a: 'Use the search bar to enter your suburb or postcode. The map will show nearby venues with play areas, which you can filter by type (indoor playground, outdoor run area, adjacent playground, etc.).',
-  },
-  {
-    q: 'Are the reviews written by real parents?',
-    a: 'Yes. Every review is written by a community member who has visited the venue. Reviewers rate specific things parents care about — noise level, safety, cleanliness, age suitability, and more.',
   },
   {
     q: 'Can I add a place that\'s not listed?',
@@ -90,7 +83,7 @@ export default function HomeLanding({ locations }: Props) {
             <span className="text-[#e8756a]">and the Kids Can Actually Play</span>
           </h1>
           <p className="text-[#4a7a7a] text-base sm:text-xl mt-5 max-w-xl mx-auto leading-relaxed">
-            Cafes, restaurants and play centres with real play areas — reviewed by local parents across Melbourne, Sydney, Brisbane and beyond.
+            Cafes, restaurants and play centres in Melbourne with real play areas — discovered and shared by local parents.
           </p>
 
           <div className="w-full max-w-xl mt-8 mx-auto">
@@ -114,7 +107,7 @@ export default function HomeLanding({ locations }: Props) {
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-6 text-[#4a7a7a] text-sm">
             <span className="flex items-center gap-1.5"><span className="text-base">📍</span> {locations.length > 0 ? `${locations.length}+ places listed` : 'Places listed'}</span>
             <span className="text-[#b5e6e6]">·</span>
-            <span className="flex items-center gap-1.5"><span className="text-base">⭐</span> Parent reviews</span>
+            <span className="flex items-center gap-1.5"><span className="text-base">☕</span> Melbourne</span>
           </div>
         </div>
       </section>
