@@ -32,6 +32,7 @@ export default function VenueSearch({ onSelect }: VenueSearchProps) {
   const [selecting, setSelecting] = useState(false)
   const [open, setOpen] = useState(false)
   const [userLoc, setUserLoc] = useState(MELBOURNE)
+  const [detailError, setDetailError] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -78,17 +79,20 @@ export default function VenueSearch({ onSelect }: VenueSearchProps) {
     setSuggestions([])
     setQuery(s.name)
     setSelecting(true)
+    setDetailError(false)
     try {
       const res = await fetch(`/api/places/${encodeURIComponent(s.id)}`)
       if (res.ok) {
         const detail: PlaceResult = await res.json()
         onSelect(detail)
+        setQuery('')
+      } else {
+        setDetailError(true)
       }
     } catch {
-      // detail fetch failed — user can still fill in manually
+      setDetailError(true)
     } finally {
       setSelecting(false)
-      setQuery('')
     }
   }
 
@@ -107,6 +111,10 @@ export default function VenueSearch({ onSelect }: VenueSearchProps) {
         />
         {(loading || selecting) && <Loader2 className="w-4 h-4 animate-spin text-[#6b7280] shrink-0" />}
       </div>
+
+      {detailError && (
+        <p className="text-xs text-amber-600 mt-1.5">Couldn&apos;t load details automatically — please fill in the name and address below.</p>
+      )}
 
       {open && suggestions.length > 0 && (
         <ul className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden z-30">

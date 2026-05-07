@@ -35,8 +35,8 @@ export async function POST(request: Request) {
   if (!name || typeof name !== 'string' || !name.trim() || name.length > 120) {
     return NextResponse.json({ error: 'Invalid name' }, { status: 400 })
   }
-  if (!description || typeof description !== 'string' || description.trim().length < 50 || description.length > 1000) {
-    return NextResponse.json({ error: 'Description must be 50–1000 characters' }, { status: 400 })
+  if (!description || typeof description !== 'string' || description.trim().length < 30 || description.length > 1000) {
+    return NextResponse.json({ error: 'Description must be 30–1000 characters' }, { status: 400 })
   }
   if (!address || typeof address !== 'string') {
     return NextResponse.json({ error: 'Invalid address' }, { status: 400 })

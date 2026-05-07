@@ -135,7 +135,7 @@ export default function SubmitForm() {
     if (!name.trim()) { setError('Name is required'); return }
     if (!address) { setError('Address is required'); return }
     if (selectedTags.length === 0) { setError('Select at least one tag'); return }
-    if (!description.trim() || description.length < 50) { setError('Description must be at least 50 characters'); return }
+    if (!description.trim() || description.length < 30) { setError('Description must be at least 30 characters'); return }
 
     if (!user) return
     setSubmitting(true)
@@ -311,7 +311,7 @@ export default function SubmitForm() {
           className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
         />
         <div className="flex justify-between text-xs text-[#6b7280] mt-1">
-          <span>{description.length < 50 ? `${50 - description.length} more characters needed` : '✓ Good to go'}</span>
+          <span>{description.length < 30 ? `${30 - description.length} more characters needed` : '✓ Good to go'}</span>
           <span>{description.length}/1000</span>
         </div>
       </div>
