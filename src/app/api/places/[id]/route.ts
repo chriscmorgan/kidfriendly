@@ -4,7 +4,7 @@ import { checkRateLimit } from '@/lib/rateLimit'
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const ip = (await headers()).get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
-  if (!checkRateLimit(ip)) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  if (!checkRateLimit(ip, 200)) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
 
   const { id } = await params
   if (!id) return NextResponse.json({ error: 'Missing place id' }, { status: 400 })

@@ -6,7 +6,7 @@ import { checkRateLimit } from '@/lib/rateLimit'
 // Client fetches /api/places/[id] on selection to get full details.
 export async function GET(request: Request) {
   const ip = (await headers()).get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
-  if (!checkRateLimit(ip)) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  if (!checkRateLimit(ip, 200)) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
 
   const { searchParams } = new URL(request.url)
   const q = searchParams.get('q')
