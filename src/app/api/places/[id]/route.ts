@@ -12,8 +12,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const apiKey = process.env.GOOGLE_PLACES_API_KEY
   if (!apiKey) return NextResponse.json({ error: 'API key not configured' }, { status: 500 })
 
-  // First attempt: full field mask including opening hours
-  // Second attempt: reduced mask (some place types reject regularOpeningHours)
+  console.log('[places/detail] fetching', id)
+
+  // ── Attempt 1 & 2: Places API (New) ────────────────────────────────────────
   const fieldMasks = [
     'id,displayName,formattedAddress,location,websiteUri,regularOpeningHours,addressComponents',
     'id,displayName,formattedAddress,location,websiteUri,addressComponents',
@@ -31,7 +32,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       const bodyText = await res.text()
 
       if (!res.ok) {
-        console.error('[places/detail] Google error', res.status, fieldMask, bodyText.slice(0, 500))
+        console.error('[places/detail] new API error', res.status, fieldMask, bodyText.slice(0, 500))
         continue
       }
 
@@ -54,6 +55,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         addressComponents.find((c) => c.types.includes('locality'))?.longText ??
         ''
 
+      console.log('[places/detail] new API success', id)
       return NextResponse.json({
         id: String(place.id ?? id),
         name: displayName?.text ?? '',
@@ -65,10 +67,62 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         opening_hours: openingHours?.weekdayDescriptions?.join('\n') ?? null,
       })
     } catch (err) {
-      console.error('[places/detail] unexpected error', fieldMask, err)
-      continue
+      console.error('[places/detail] new API unexpected error', fieldMask, err)
     }
   }
 
+  // ── Attempt 3: Legacy Places API ────────────────────────────────────────────
+  try {
+    const url = new URL('https://maps.googleapis.com/maps/api/place/details/json')
+    url.searchParams.set('place_id', id)
+    url.searchParams.set('fields', 'name,formatted_address,geometry,website,opening_hours,address_components')
+    url.searchParams.set('key', apiKey)
+
+    const res = await fetch(url.toString())
+    const bodyText = await res.text()
+
+    if (!res.ok) {
+      console.error('[places/detail] legacy API error', res.status, bodyText.slice(0, 500))
+    } else {
+      let data: Record<string, unknown>
+      try {
+        data = JSON.parse(bodyText)
+      } catch {
+        console.error('[places/detail] legacy JSON parse error', bodyText.slice(0, 200))
+        data = {}
+      }
+
+      const status = String(data.status ?? '')
+      console.log('[places/detail] legacy API status', status)
+
+      if (status === 'OK') {
+        const result = data.result as Record<string, unknown> | undefined ?? {}
+        const geo = result.geometry as { location?: { lat?: number; lng?: number } } | undefined
+        const addressComponents = (result.address_components as { long_name: string; types: string[] }[] | undefined) ?? []
+        const openingHours = result.opening_hours as { weekday_text?: string[] } | undefined
+
+        const suburb =
+          addressComponents.find((c) => c.types.includes('sublocality_level_1'))?.long_name ??
+          addressComponents.find((c) => c.types.includes('sublocality'))?.long_name ??
+          addressComponents.find((c) => c.types.includes('locality'))?.long_name ??
+          ''
+
+        return NextResponse.json({
+          id,
+          name: String(result.name ?? ''),
+          address: String(result.formatted_address ?? '').replace(/, Australia$/, ''),
+          lat: geo?.location?.lat ?? 0,
+          lng: geo?.location?.lng ?? 0,
+          suburb,
+          website: typeof result.website === 'string' ? result.website : null,
+          opening_hours: openingHours?.weekday_text?.join('\n') ?? null,
+        })
+      }
+    }
+  } catch (err) {
+    console.error('[places/detail] legacy API unexpected error', err)
+  }
+
+  console.error('[places/detail] all attempts failed for', id)
   return NextResponse.json({ error: 'Place not found' }, { status: 404 })
 }
