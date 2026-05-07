@@ -103,12 +103,6 @@ export default function HomeLanding({ locations }: Props) {
             ))}
           </div>
 
-          {/* Stats strip */}
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-6 text-[#4a7a7a] text-sm">
-            <span className="flex items-center gap-1.5"><span className="text-base">📍</span> {locations.length > 0 ? `${locations.length}+ places listed` : 'Places listed'}</span>
-            <span className="text-[#b5e6e6]">·</span>
-            <span className="flex items-center gap-1.5"><span className="text-base">☕</span> Melbourne</span>
-          </div>
         </div>
       </section>
 
