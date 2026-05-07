@@ -26,9 +26,9 @@ export default function LocationCard({ location, className, compact = false }: L
         className
       )}
     >
-      {/* Photo */}
-      <div className={cn('relative bg-sand-100 overflow-hidden', compact ? 'h-36' : 'h-48')}>
-        {heroPhoto ? (
+      {/* Photo — only render if there is one */}
+      {heroPhoto && (
+        <div className={cn('relative overflow-hidden', compact ? 'h-36' : 'h-48')}>
           <Image
             src={heroPhoto.url}
             alt={location.name}
@@ -36,24 +36,25 @@ export default function LocationCard({ location, className, compact = false }: L
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-        ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-gradient-to-br from-[#edf8f8] to-[#d4f0f0]">
-            <span className="text-3xl opacity-60">🛝</span>
-            <span className="text-[10px] text-[#6b9b9b] font-medium opacity-70">No photo yet</span>
-          </div>
-        )}
-        {location.tags.length > 0 && (
-          <div className="absolute top-2 left-2">
-            <TagBadge tag={location.tags[0]} />
-          </div>
-        )}
-        {(location.photos?.length ?? 0) > 1 && (
-          <div className="absolute top-2 right-2 flex items-center gap-0.5 bg-black/50 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-full">
-            <Camera className="w-2.5 h-2.5" />
-            {location.photos!.length}
-          </div>
-        )}
-      </div>
+          {location.tags.length > 0 && (
+            <div className="absolute top-2 left-2">
+              <TagBadge tag={location.tags[0]} />
+            </div>
+          )}
+          {(location.photos?.length ?? 0) > 1 && (
+            <div className="absolute top-2 right-2 flex items-center gap-0.5 bg-black/50 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-full">
+              <Camera className="w-2.5 h-2.5" />
+              {location.photos!.length}
+            </div>
+          )}
+        </div>
+      )}
+      {/* Tag badge when there's no photo */}
+      {!heroPhoto && location.tags.length > 0 && (
+        <div className="px-4 pt-4">
+          <TagBadge tag={location.tags[0]} />
+        </div>
+      )}
 
       {/* Content */}
       <div className="p-4">
