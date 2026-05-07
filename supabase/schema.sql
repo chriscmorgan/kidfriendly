@@ -59,6 +59,8 @@ create table public.locations (
   open_times text[] not null default '{}',
   age_ranges text[] not null default '{}',
   tips text check (char_length(tips) <= 280),
+  website text check (website is null or website ~* '^https?://'),
+  opening_hours text,
   status location_status not null default 'pending',
   submitted_by uuid not null references public.users(id),
   rejection_note text,
@@ -90,6 +92,11 @@ create policy "Admins can update any location" on public.locations
 create policy "Contributors can update their pending submissions" on public.locations
   for update using (auth.uid() = submitted_by and status = 'pending');
 
+create policy "Admins can delete locations" on public.locations
+  for delete using (
+    exists (select 1 from public.users where id = auth.uid() and role = 'admin')
+  );
+
 -- ─── Location Photos ─────────────────────────────────────────────────────────
 create table public.location_photos (
   id uuid primary key default uuid_generate_v4(),
@@ -113,6 +120,14 @@ create policy "Admins can view all photos" on public.location_photos
 
 create policy "Authenticated users can upload photos" on public.location_photos
   for insert with check (auth.uid() = uploaded_by);
+
+create policy "Admins can delete photos" on public.location_photos
+  for delete using (
+    exists (select 1 from public.users where id = auth.uid() and role = 'admin')
+  );
+
+create policy "Uploaders can delete their own photos" on public.location_photos
+  for delete using (auth.uid() = uploaded_by);
 
 -- ─── Reviews ─────────────────────────────────────────────────────────────────
 create table public.reviews (
@@ -165,6 +180,11 @@ create policy "Authenticated users can submit reports" on public.reports
 
 create policy "Admins can view all reports" on public.reports
   for select using (
+    exists (select 1 from public.users where id = auth.uid() and role = 'admin')
+  );
+
+create policy "Admins can delete reports" on public.reports
+  for delete using (
     exists (select 1 from public.users where id = auth.uid() and role = 'admin')
   );
 

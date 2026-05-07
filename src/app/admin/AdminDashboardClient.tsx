@@ -7,26 +7,35 @@ import { createClient } from '@/lib/supabase/client'
 import { TagBadge } from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import type { Location } from '@/lib/types'
+import type { Report } from './page'
 import { AGE_RANGES } from '@/lib/constants'
-import { CheckCircle, XCircle, Clock, MapPin, User, Eye, Pencil } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, MapPin, User, Eye, Pencil, Flag } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-type Tab = 'pending' | 'all'
+type Tab = 'pending' | 'all' | 'reports'
 
 export default function AdminDashboardClient({
   initialPending,
   initialAll,
+  initialReports,
 }: {
   initialPending: Location[]
   initialAll: Location[]
+  initialReports: Report[]
 }) {
   const router = useRouter()
   const supabase = createClient()
   const [tab, setTab] = useState<Tab>('pending')
   const [pending, setPending] = useState(initialPending)
   const [all, setAll] = useState(initialAll)
+  const [reports, setReports] = useState(initialReports)
   const [processingId, setProcessingId] = useState<string | null>(null)
   const [rejectNote, setRejectNote] = useState<{ id: string; note: string } | null>(null)
+
+  async function dismissReport(id: string) {
+    await supabase.from('reports').delete().eq('id', id)
+    setReports((prev) => prev.filter((r) => r.id !== id))
+  }
 
   async function approve(id: string) {
     setProcessingId(id)
@@ -65,21 +74,33 @@ export default function AdminDashboardClient({
 
       {/* Tabs */}
       <div className="flex border-b border-gray-100 mb-8 gap-1">
-        {(['pending', 'all'] as Tab[]).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={cn(
-              'px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg',
-              tab === t ? 'text-[#38a5a0] border-b-2 border-[#4abfc0]' : 'text-[#6b7280] hover:text-[#2c2c2c]'
-            )}
-          >
-            {t === 'pending' ? `Pending (${pending.length})` : `All locations (${all.length})`}
-          </button>
-        ))}
+        <button onClick={() => setTab('pending')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg', tab === 'pending' ? 'text-[#38a5a0] border-b-2 border-[#4abfc0]' : 'text-[#6b7280] hover:text-[#2c2c2c]')}>
+          Pending ({pending.length})
+        </button>
+        <button onClick={() => setTab('all')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg', tab === 'all' ? 'text-[#38a5a0] border-b-2 border-[#4abfc0]' : 'text-[#6b7280] hover:text-[#2c2c2c]')}>
+          All locations ({all.length})
+        </button>
+        <button onClick={() => setTab('reports')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg flex items-center gap-1.5', tab === 'reports' ? 'text-[#38a5a0] border-b-2 border-[#4abfc0]' : 'text-[#6b7280] hover:text-[#2c2c2c]')}>
+          <Flag className="w-3.5 h-3.5" />
+          Reports {reports.length > 0 && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{reports.length}</span>}
+        </button>
       </div>
 
-      {tab === 'pending' ? (
+      {tab === 'reports' ? (
+        reports.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="text-5xl mb-4">✅</div>
+            <p className="font-semibold text-[#2c2c2c]">No open reports</p>
+            <p className="text-sm text-[#6b7280] mt-1">Nothing to action right now.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {reports.map((report) => (
+              <ReportRow key={report.id} report={report} onDismiss={dismissReport} />
+            ))}
+          </div>
+        )
+      ) : tab === 'pending' ? (
         pending.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">✅</div>
@@ -252,6 +273,52 @@ function AllLocationRow({ location: loc, onDelete }: { location: Location; onDel
           <>
             <span className="text-xs text-[#6b7280]">Sure?</span>
             <Button variant="danger" size="sm" onClick={() => onDelete(loc.id)}>Yes, delete</Button>
+            <Button variant="ghost" size="sm" onClick={() => setConfirming(false)}>Cancel</Button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ── Report row ── */
+
+function ReportRow({ report: r, onDismiss }: { report: Report; onDismiss: (id: string) => void }) {
+  const [confirming, setConfirming] = useState(false)
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-4 flex flex-col sm:flex-row sm:items-center gap-4">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap mb-1">
+          <Flag className="w-3.5 h-3.5 text-red-400 shrink-0" />
+          {r.location ? (
+            <Link href={`/location/${r.location.slug}`} target="_blank" className="font-semibold text-[#2c2c2c] hover:text-[#38a5a0] transition-colors">
+              {r.location.name}
+            </Link>
+          ) : (
+            <span className="font-semibold text-[#2c2c2c]">Unknown venue</span>
+          )}
+        </div>
+        <p className="text-sm text-[#4b5563] mb-1">{r.reason}</p>
+        <p className="text-xs text-[#9ca3af]">
+          {r.reporter?.display_name ?? 'Unknown user'} · {new Date(r.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2 shrink-0">
+        {r.location && (
+          <Link href={`/location/${r.location.slug}`} target="_blank">
+            <Button variant="ghost" size="sm" className="gap-1.5">
+              <Eye className="w-3.5 h-3.5" /> View
+            </Button>
+          </Link>
+        )}
+        {!confirming ? (
+          <Button variant="ghost" size="sm" onClick={() => setConfirming(true)}>Dismiss</Button>
+        ) : (
+          <>
+            <span className="text-xs text-[#6b7280]">Dismiss?</span>
+            <Button variant="danger" size="sm" onClick={() => onDismiss(r.id)}>Yes</Button>
             <Button variant="ghost" size="sm" onClick={() => setConfirming(false)}>Cancel</Button>
           </>
         )}
