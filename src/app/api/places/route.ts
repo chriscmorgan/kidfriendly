@@ -2,12 +2,16 @@ import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { checkRateLimit } from '@/lib/rateLimit'
 
+// Returns lightweight autocomplete suggestions (name + address preview only, no lat/lng).
+// Client fetches /api/places/[id] on selection to get full details.
 export async function GET(request: Request) {
   const ip = (await headers()).get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
   if (!checkRateLimit(ip)) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
 
   const { searchParams } = new URL(request.url)
   const q = searchParams.get('q')
+  const lat = parseFloat(searchParams.get('lat') ?? '') || -37.8136
+  const lng = parseFloat(searchParams.get('lng') ?? '') || 144.9631
 
   if (!q || q.length < 2) return NextResponse.json([])
 
@@ -18,55 +22,48 @@ export async function GET(request: Request) {
   }
 
   try {
-    const res = await fetch('https://places.googleapis.com/v1/places:searchText', {
+    const res = await fetch('https://places.googleapis.com/v1/places:autocomplete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.websiteUri,places.regularOpeningHours,places.addressComponents',
+        'X-Goog-FieldMask': 'suggestions.placePrediction.placeId,suggestions.placePrediction.structuredFormat',
       },
       body: JSON.stringify({
-        textQuery: q,
+        input: q,
         languageCode: 'en',
         regionCode: 'AU',
-        maxResultCount: 5,
+        locationBias: {
+          circle: {
+            center: { latitude: lat, longitude: lng },
+            radius: 50000,
+          },
+        },
       }),
     })
 
     if (!res.ok) {
-      console.error('[places] Google Places error', res.status, await res.text())
+      console.error('[places] autocomplete error', res.status, await res.text())
       return NextResponse.json([])
     }
 
     const data = await res.json()
-    const places: Record<string, unknown>[] = data?.places ?? []
+    const suggestions: Record<string, unknown>[] = data?.suggestions ?? []
 
-    const results = places
-      .map((place, i) => {
-        const displayName = place.displayName as { text?: string } | undefined
-        const location = place.location as { latitude?: number; longitude?: number } | undefined
-        const addressComponents = (place.addressComponents as { longText: string; types: string[] }[] | undefined) ?? []
-        const openingHours = place.regularOpeningHours as { weekdayDescriptions?: string[] } | undefined
-
-        const name = displayName?.text ?? ''
+    const results = suggestions
+      .map((s) => {
+        const pred = s.placePrediction as Record<string, unknown> | undefined
+        if (!pred) return null
+        const fmt = pred.structuredFormat as {
+          mainText?: { text?: string }
+          secondaryText?: { text?: string }
+        } | undefined
+        const name = fmt?.mainText?.text ?? ''
         if (!name) return null
-
-        // Prefer sublocality (suburb) over locality (city/LGA) for Australian addresses
-        const suburb =
-          addressComponents.find((c) => c.types.includes('sublocality_level_1'))?.longText ??
-          addressComponents.find((c) => c.types.includes('sublocality'))?.longText ??
-          addressComponents.find((c) => c.types.includes('locality'))?.longText ??
-          ''
-
         return {
-          id: String(place.id ?? i),
+          id: String(pred.placeId ?? ''),
           name,
-          address: String(place.formattedAddress ?? '').replace(/, Australia$/, ''),
-          lat: location?.latitude ?? 0,
-          lng: location?.longitude ?? 0,
-          suburb,
-          website: typeof place.websiteUri === 'string' ? place.websiteUri : null,
-          opening_hours: openingHours?.weekdayDescriptions?.join('\n') ?? null,
+          address: fmt?.secondaryText?.text ?? '',
         }
       })
       .filter(Boolean)

@@ -13,17 +13,34 @@ export interface PlaceResult {
   opening_hours: string | null
 }
 
+interface Suggestion {
+  id: string
+  name: string
+  address: string
+}
+
 interface VenueSearchProps {
   onSelect: (result: PlaceResult) => void
 }
 
+const MELBOURNE = { lat: -37.8136, lng: 144.9631 }
+
 export default function VenueSearch({ onSelect }: VenueSearchProps) {
   const [query, setQuery] = useState('')
-  const [suggestions, setSuggestions] = useState<PlaceResult[]>([])
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [loading, setLoading] = useState(false)
+  const [selecting, setSelecting] = useState(false)
   const [open, setOpen] = useState(false)
+  const [userLoc, setUserLoc] = useState(MELBOURNE)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    navigator.geolocation?.getCurrentPosition(
+      (pos) => setUserLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {} // fall back to Melbourne
+    )
+  }, [])
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -37,8 +54,10 @@ export default function VenueSearch({ onSelect }: VenueSearchProps) {
     if (!q.trim() || q.length < 2) { setSuggestions([]); return }
     setLoading(true)
     try {
-      const res = await fetch(`/api/places?q=${encodeURIComponent(q)}`)
-      const data: PlaceResult[] = await res.json()
+      const res = await fetch(
+        `/api/places?q=${encodeURIComponent(q)}&lat=${userLoc.lat}&lng=${userLoc.lng}`
+      )
+      const data: Suggestion[] = await res.json()
       setSuggestions(data)
       setOpen(true)
     } catch {
@@ -51,14 +70,26 @@ export default function VenueSearch({ onSelect }: VenueSearchProps) {
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
     setQuery(e.target.value)
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => fetchSuggestions(e.target.value), 400)
+    debounceRef.current = setTimeout(() => fetchSuggestions(e.target.value), 350)
   }
 
-  function handleSelect(result: PlaceResult) {
-    setQuery('')
+  async function handleSelect(s: Suggestion) {
     setOpen(false)
     setSuggestions([])
-    onSelect(result)
+    setQuery(s.name)
+    setSelecting(true)
+    try {
+      const res = await fetch(`/api/places/${encodeURIComponent(s.id)}`)
+      if (res.ok) {
+        const detail: PlaceResult = await res.json()
+        onSelect(detail)
+      }
+    } catch {
+      // detail fetch failed — user can still fill in manually
+    } finally {
+      setSelecting(false)
+      setQuery('')
+    }
   }
 
   return (
@@ -74,7 +105,7 @@ export default function VenueSearch({ onSelect }: VenueSearchProps) {
           className="flex-1 min-w-0 outline-none text-sm text-[#2c2c2c] placeholder:text-[#6b7280] bg-transparent"
           autoComplete="off"
         />
-        {loading && <Loader2 className="w-4 h-4 animate-spin text-[#6b7280] shrink-0" />}
+        {(loading || selecting) && <Loader2 className="w-4 h-4 animate-spin text-[#6b7280] shrink-0" />}
       </div>
 
       {open && suggestions.length > 0 && (
