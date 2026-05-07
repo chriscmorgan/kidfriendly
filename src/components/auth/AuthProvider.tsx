@@ -10,7 +10,7 @@ interface AuthContextType {
   profile: AppUser | null
   loading: boolean
   signInWithGoogle: () => Promise<void>
-  signInWithEmail: (email: string, captchaToken: string) => Promise<{ error: string | null }>
+  signInWithEmail: (email: string, captchaToken: string, createAccount?: boolean) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
 }
 
@@ -51,12 +51,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  async function signInWithEmail(email: string, captchaToken: string): Promise<{ error: string | null }> {
+  async function signInWithEmail(email: string, captchaToken: string, createAccount = false): Promise<{ error: string | null }> {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
         captchaToken,
+        shouldCreateUser: createAccount,
       },
     })
     return { error: error?.message ?? null }

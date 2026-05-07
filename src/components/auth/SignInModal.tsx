@@ -3,6 +3,7 @@ import { useState, useRef } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
 import type { TurnstileInstance } from '@marsidev/react-turnstile'
 import { useAuth } from './AuthProvider'
+import { cn } from '@/lib/utils'
 
 interface SignInModalProps {
   onClose: () => void
@@ -10,29 +11,45 @@ interface SignInModalProps {
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 
+type Tab = 'signin' | 'signup'
+
 export default function SignInModal({ onClose }: SignInModalProps) {
   const { signInWithGoogle, signInWithEmail } = useAuth()
+  const [tab, setTab] = useState<Tab>('signin')
   const [email, setEmail] = useState('')
-  const [emailSent, setEmailSent] = useState(false)
-  const [emailError, setEmailError] = useState<string | null>(null)
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const turnstileRef = useRef<TurnstileInstance>(null)
 
-  async function handleEmailSubmit(e: React.FormEvent) {
+  function switchTab(t: Tab) {
+    setTab(t)
+    setEmail('')
+    setSent(false)
+    setError(null)
+    setCaptchaToken(null)
+    turnstileRef.current?.reset()
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!captchaToken) return
     setSending(true)
-    setEmailError(null)
-    const { error } = await signInWithEmail(email.trim(), captchaToken)
+    setError(null)
+    const { error: err } = await signInWithEmail(email.trim(), captchaToken, tab === 'signup')
     setSending(false)
-    if (error) {
-      setEmailError(error)
-      // Reset widget so user can retry with a fresh token
+    if (err) {
+      const msg = err.toLowerCase().includes('signups not allowed')
+        ? 'Sign-ups are currently disabled.'
+        : err.toLowerCase().includes('user not found') || err.toLowerCase().includes('invalid login')
+        ? 'No account found for that email. Try creating one.'
+        : err
+      setError(msg)
       turnstileRef.current?.reset()
       setCaptchaToken(null)
     } else {
-      setEmailSent(true)
+      setSent(true)
     }
   }
 
@@ -50,16 +67,36 @@ export default function SignInModal({ onClose }: SignInModalProps) {
 
         <div className="text-center">
           <div className="text-3xl mb-2">🗺️</div>
-          <h2 className="text-xl font-bold text-charcoal">Sign in to continue</h2>
-          <p className="text-sm text-muted mt-1">
-            Sign in to add places and write reviews
+          <h2 className="text-xl font-bold text-[#2c2c2c]">
+            {tab === 'signin' ? 'Welcome back' : 'Create an account'}
+          </h2>
+          <p className="text-sm text-[#6b7280] mt-1">
+            {tab === 'signin'
+              ? 'Sign in to add places and write reviews'
+              : 'Join the community — free, no password needed'}
           </p>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex bg-gray-100 rounded-xl p-1 gap-1">
+          {(['signin', 'signup'] as Tab[]).map((t) => (
+            <button
+              key={t}
+              onClick={() => switchTab(t)}
+              className={cn(
+                'flex-1 py-2 text-sm font-semibold rounded-lg transition-colors cursor-pointer',
+                tab === t ? 'bg-white text-[#2c2c2c] shadow-sm' : 'text-[#6b7280] hover:text-[#2c2c2c]'
+              )}
+            >
+              {t === 'signin' ? 'Sign in' : 'Create account'}
+            </button>
+          ))}
         </div>
 
         <div className="flex flex-col gap-3">
           <button
             onClick={signInWithGoogle}
-            className="flex items-center justify-center gap-3 w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-charcoal hover:bg-gray-50 transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-3 w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-[#2c2c2c] hover:bg-gray-50 transition-colors cursor-pointer"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden="true">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -76,15 +113,17 @@ export default function SignInModal({ onClose }: SignInModalProps) {
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          {emailSent ? (
+          {sent ? (
             <div className="text-center py-3 px-4 bg-[#edf8f8] rounded-xl">
               <p className="text-sm font-semibold text-[#2a8a85] mb-1">Check your inbox ✓</p>
               <p className="text-xs text-[#4b5563]">
-                We sent a sign-in link to <strong>{email}</strong>
+                {tab === 'signup'
+                  ? <>We sent an activation link to <strong>{email}</strong></>
+                  : <>We sent a sign-in link to <strong>{email}</strong></>}
               </p>
             </div>
           ) : (
-            <form onSubmit={handleEmailSubmit} className="flex flex-col gap-2">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2">
               <input
                 type="email"
                 required
@@ -93,10 +132,7 @@ export default function SignInModal({ onClose }: SignInModalProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#2c2c2c] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4abfc0] focus:border-transparent"
               />
-              {emailError && (
-                <p className="text-xs text-red-500">{emailError}</p>
-              )}
-              {/* Invisible widget — runs silently in the background */}
+              {error && <p className="text-xs text-red-500">{error}</p>}
               <Turnstile
                 ref={turnstileRef}
                 siteKey={SITE_KEY}
@@ -109,13 +145,15 @@ export default function SignInModal({ onClose }: SignInModalProps) {
                 disabled={sending || !captchaToken}
                 className="w-full px-4 py-3 bg-[#4abfc0] hover:bg-[#38a5a0] disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer"
               >
-                {sending ? 'Sending…' : 'Continue with email'}
+                {sending
+                  ? 'Sending…'
+                  : tab === 'signin' ? 'Sign in with email' : 'Create account'}
               </button>
             </form>
           )}
         </div>
 
-        <p className="text-center text-xs text-muted">
+        <p className="text-center text-xs text-[#9ca3af]">
           By continuing you agree to our community guidelines.
         </p>
       </div>
