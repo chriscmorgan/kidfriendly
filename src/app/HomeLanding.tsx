@@ -86,8 +86,8 @@ export default function HomeLanding({ locations }: Props) {
           </div>
 
           <h1 className="text-[clamp(1.6rem,7vw,4rem)] leading-tight font-extrabold text-[#2c2c2c] tracking-tight">
-            Find Cafes Where{' '}
-            <span className="text-[#e8756a]">Kids Can Actually Play</span>
+            Find Venues Where You Can Eat{' '}
+            <span className="text-[#e8756a]">and the Kids Can Actually Play</span>
           </h1>
           <p className="text-[#4a7a7a] text-base sm:text-xl mt-5 max-w-xl mx-auto leading-relaxed">
             Cafes, restaurants and play centres with real play areas — reviewed by local parents across Melbourne, Sydney, Brisbane and beyond.
