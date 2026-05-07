@@ -8,7 +8,6 @@ import VenueSearch, { type PlaceResult } from '@/components/forms/VenueSearch'
 import Button from '@/components/ui/Button'
 import { createClient } from '@/lib/supabase/client'
 import { TAGS, OPEN_TIMES, AGE_RANGES } from '@/lib/constants'
-import { slugify } from '@/lib/utils'
 import type { Tag, OpenTime, AgeRange } from '@/lib/types'
 import { Upload, X, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -126,14 +125,12 @@ export default function SubmitForm() {
     if (!user) return
     setSubmitting(true)
     const supabase = createClient()
-    const slug = slugify(name) + '-' + Math.random().toString(36).slice(2, 7)
 
-    const { data: loc, error: locError } = await supabase
-      .from('locations')
-      .insert({
-        slug,
+    const locRes = await fetch('/api/submit/location', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         name: name.trim(),
-        description: description.trim(),
         address: address.place_name,
         lat: address.lat,
         lng: address.lng,
@@ -141,21 +138,21 @@ export default function SubmitForm() {
         tags: selectedTags,
         open_times: selectedOpenTimes,
         age_ranges: ageRanges,
+        description: description.trim(),
         tips: tips.trim() || null,
         website: website.trim() || null,
         opening_hours: openingHours.trim() || null,
-        submitted_by: user.id,
-        status: 'pending',
-      })
-      .select('id')
-      .single()
+      }),
+    })
 
-    if (locError || !loc) {
-      console.error('[submit] location insert failed:', locError?.message, locError?.details)
-      setError(`Submission failed: ${locError?.message ?? 'unknown error'}`)
+    if (!locRes.ok) {
+      const data = await locRes.json()
+      setError(`Submission failed: ${data.error ?? 'unknown error'}`)
       setSubmitting(false)
       return
     }
+
+    const loc = await locRes.json()
 
     for (let i = 0; i < photos.length; i++) {
       const file = photos[i]

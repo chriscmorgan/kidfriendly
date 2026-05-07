@@ -52,3 +52,12 @@ export function truncate(text: string, maxLen: number): string {
   if (text.length <= maxLen) return text
   return text.slice(0, maxLen).trimEnd() + '…'
 }
+
+// JSON.stringify does not escape < > / so user content can break out of
+// <script> tags via </script>. Use this for all dangerouslySetInnerHTML JSON-LD.
+export function safeJsonLd(obj: unknown): string {
+  return JSON.stringify(obj)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/\//g, '\\u002f')
+}

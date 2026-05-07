@@ -10,6 +10,7 @@ import ReportButton from '@/components/location/ReportButton'
 import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
 import type { Location, Review, AvgRatings, Tag, OpenTime } from '@/lib/types'
 import { AGE_RANGES, TAGS } from '@/lib/constants'
+import { safeJsonLd } from '@/lib/utils'
 import { MapPin, Navigation, User, Calendar, Star, Clock, ExternalLink } from 'lucide-react'
 import AddReviewSection from './AddReviewSection'
 
@@ -152,7 +153,7 @@ export default async function LocationPage({ params }: Props) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-28 md:pb-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
       {/* Back */}
       <Link href="/search" className="inline-flex items-center gap-1 text-sm text-[#6b7280] hover:text-[#2c2c2c] mb-6 transition-colors">

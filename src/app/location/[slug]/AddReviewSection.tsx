@@ -4,7 +4,6 @@ import { useAuth } from '@/components/auth/AuthProvider'
 import SignInModal from '@/components/auth/SignInModal'
 import StarRating from '@/components/ui/StarRating'
 import Button from '@/components/ui/Button'
-import { createClient } from '@/lib/supabase/client'
 import { RATING_DIMENSIONS } from '@/lib/constants'
 import type { Review } from '@/lib/types'
 import { useRouter } from 'next/navigation'
@@ -53,22 +52,15 @@ export default function AddReviewSection({ locationId, existingReview }: Props) 
   async function handleSubmit() {
     if (!user || (!hasComment && !hasRating)) return
     setSubmitting(true)
-    const supabase = createClient()
-    const payload: Record<string, unknown> = {
-      location_id: locationId,
-      user_id: user!.id,
-      comment: comment.trim() || null,
-    }
-    for (const d of RATING_DIMENSIONS) {
-      payload[`rating_${d.key}`] = ratings[d.key] ?? null
-    }
 
-    const { error } = await supabase
-      .from('reviews')
-      .upsert(payload, { onConflict: 'location_id,user_id' })
+    const res = await fetch('/api/review', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ locationId, comment: comment.trim() || null, ratings }),
+    })
 
     setSubmitting(false)
-    if (!error) {
+    if (res.ok) {
       setSubmitted(true)
       router.refresh()
     }
