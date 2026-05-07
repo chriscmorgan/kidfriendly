@@ -14,6 +14,7 @@ export default function Footer() {
             <Link href="/about" className="hover:text-charcoal transition-colors">About</Link>
             <Link href="/search" className="hover:text-charcoal transition-colors">Explore</Link>
             <Link href="/submit" className="hover:text-charcoal transition-colors">Add a place</Link>
+            <a href="mailto:support@kidfriendlyeats.space" className="hover:text-charcoal transition-colors">Contact</a>
           </nav>
           <p className="text-xs text-muted">
             © {new Date().getFullYear()} KidFriendlyEats — Australia

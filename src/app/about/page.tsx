@@ -73,6 +73,16 @@ export default function AboutPage() {
           </p>
         </div>
 
+        <div>
+          <h2 className="text-lg font-semibold mb-3">Get in touch</h2>
+          <p className="text-[#4b5563]">
+            Questions, feedback, or spotted something that needs fixing?{' '}
+            <a href="mailto:support@kidfriendlyeats.space" className="text-[#4abfc0] hover:underline">
+              support@kidfriendlyeats.space
+            </a>
+          </p>
+        </div>
+
       </div>
 
       <div className="mt-10 flex gap-3">
