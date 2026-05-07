@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server'
+import { headers } from 'next/headers'
+import { checkRateLimit } from '@/lib/rateLimit'
 
 // Uses Geoapify Geocoding Autocomplete with type=amenity to search businesses/POIs by name.
 // To switch to Google Places API, replace this handler body — response shape stays identical.
 export async function GET(request: Request) {
+  const ip = (await headers()).get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
+  if (!checkRateLimit(ip)) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+
   const { searchParams } = new URL(request.url)
   const q = searchParams.get('q')
 
