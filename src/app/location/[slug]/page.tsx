@@ -9,7 +9,7 @@ import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
 import type { Location, Review, AvgRatings, Tag, OpenTime } from '@/lib/types'
 import { AGE_RANGES, TAGS } from '@/lib/constants'
 import { safeJsonLd } from '@/lib/utils'
-import { MapPin, Navigation, User, Calendar, Clock, ExternalLink } from 'lucide-react'
+import { MapPin, Navigation, User, Calendar, ExternalLink } from 'lucide-react'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
@@ -195,12 +195,6 @@ export default async function LocationPage({ params }: Props) {
               <Navigation className="w-3.5 h-3.5" />
               Get directions
             </a>
-            {loc.opening_hours && (
-              <p className="flex items-center gap-1.5 text-sm text-[#4b5563] mt-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#6b7280] shrink-0" />
-                {loc.opening_hours}
-              </p>
-            )}
             {loc.website && (
               <a
                 href={loc.website}
