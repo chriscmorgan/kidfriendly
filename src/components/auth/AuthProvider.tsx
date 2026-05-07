@@ -10,7 +10,6 @@ interface AuthContextType {
   profile: AppUser | null
   loading: boolean
   signInWithGoogle: () => Promise<void>
-  signInWithApple: () => Promise<void>
   signOut: () => Promise<void>
 }
 
@@ -51,19 +50,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  async function signInWithApple() {
-    await supabase.auth.signInWithOAuth({
-      provider: 'apple',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    })
-  }
-
   async function signOut() {
     await supabase.auth.signOut()
   }
 
   return (
-    <AuthContext.Provider value={{ session, user, profile, loading, signInWithGoogle, signInWithApple, signOut }}>
+    <AuthContext.Provider value={{ session, user, profile, loading, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   )
