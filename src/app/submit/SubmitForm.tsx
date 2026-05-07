@@ -352,12 +352,13 @@ export default function SubmitForm() {
           Opening hours <span className="text-[#6b7280] font-normal">(optional)</span>
           {venueSelected && openingHours && <span className="text-xs text-[#38a5a0] ml-2">✓ auto-filled</span>}
         </label>
-        <input
+        <textarea
           value={openingHours}
           onChange={(e) => setOpeningHours(e.target.value)}
           placeholder="e.g. Mon–Fri 9am–5pm, Sat–Sun 8am–6pm"
-          maxLength={200}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          maxLength={500}
+          rows={openingHours.includes('\n') ? 7 : 2}
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280] resize-none"
         />
       </div>
 

@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Website must start with http:// or https://' }, { status: 400 })
     }
   }
-  if (opening_hours !== null && opening_hours !== undefined && (typeof opening_hours !== 'string' || opening_hours.length > 200)) {
+  if (opening_hours !== null && opening_hours !== undefined && (typeof opening_hours !== 'string' || opening_hours.length > 500)) {
     return NextResponse.json({ error: 'Opening hours too long' }, { status: 400 })
   }
 
