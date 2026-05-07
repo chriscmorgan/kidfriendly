@@ -1,10 +1,14 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { Turnstile } from '@marsidev/react-turnstile'
+import type { TurnstileInstance } from '@marsidev/react-turnstile'
 import { useAuth } from './AuthProvider'
 
 interface SignInModalProps {
   onClose: () => void
 }
+
+const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 
 export default function SignInModal({ onClose }: SignInModalProps) {
   const { signInWithGoogle, signInWithEmail } = useAuth()
@@ -12,15 +16,21 @@ export default function SignInModal({ onClose }: SignInModalProps) {
   const [emailSent, setEmailSent] = useState(false)
   const [emailError, setEmailError] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const turnstileRef = useRef<TurnstileInstance>(null)
 
   async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!captchaToken) return
     setSending(true)
     setEmailError(null)
-    const { error } = await signInWithEmail(email.trim())
+    const { error } = await signInWithEmail(email.trim(), captchaToken)
     setSending(false)
     if (error) {
       setEmailError(error)
+      // Reset widget so user can retry with a fresh token
+      turnstileRef.current?.reset()
+      setCaptchaToken(null)
     } else {
       setEmailSent(true)
     }
@@ -86,9 +96,17 @@ export default function SignInModal({ onClose }: SignInModalProps) {
               {emailError && (
                 <p className="text-xs text-red-500">{emailError}</p>
               )}
+              {/* Invisible widget — runs silently in the background */}
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={SITE_KEY}
+                onSuccess={setCaptchaToken}
+                onError={() => setCaptchaToken(null)}
+                onExpire={() => setCaptchaToken(null)}
+              />
               <button
                 type="submit"
-                disabled={sending}
+                disabled={sending || !captchaToken}
                 className="w-full px-4 py-3 bg-[#4abfc0] hover:bg-[#38a5a0] disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer"
               >
                 {sending ? 'Sending…' : 'Continue with email'}
