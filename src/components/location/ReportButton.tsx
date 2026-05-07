@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import { Flag } from 'lucide-react'
 import { useAuth } from '@/components/auth/AuthProvider'
-import { createClient } from '@/lib/supabase/client'
 import SignInModal from '@/components/auth/SignInModal'
 
 const QUICK_REASONS = [
@@ -20,12 +19,10 @@ export default function ReportButton({ locationId }: { locationId: string }) {
 
   async function handleSubmit() {
     if (!user || !reason.trim()) return
-    const supabase = createClient()
-    await supabase.from('reports').insert({
-      target_type: 'location',
-      target_id: locationId,
-      reported_by: user.id,
-      reason,
+    await fetch('/api/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ locationId, reason }),
     })
     setSubmitted(true)
     setOpen(false)
