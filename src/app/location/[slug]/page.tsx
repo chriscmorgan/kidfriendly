@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `${loc.description.slice(0, 150).trimEnd()}…`
 
   return {
-    title: loc.name,
+    title: `${loc.name} — Kid-Friendly Venue in ${loc.suburb}`,
     description,
     alternates: { canonical: `${SITE_URL}/location/${loc.slug}` },
     openGraph: {
@@ -169,7 +169,7 @@ export default async function LocationPage({ params }: Props) {
         {/* Main column */}
         <div className="lg:col-span-2 space-y-8">
           {/* Photos */}
-          <PhotoCarousel photos={photos} />
+          <PhotoCarousel photos={photos} locationName={loc.name} />
 
           {/* Title & meta */}
           <div>

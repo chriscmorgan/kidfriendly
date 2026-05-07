@@ -71,9 +71,25 @@ export default async function IndoorPlaygroundCafesPage() {
     ],
   }
 
+  const itemListSchema = locations.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Cafes with Indoor Playgrounds in Melbourne',
+    description: 'Cafes and venues with indoor playgrounds where kids can play while parents eat and drink coffee.',
+    url: `${SITE_URL}/indoor-playground-cafes`,
+    numberOfItems: locations.length,
+    itemListElement: locations.map((loc, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${SITE_URL}/location/${loc.slug}`,
+      name: loc.name,
+    })),
+  } : null
+
   return (
     <div className="flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbSchema) }} />
+      {itemListSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(itemListSchema) }} />}
 
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#b8e4e4] via-[#cceece] to-[#e8f5f0] py-14 px-4 text-center">

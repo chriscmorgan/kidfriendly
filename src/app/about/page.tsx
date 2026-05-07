@@ -4,7 +4,7 @@ import Link from 'next/link'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
 export const metadata: Metadata = {
-  title: 'About',
+  title: 'About KidFriendlyEats — Community Directory for Parents',
   description: 'KidFriendlyEats is a free community directory of cafes and venues with kids play areas across Australia — built by parents, for parents.',
   alternates: { canonical: `${SITE_URL}/about` },
 }

@@ -5,6 +5,8 @@ import { TAGS } from '@/lib/constants'
 import type { Location } from '@/lib/types'
 import { safeJsonLd } from '@/lib/utils'
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
+
 interface Props {
   locations: Location[]
 }
@@ -41,12 +43,28 @@ const FAQS = [
     a: 'Use the search bar to enter your suburb or postcode. The map will show nearby venues with play areas, which you can filter by type (indoor playground, outdoor run area, adjacent playground, etc.).',
   },
   {
+    q: 'What types of play areas are listed?',
+    a: 'We list five types: indoor playgrounds (built inside the venue), on-site kids play areas (equipment in the venue grounds), venues adjacent to a public playground, outdoor run areas, and dedicated play centres. Each venue is tagged so you can filter for exactly what you\'re after.',
+  },
+  {
     q: 'Can I add a place that\'s not listed?',
     a: 'Absolutely. Sign in for free and use the Submit page to add a venue. Every submission is reviewed before going live to keep quality high.',
   },
   {
+    q: 'How do I know the information is accurate?',
+    a: 'Every listing is submitted and reviewed by real parents who have visited. We rely on the community to flag anything that\'s outdated — use the "Report" button on any listing if something looks wrong.',
+  },
+  {
+    q: 'What areas of Melbourne are covered?',
+    a: 'All of Greater Melbourne — inner suburbs, outer suburbs, and the Peninsula. Coverage grows as the community adds more places, so if your area is light on listings, add a place you know.',
+  },
+  {
     q: 'Is it free to use?',
     a: 'Completely free — no ads, no subscriptions. KidFriendlyEats is a community project built by parents for parents.',
+  },
+  {
+    q: 'Do venues pay to be listed?',
+    a: 'No. Listings are not paid placements — they are added by community members who have visited. We do not accept sponsored or promotional content.',
   },
 ]
 
@@ -145,6 +163,36 @@ export default function HomeLanding({ locations }: Props) {
         </div>
       </section>
 
+      {/* ── Feature guides ── */}
+      <section className="bg-white px-4 py-12 border-b border-gray-100">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Popular guides</h2>
+          <p className="text-sm text-[#6b7280] mb-6">Curated lists by play type</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Link
+              href="/indoor-playground-cafes"
+              className="group flex items-start gap-4 bg-[#edf8f8] border border-[#aadbd8] rounded-2xl p-5 hover:border-[#4abfc0] transition-colors"
+            >
+              <div className="w-12 h-12 shrink-0 rounded-2xl bg-white flex items-center justify-center text-2xl shadow-sm">🛝</div>
+              <div>
+                <h3 className="font-semibold text-[#2c2c2c] text-sm group-hover:text-[#38a5a0] transition-colors">Cafes with Indoor Playgrounds</h3>
+                <p className="text-xs text-[#6b7280] mt-1 leading-relaxed">A proper playground inside the venue — drink your coffee while it&apos;s hot.</p>
+              </div>
+            </Link>
+            <Link
+              href="/cafes-next-to-playgrounds"
+              className="group flex items-start gap-4 bg-[#f0fdf0] border border-[#a8dba8] rounded-2xl p-5 hover:border-[#4abfc0] transition-colors"
+            >
+              <div className="w-12 h-12 shrink-0 rounded-2xl bg-white flex items-center justify-center text-2xl shadow-sm">🏞️</div>
+              <div>
+                <h3 className="font-semibold text-[#2c2c2c] text-sm group-hover:text-[#38a5a0] transition-colors">Cafes Next to Playgrounds</h3>
+                <p className="text-xs text-[#6b7280] mt-1 leading-relaxed">A playground right next door — perfect for good-weather days out.</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── Recently added ── */}
       {locations.length > 0 && (
         <section className="bg-white px-4 py-12">
@@ -187,6 +235,44 @@ export default function HomeLanding({ locations }: Props) {
                 name: faq.q,
                 acceptedAnswer: { '@type': 'Answer', text: faq.a },
               })),
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: safeJsonLd({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              '@id': `${SITE_URL}/#website`,
+              url: SITE_URL,
+              name: 'KidFriendlyEats',
+              description: 'Community directory of kid-friendly cafes and venues with play areas in Melbourne',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: {
+                  '@type': 'EntryPoint',
+                  urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+                },
+                'query-input': 'required name=search_term_string',
+              },
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: safeJsonLd({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              '@id': `${SITE_URL}/#organization`,
+              name: 'KidFriendlyEats',
+              url: SITE_URL,
+              contactPoint: {
+                '@type': 'ContactPoint',
+                email: 'support@kidfriendlyeats.space',
+                contactType: 'customer support',
+              },
             }),
           }}
         />

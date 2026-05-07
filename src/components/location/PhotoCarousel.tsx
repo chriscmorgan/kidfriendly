@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { LocationPhoto } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-export default function PhotoCarousel({ photos }: { photos: LocationPhoto[] }) {
+export default function PhotoCarousel({ photos, locationName }: { photos: LocationPhoto[]; locationName?: string }) {
   const [index, setIndex] = useState(0)
   if (!photos.length) return null
 
@@ -16,7 +16,7 @@ export default function PhotoCarousel({ photos }: { photos: LocationPhoto[] }) {
     <div className="relative w-full h-80 rounded-2xl overflow-hidden bg-[#f7eed9] group">
       <Image
         src={photos[index].url}
-        alt=""
+        alt={locationName ? `${locationName} — photo ${index + 1}` : ''}
         fill
         className="object-cover transition-opacity duration-300"
         sizes="(max-width: 768px) 100vw, 800px"
