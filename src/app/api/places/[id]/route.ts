@@ -50,9 +50,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       const openingHours = place.regularOpeningHours as { weekdayDescriptions?: string[] } | undefined
 
       const suburb =
-        addressComponents.find((c) => c.types.includes('sublocality_level_1'))?.longText ??
-        addressComponents.find((c) => c.types.includes('sublocality'))?.longText ??
-        addressComponents.find((c) => c.types.includes('locality'))?.longText ??
+        addressComponents.find((c) => c.types?.includes('sublocality_level_1'))?.longText ??
+        addressComponents.find((c) => c.types?.includes('sublocality'))?.longText ??
+        addressComponents.find((c) => c.types?.includes('locality'))?.longText ??
         ''
 
       console.log('[places/detail] new API success', id)
@@ -102,9 +102,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         const openingHours = result.opening_hours as { weekday_text?: string[] } | undefined
 
         const suburb =
-          addressComponents.find((c) => c.types.includes('sublocality_level_1'))?.long_name ??
-          addressComponents.find((c) => c.types.includes('sublocality'))?.long_name ??
-          addressComponents.find((c) => c.types.includes('locality'))?.long_name ??
+          addressComponents.find((c) => c.types?.includes('sublocality_level_1'))?.long_name ??
+          addressComponents.find((c) => c.types?.includes('sublocality'))?.long_name ??
+          addressComponents.find((c) => c.types?.includes('locality'))?.long_name ??
           ''
 
         return NextResponse.json({
