@@ -7,11 +7,7 @@ import { cn } from '@/lib/utils'
 
 export default function PhotoCarousel({ photos }: { photos: LocationPhoto[] }) {
   const [index, setIndex] = useState(0)
-  if (!photos.length) return (
-    <div className="w-full h-80 bg-[#f7eed9] rounded-2xl flex items-center justify-center text-5xl opacity-50">
-      📍
-    </div>
-  )
+  if (!photos.length) return null
 
   const prev = () => setIndex((i) => (i === 0 ? photos.length - 1 : i - 1))
   const next = () => setIndex((i) => (i === photos.length - 1 ? 0 : i + 1))
