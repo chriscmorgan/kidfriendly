@@ -52,5 +52,5 @@ export const RATING_DIMENSIONS = [
 ] as const
 
 export const DEFAULT_RADIUS = 10
-export const DEFAULT_MAP_CENTER = { lng: 151.2093, lat: -33.8688 } // Sydney
+export const DEFAULT_MAP_CENTER = { lng: 144.9631, lat: -37.8136 } // Melbourne
 export const DEFAULT_MAP_ZOOM = 11

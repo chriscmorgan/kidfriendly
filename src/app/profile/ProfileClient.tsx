@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useAuth } from '@/components/auth/AuthProvider'
+import SignInModal from '@/components/auth/SignInModal'
 import { createClient } from '@/lib/supabase/client'
 import LocationCard from '@/components/location/LocationCard'
+import Button from '@/components/ui/Button'
 import type { Location, Review } from '@/lib/types'
 import { User, MapPin, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -14,6 +16,7 @@ type Tab = 'submissions' | 'reviews'
 export default function ProfileClient() {
   const { user, profile } = useAuth()
   const supabase = createClient()
+  const [showSignIn, setShowSignIn] = useState(false)
   const [tab, setTab] = useState<Tab>('submissions')
   const [submissions, setSubmissions] = useState<Location[]>([])
   const [reviews, setReviews] = useState<(Review & { location: Location })[]>([])
@@ -46,9 +49,15 @@ export default function ProfileClient() {
   }, [user])
 
   if (!user || !profile) return (
-    <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-      <p className="text-[#6b7280]">Please sign in to view your profile.</p>
-    </div>
+    <>
+      <div className="max-w-2xl mx-auto px-4 py-24 text-center">
+        <div className="text-4xl mb-4">👤</div>
+        <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Sign in to view your profile</h2>
+        <p className="text-sm text-[#6b7280] mb-6">Track your submissions and reviews</p>
+        <Button onClick={() => setShowSignIn(true)}>Sign in or create account</Button>
+      </div>
+      {showSignIn && <SignInModal onClose={() => setShowSignIn(false)} />}
+    </>
   )
 
   return (

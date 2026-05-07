@@ -10,6 +10,7 @@ interface SignInModalProps {
 }
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
+const TURNSTILE_ENABLED = SITE_KEY.length > 0
 
 type Tab = 'signin' | 'signup'
 
@@ -34,10 +35,10 @@ export default function SignInModal({ onClose }: SignInModalProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!captchaToken) return
+    if (TURNSTILE_ENABLED && !captchaToken) return
     setSending(true)
     setError(null)
-    const { error: err } = await signInWithEmail(email.trim(), captchaToken, tab === 'signup')
+    const { error: err } = await signInWithEmail(email.trim(), captchaToken ?? '', tab === 'signup')
     setSending(false)
     if (err) {
       const msg = err.toLowerCase().includes('signups not allowed')
@@ -133,16 +134,18 @@ export default function SignInModal({ onClose }: SignInModalProps) {
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#2c2c2c] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4abfc0] focus:border-transparent"
               />
               {error && <p className="text-xs text-red-500">{error}</p>}
-              <Turnstile
-                ref={turnstileRef}
-                siteKey={SITE_KEY}
-                onSuccess={setCaptchaToken}
-                onError={() => setCaptchaToken(null)}
-                onExpire={() => setCaptchaToken(null)}
-              />
+              {TURNSTILE_ENABLED && (
+                <Turnstile
+                  ref={turnstileRef}
+                  siteKey={SITE_KEY}
+                  onSuccess={setCaptchaToken}
+                  onError={() => setCaptchaToken(null)}
+                  onExpire={() => setCaptchaToken(null)}
+                />
+              )}
               <button
                 type="submit"
-                disabled={sending || !captchaToken}
+                disabled={sending || (TURNSTILE_ENABLED && !captchaToken)}
                 className="w-full px-4 py-3 bg-[#4abfc0] hover:bg-[#38a5a0] disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer"
               >
                 {sending
