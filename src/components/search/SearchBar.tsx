@@ -1,7 +1,7 @@
 ﻿'use client'
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, MapPin, Loader2 } from 'lucide-react'
+import { Search, MapPin, Loader2, Store } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface GeocodeResult {
@@ -10,6 +10,8 @@ interface GeocodeResult {
   lat: number
   lng: number
   suburb: string
+  type?: 'venue' | 'place'
+  slug?: string
 }
 
 interface SearchBarProps {
@@ -62,10 +64,14 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
   }
 
   function handleSelect(s: GeocodeResult) {
-    const label = s.label.split(',')[0].trim()
-    setQuery(label)
     setOpen(false)
     setSuggestions([])
+    if (s.type === 'venue' && s.slug) {
+      router.push(`/location/${s.slug}`)
+      return
+    }
+    const label = s.label.split(',')[0].trim()
+    setQuery(label)
     navigate(label, s.lat, s.lng)
   }
 
@@ -156,7 +162,10 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
                 onClick={() => handleSelect(s)}
                 className="flex items-center gap-3 w-full px-4 py-3 text-sm text-[#2c2c2c] hover:bg-[#f7eed9] transition-colors cursor-pointer text-left"
               >
-                <MapPin className="w-4 h-4 text-[#6b7280] shrink-0" />
+                {s.type === 'venue'
+                  ? <Store className="w-4 h-4 text-[#4abfc0] shrink-0" />
+                  : <MapPin className="w-4 h-4 text-[#6b7280] shrink-0" />
+                }
                 <span className="truncate">{s.label}</span>
               </button>
             </li>
