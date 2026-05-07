@@ -396,6 +396,7 @@ export default function SearchResultsClient() {
             selectedId={selectedId}
             onLocationClick={handlePinClick}
             onMapMove={handleMapMove}
+            bottomPadding={sheetPx}
           />
         </div>
 

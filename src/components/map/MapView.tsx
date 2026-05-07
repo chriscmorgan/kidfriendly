@@ -12,6 +12,7 @@ interface MapViewProps {
   onLocationClick?: (location: Location) => void
   selectedId?: string | null
   onMapMove?: (center: { lat: number; lng: number }) => void
+  bottomPadding?: number
 }
 
 const MAP_STYLE = 'https://tiles.openfreemap.org/styles/positron'
@@ -38,24 +39,6 @@ function makePinEl(loc: Location): HTMLElement {
   return el
 }
 
-function makePopupHTML(loc: Location): string {
-  const photo = loc.photos?.[0]
-  const meta = getPrimaryTagMeta(loc.tags ?? [])
-  return `
-    <div style="font-family: inherit; width: 220px;">
-      ${photo ? `<div style="margin: 0 0 10px; overflow: hidden; border-radius: 8px;">
-        <img src="${photo.url}" alt="" style="width: 100%; height: 110px; object-fit: cover; display: block;" />
-      </div>` : ''}
-      <p style="font-weight: 700; font-size: 13px; color: #2c2c2c; margin: 0 0 3px; line-height: 1.3;">${loc.name}</p>
-      <p style="font-size: 11px; color: #6b7280; margin: 0 0 10px;">${meta.emoji} ${meta.label} · ${loc.suburb}</p>
-      <a href="/location/${loc.slug}" style="
-        display: inline-block; background: #4abfc0; color: white;
-        font-size: 12px; font-weight: 600; padding: 6px 14px;
-        border-radius: 8px; text-decoration: none;
-      ">View details →</a>
-    </div>
-  `
-}
 
 function setSelected(el: HTMLElement, selected: boolean) {
   const inner = el.querySelector('div') as HTMLElement | null
@@ -69,14 +52,15 @@ function setSelected(el: HTMLElement, selected: boolean) {
   el.style.zIndex = selected ? '10' : '1'
 }
 
-export default function MapView({ locations, center, zoom = 12, onLocationClick, selectedId, onMapMove }: MapViewProps) {
+export default function MapView({ locations, center, zoom = 12, onLocationClick, selectedId, onMapMove, bottomPadding = 0 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<maplibregl.Map | null>(null)
   const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map())
-  const popupsRef = useRef<Map<string, maplibregl.Popup>>(new Map())
   const onMapMoveRef = useRef(onMapMove)
+  const bottomPaddingRef = useRef(bottomPadding)
   const programmaticRef = useRef(false)
   useEffect(() => { onMapMoveRef.current = onMapMove }, [onMapMove])
+  useEffect(() => { bottomPaddingRef.current = bottomPadding }, [bottomPadding])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -104,26 +88,16 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
 
     markersRef.current.forEach((m) => m.remove())
     markersRef.current.clear()
-    popupsRef.current.clear()
 
     for (const loc of locations) {
       const el = makePinEl(loc)
       el.addEventListener('click', () => onLocationClick?.(loc))
 
-      const popup = new maplibregl.Popup({
-        offset: [0, -44],
-        closeButton: true,
-        maxWidth: 'none',
-        className: 'kid-popup',
-      }).setHTML(makePopupHTML(loc))
-
       const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([loc.lng, loc.lat])
-        .setPopup(popup)
         .addTo(map)
 
       markersRef.current.set(loc.id, marker)
-      popupsRef.current.set(loc.id, popup)
     }
   }, [locations, onLocationClick])
 
@@ -138,18 +112,16 @@ export default function MapView({ locations, center, zoom = 12, onLocationClick,
     if (!selectedId) return
 
     const marker = markersRef.current.get(selectedId)
-    const popup = popupsRef.current.get(selectedId)
-    if (!marker || !popup) return
-
-    popupsRef.current.forEach((p, id) => {
-      if (id !== selectedId && p.isOpen()) p.remove()
-    })
+    if (!marker) return
 
     const lngLat = marker.getLngLat()
     programmaticRef.current = true
-    map.flyTo({ center: [lngLat.lng, lngLat.lat], zoom: Math.max(map.getZoom(), 14), essential: true })
-
-    if (!popup.isOpen()) marker.togglePopup()
+    map.flyTo({
+      center: [lngLat.lng, lngLat.lat],
+      zoom: Math.max(map.getZoom(), 14),
+      padding: { bottom: bottomPaddingRef.current, top: 60, left: 0, right: 0 },
+      essential: true,
+    })
   }, [selectedId])
 
   useEffect(() => {

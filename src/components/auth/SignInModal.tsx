@@ -1,13 +1,30 @@
 'use client'
+import { useState } from 'react'
 import { useAuth } from './AuthProvider'
-import Button from '@/components/ui/Button'
 
 interface SignInModalProps {
   onClose: () => void
 }
 
 export default function SignInModal({ onClose }: SignInModalProps) {
-  const { signInWithGoogle } = useAuth()
+  const { signInWithGoogle, signInWithEmail } = useAuth()
+  const [email, setEmail] = useState('')
+  const [emailSent, setEmailSent] = useState(false)
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [sending, setSending] = useState(false)
+
+  async function handleEmailSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSending(true)
+    setEmailError(null)
+    const { error } = await signInWithEmail(email.trim())
+    setSending(false)
+    if (error) {
+      setEmailError(error)
+    } else {
+      setEmailSent(true)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -32,7 +49,7 @@ export default function SignInModal({ onClose }: SignInModalProps) {
         <div className="flex flex-col gap-3">
           <button
             onClick={signInWithGoogle}
-            className="flex items-center justify-center gap-3 w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-charcoal hover:bg-sand-50 transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-3 w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-charcoal hover:bg-gray-50 transition-colors cursor-pointer"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden="true">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -43,6 +60,41 @@ export default function SignInModal({ onClose }: SignInModalProps) {
             Continue with Google
           </button>
 
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs text-gray-400 font-medium">or</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          {emailSent ? (
+            <div className="text-center py-3 px-4 bg-[#edf8f8] rounded-xl">
+              <p className="text-sm font-semibold text-[#2a8a85] mb-1">Check your inbox ✓</p>
+              <p className="text-xs text-[#4b5563]">
+                We sent a sign-in link to <strong>{email}</strong>
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleEmailSubmit} className="flex flex-col gap-2">
+              <input
+                type="email"
+                required
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#2c2c2c] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4abfc0] focus:border-transparent"
+              />
+              {emailError && (
+                <p className="text-xs text-red-500">{emailError}</p>
+              )}
+              <button
+                type="submit"
+                disabled={sending}
+                className="w-full px-4 py-3 bg-[#4abfc0] hover:bg-[#38a5a0] disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer"
+              >
+                {sending ? 'Sending…' : 'Continue with email'}
+              </button>
+            </form>
+          )}
         </div>
 
         <p className="text-center text-xs text-muted">
