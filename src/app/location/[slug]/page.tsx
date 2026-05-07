@@ -1,4 +1,5 @@
-﻿import { notFound } from 'next/navigation'
+import { cache } from 'react'
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
@@ -8,17 +9,18 @@ import ReviewCard from '@/components/location/ReviewCard'
 import ReportButton from '@/components/location/ReportButton'
 import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
 import type { Location, Review, AvgRatings, Tag, OpenTime } from '@/lib/types'
-import { AGE_RANGES } from '@/lib/constants'
+import { AGE_RANGES, TAGS } from '@/lib/constants'
 import { MapPin, Navigation, User, Calendar, Star, Clock, ExternalLink } from 'lucide-react'
 import AddReviewSection from './AddReviewSection'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
 interface Props {
   params: Promise<{ slug: string }>
 }
 
-async function getLocation(slug: string) {
+const getLocation = cache(async (slug: string) => {
   const supabase = await createClient()
-
   const { data: loc } = await supabase
     .from('locations')
     .select(`
@@ -33,17 +35,38 @@ async function getLocation(slug: string) {
     .eq('slug', slug)
     .eq('status', 'approved')
     .single()
-
   return loc
-}
+})
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const loc = await getLocation(slug)
   if (!loc) return {}
+
+  const photos = (loc.photos ?? []).sort((a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order)
+  const heroPhoto = photos[0]
+  const tagLabels = (loc.tags ?? []).map((t: Tag) => TAGS.find(x => x.value === t)?.label).filter(Boolean).join(', ')
+  const title = `${loc.name} — Kid-Friendly Cafe in ${loc.suburb}`
+  const description = `${loc.description.slice(0, 150).trimEnd()}…`
+
   return {
     title: loc.name,
-    description: loc.description,
+    description,
+    alternates: { canonical: `${SITE_URL}/location/${loc.slug}` },
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `${SITE_URL}/location/${loc.slug}`,
+      images: heroPhoto ? [{ url: heroPhoto.url, width: 1200, height: 630, alt: `${loc.name} — ${loc.suburb}` }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: heroPhoto ? [heroPhoto.url] : [],
+    },
+    keywords: [`${loc.name}`, `${loc.suburb} cafe kids`, `kid friendly ${loc.suburb}`, tagLabels, 'cafe with play area Australia'],
   }
 }
 
@@ -69,8 +92,68 @@ export default async function LocationPage({ params }: Props) {
 
   const ageLabels = AGE_RANGES.filter((a) => loc.age_ranges?.includes(a.value)).map((a) => a.label)
 
+  // LocalBusiness JSON-LD
+  const schemaType = (loc.tags ?? []).includes('play_centre') || (loc.tags ?? []).includes('indoor_playground')
+    ? 'EntertainmentBusiness'
+    : 'CafeOrCoffeeShop'
+
+  const TAG_AMENITY: Record<string, string> = {
+    indoor_playground: 'Indoor playground',
+    kids_play_area: 'Kids play area',
+    adjacent_playground: 'Adjacent playground',
+    outdoor_run_area: 'Outdoor space for kids',
+    play_centre: 'Play centre',
+  }
+
+  const jsonLd: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': schemaType,
+    '@id': `${SITE_URL}/location/${loc.slug}`,
+    name: loc.name,
+    description: loc.description,
+    url: `${SITE_URL}/location/${loc.slug}`,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: loc.address,
+      addressLocality: loc.suburb,
+      addressCountry: 'AU',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: loc.lat,
+      longitude: loc.lng,
+    },
+    amenityFeature: (loc.tags ?? []).map((tag: Tag) => ({
+      '@type': 'LocationFeatureSpecification',
+      name: TAG_AMENITY[tag] ?? tag,
+      value: true,
+    })),
+    ...(photos.length > 0 && { image: photos.map((p: { url: string }) => p.url) }),
+    ...(loc.website && { sameAs: [loc.website] }),
+    ...(loc.opening_hours && { openingHours: loc.opening_hours }),
+    ...(overallAvg != null && reviews.length > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: overallAvg.toFixed(1),
+        reviewCount: reviews.length,
+        bestRating: 5,
+        worstRating: 1,
+      },
+    }),
+    ...(reviews.length > 0 && {
+      review: reviews.slice(0, 5).map((r) => ({
+        '@type': 'Review',
+        author: { '@type': 'Person', name: (r.user as { display_name?: string } | undefined)?.display_name ?? 'Community member' },
+        datePublished: r.created_at.split('T')[0],
+        ...(r.comment && { reviewBody: r.comment }),
+      })),
+    }),
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-28 md:pb-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
       {/* Back */}
       <Link href="/search" className="inline-flex items-center gap-1 text-sm text-[#6b7280] hover:text-[#2c2c2c] mb-6 transition-colors">
         ← Back to search
@@ -183,21 +266,17 @@ export default async function LocationPage({ params }: Props) {
 
         {/* Sidebar */}
         <aside className="space-y-4">
-          {/* Age ranges */}
           {ageLabels.length > 0 && (
             <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
               <h3 className="text-sm font-semibold text-[#2c2c2c] mb-3">👶 Best for</h3>
               <div className="flex flex-wrap gap-2">
                 {ageLabels.map((label) => (
-                  <Badge key={label} bgColor="bg-[#f7eed9]" color="text-[#9e7c48]">
-                    {label}
-                  </Badge>
+                  <Badge key={label} bgColor="bg-[#f7eed9]" color="text-[#9e7c48]">{label}</Badge>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Submitted by */}
           <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
             <h3 className="text-sm font-semibold text-[#2c2c2c] mb-3">Submitted by</h3>
             <div className="flex items-center gap-2">
@@ -214,7 +293,6 @@ export default async function LocationPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Report */}
           <div className="px-1">
             <ReportButton locationId={loc.id} />
           </div>

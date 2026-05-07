@@ -1,0 +1,31 @@
+# KidFriendlyEats
+
+> Australian community directory of cafes, restaurants and venues where parents can eat and drink while their children play on-site.
+
+## What we are
+
+KidFriendlyEats is a parent-powered listing site for kid-friendly venues across Australia. Every listing is submitted by local parents and reviewed before going live. We focus specifically on places with:
+
+- On-site indoor playgrounds
+- Dedicated kids play areas with equipment
+- Venues located directly next to a public playground
+- Outdoor run-around space for kids
+- Dedicated play centres with food/cafe
+
+## Key pages
+
+- [Home](https://kidfriendlyeats.space/) — search for kid-friendly venues near you
+- [Search & map](https://kidfriendlyeats.space/search) — browse and filter by suburb, play type, and distance
+- [Add a place](https://kidfriendlyeats.space/submit) — submit a new kid-friendly venue
+
+## Data provided per venue
+
+Each listing includes: venue name, full address, suburb, GPS coordinates, play area type, parent-written description, visitor tips, opening hours, website, photos, and community ratings across food quality, noise level, safety, cleanliness, parking & access, weather dependency, and age suitability.
+
+## Coverage
+
+Australia-wide, with a focus on Sydney, Melbourne, Brisbane, Perth, Adelaide and surrounding suburbs.
+
+## About
+
+Built by parents, for parents. Community submissions, admin-reviewed before publishing.
