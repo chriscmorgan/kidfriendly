@@ -25,14 +25,14 @@ export default function Header() {
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 bg-[#f4a090] rounded-full flex items-center justify-center shrink-0 shadow-sm group-hover:bg-[#f0907e] transition-colors">
-                <span className="text-white text-sm leading-none" aria-hidden>🍴</span>
+            {/* Logo — min 44px touch target */}
+            <Link href="/" className="flex items-center gap-2.5 group min-h-[44px]">
+              <div className="w-10 h-10 bg-[#f4a090] rounded-full flex items-center justify-center shrink-0 shadow-sm group-hover:bg-[#f0907e] transition-colors">
+                <span className="text-white text-base leading-none" aria-hidden>🍴</span>
               </div>
               <div className="flex flex-col leading-none">
-                <span className="font-black text-[13px] tracking-[0.15em] uppercase text-[#2c2c2c]">Kid Friendly</span>
-                <span className="font-semibold text-[10px] tracking-[0.3em] uppercase text-[#4abfc0] mt-0.5">Eats</span>
+                <span className="font-black text-[14px] tracking-[0.12em] uppercase text-[#2c2c2c]">Kid Friendly</span>
+                <span className="font-semibold text-[11px] tracking-[0.25em] uppercase text-[#4abfc0] mt-0.5">Eats</span>
               </div>
             </Link>
 
@@ -123,9 +123,9 @@ export default function Header() {
                 </>
               )}
 
-              {/* Mobile menu toggle */}
+              {/* Mobile menu toggle — 44px tap target */}
               <button
-                className="md:hidden p-2 rounded-lg hover:bg-sand-100 transition-colors cursor-pointer"
+                className="md:hidden p-3 rounded-lg hover:bg-sand-100 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label="Toggle menu"
               >
@@ -135,27 +135,33 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile nav */}
+        {/* Mobile nav — 44px tap targets */}
         {menuOpen && (
-          <div className="md:hidden border-t border-gray-100 bg-white px-4 py-3 flex flex-col gap-1">
+          <div className="md:hidden border-t border-gray-100 bg-white px-4 py-2 flex flex-col">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-charcoal hover:bg-sand-50"
+                className="px-3 py-3.5 rounded-lg text-base font-medium text-charcoal hover:bg-sand-50 min-h-[44px] flex items-center"
                 onClick={() => setMenuOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            {user && (
-              <Link
-                href="/submit"
-                className="px-3 py-2 rounded-lg text-sm font-medium text-sage-700 hover:bg-sage-50"
-                onClick={() => setMenuOpen(false)}
+            <Link
+              href="/submit"
+              className="px-3 py-3.5 rounded-lg text-base font-medium text-[#38a5a0] hover:bg-[#edf8f8] min-h-[44px] flex items-center gap-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              <span>📍</span> Add a place
+            </Link>
+            {!user && (
+              <button
+                onClick={() => { setMenuOpen(false); setShowSignIn(true) }}
+                className="px-3 py-3.5 rounded-lg text-base font-medium text-[#2c2c2c] hover:bg-sand-50 min-h-[44px] flex items-center text-left cursor-pointer"
               >
-                + Add a place
-              </Link>
+                Sign in
+              </button>
             )}
           </div>
         )}

@@ -43,10 +43,25 @@ export default function SubmitForm() {
   if (!user) return (
     <>
       <div className="bg-[#edf8f8] border border-[#aadbd8] rounded-2xl p-8 text-center">
-        <div className="text-4xl mb-3">🔒</div>
-        <p className="font-semibold text-[#2c2c2c] mb-1">Sign in to add a place</p>
-        <p className="text-sm text-[#6b7280] mb-4">You need an account to submit new locations.</p>
-        <Button onClick={() => setShowSignIn(true)}>Sign in</Button>
+        <div className="text-4xl mb-4">📍</div>
+        <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Add a kid-friendly spot</h2>
+        <p className="text-sm text-[#4b5563] mb-6 max-w-xs mx-auto leading-relaxed">
+          Know a cafe with a play area that other parents would love? Sign in for free — it only takes 2 minutes to add it to the map.
+        </p>
+        <div className="flex flex-col gap-3 max-w-xs mx-auto mb-6">
+          {[
+            '📍 Pin it on the map for families nearby',
+            '🛝 Describe the play setup in detail',
+            '⭐ Help parents make better decisions',
+          ].map((line) => (
+            <div key={line} className="flex items-start gap-2 text-sm text-[#4b5563] text-left">
+              <span className="shrink-0">{line.slice(0, 2)}</span>
+              <span>{line.slice(3)}</span>
+            </div>
+          ))}
+        </div>
+        <Button size="lg" onClick={() => setShowSignIn(true)}>Sign in to add a place</Button>
+        <p className="text-xs text-[#9ca3af] mt-4">Free · No password needed · Reviewed before going live</p>
       </div>
       {showSignIn && <SignInModal onClose={() => setShowSignIn(false)} />}
     </>

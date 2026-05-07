@@ -92,7 +92,7 @@ test('home search: typing a suburb shows dropdown', async ({ page }) => {
   await page.goto('/')
   await page.waitForLoadState('domcontentloaded')
 
-  const input = page.getByPlaceholder('Search suburb, postcode…')
+  const input = page.getByPlaceholder('Search suburb or postcode…')
   await input.click()
   await input.fill('Richmond')
   await page.waitForTimeout(900) // debounce + network

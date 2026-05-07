@@ -10,11 +10,11 @@ export default function Footer() {
             <MapPin className="w-4 h-4 text-sage-500" />
             KidFriendlyEats
           </Link>
-          <nav className="flex items-center gap-4 text-sm text-muted">
-            <Link href="/about" className="hover:text-charcoal transition-colors">About</Link>
-            <Link href="/search" className="hover:text-charcoal transition-colors">Explore</Link>
-            <Link href="/submit" className="hover:text-charcoal transition-colors">Add a place</Link>
-            <a href="mailto:support@kidfriendlyeats.space" className="hover:text-charcoal transition-colors">Contact</a>
+          <nav className="flex flex-wrap items-center justify-center gap-1 text-sm text-muted">
+            <Link href="/about" className="hover:text-charcoal transition-colors px-3 py-3 min-h-[44px] flex items-center">About</Link>
+            <Link href="/search" className="hover:text-charcoal transition-colors px-3 py-3 min-h-[44px] flex items-center">Explore</Link>
+            <Link href="/submit" className="hover:text-charcoal transition-colors px-3 py-3 min-h-[44px] flex items-center">Add a place</Link>
+            <a href="mailto:support@kidfriendlyeats.space" className="hover:text-charcoal transition-colors px-3 py-3 min-h-[44px] flex items-center">Contact</a>
           </nav>
           <p className="text-xs text-muted">
             © {new Date().getFullYear()} KidFriendlyEats — Australia

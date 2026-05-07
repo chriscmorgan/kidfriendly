@@ -106,46 +106,49 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
     <div ref={containerRef} className={cn('relative w-full', className)}>
       <form onSubmit={handleSubmit}>
         <div className={cn(
-          'flex items-center gap-2 bg-white border border-gray-200 rounded-2xl shadow-sm transition-shadow focus-within:shadow-md focus-within:border-[#4abfc0]',
-          isHero ? 'p-3 pr-3' : 'p-2 pr-2'
+          'flex items-center gap-1 bg-white border border-gray-200 rounded-2xl shadow-sm transition-shadow focus-within:shadow-md focus-within:border-[#4abfc0]',
+          isHero ? 'p-2 pr-2' : 'p-1.5 pr-1.5'
         )}>
-          <Search className={cn('shrink-0 text-[#6b7280]', isHero ? 'w-5 h-5 ml-1' : 'w-4 h-4 ml-1')} />
+          <Search className={cn('shrink-0 text-[#6b7280] ml-2', isHero ? 'w-5 h-5' : 'w-4 h-4')} />
           <input
             type="text"
-            placeholder="Search suburb, postcode…"
+            placeholder="Search suburb or postcode…"
             value={query}
             onChange={handleInput}
             onFocus={() => suggestions.length > 0 && setOpen(true)}
             className={cn(
               'flex-1 min-w-0 bg-transparent outline-none text-[#2c2c2c] placeholder:text-[#6b7280]',
-              isHero ? 'text-base py-1' : 'text-sm py-0.5'
+              isHero ? 'text-base py-2 px-1' : 'text-sm py-2 px-1'
             )}
             autoComplete="off"
           />
           {loading && <Loader2 className="w-4 h-4 text-[#6b7280] animate-spin shrink-0" />}
+          {/* Near me — min 44px tap target */}
           <button
             type="button"
             onClick={useMyLocation}
             disabled={geoLoading}
             title="Use my location"
+            aria-label="Use my location"
             className={cn(
-              'shrink-0 flex items-center gap-1 font-medium rounded-xl transition-colors cursor-pointer disabled:opacity-50',
+              'shrink-0 flex items-center gap-1 font-medium rounded-xl transition-colors cursor-pointer disabled:opacity-50 min-h-[44px] min-w-[44px] justify-center',
               isHero
-                ? 'px-3 py-2 text-sm text-[#38a5a0] hover:bg-[#edf8f8]'
-                : 'px-2 py-1 text-xs text-[#38a5a0] hover:bg-[#edf8f8]'
+                ? 'px-3 text-sm text-[#38a5a0] hover:bg-[#edf8f8]'
+                : 'px-2 text-xs text-[#38a5a0] hover:bg-[#edf8f8]'
             )}
           >
             {geoLoading
               ? <Loader2 className="w-4 h-4 animate-spin" />
-              : <MapPin className={isHero ? 'w-4 h-4' : 'w-3.5 h-3.5'} />
+              : <MapPin className={isHero ? 'w-4 h-4' : 'w-4 h-4'} />
             }
             <span className="hidden sm:inline">Near me</span>
           </button>
+          {/* Search — min 44px tap target */}
           <button
             type="submit"
             className={cn(
-              'shrink-0 bg-[#4abfc0] text-white font-medium rounded-xl hover:bg-[#38a5a0] transition-colors cursor-pointer',
-              isHero ? 'px-5 py-2 text-sm' : 'px-3 py-1.5 text-xs'
+              'shrink-0 bg-[#4abfc0] text-white font-semibold rounded-xl hover:bg-[#38a5a0] transition-colors cursor-pointer min-h-[44px]',
+              isHero ? 'px-5 text-sm' : 'px-4 text-sm'
             )}
           >
             Search

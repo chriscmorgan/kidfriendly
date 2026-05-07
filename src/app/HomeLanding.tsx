@@ -97,13 +97,13 @@ export default function HomeLanding({ locations }: Props) {
             <SearchBar size="hero" />
           </div>
 
-          {/* City quick links */}
+          {/* City quick links — min 44px tap targets */}
           <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
             {CITY_LINKS.map(({ city, href, emoji }) => (
               <Link
                 key={city}
                 href={href}
-                className="inline-flex items-center gap-1.5 bg-white/70 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-white transition-colors"
+                className="inline-flex items-center gap-1.5 bg-white/70 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-sm font-semibold px-4 py-3 rounded-full hover:bg-white transition-colors min-h-[44px]"
               >
                 <span>{emoji}</span> {city}
               </Link>
@@ -147,11 +147,11 @@ export default function HomeLanding({ locations }: Props) {
               <Link
                 key={tag.value}
                 href={`/search?tag=${tag.value}`}
-                className={`group flex flex-col items-center text-center p-4 rounded-2xl border-2 border-transparent bg-white hover:border-current transition-all shadow-sm hover:shadow-md ${tag.color}`}
+                className={`group flex flex-col items-center text-center p-4 rounded-2xl border-2 border-transparent bg-white hover:border-current transition-all shadow-sm hover:shadow-md min-h-[100px] ${tag.color}`}
               >
                 <span className="text-3xl mb-2">{tag.emoji}</span>
                 <span className="text-xs font-semibold leading-tight mb-1">{tag.label}</span>
-                <span className="text-[10px] text-[#6b7280] leading-snug">{TAG_DESCRIPTIONS[tag.value]}</span>
+                <span className="text-xs text-[#6b7280] leading-snug">{TAG_DESCRIPTIONS[tag.value]}</span>
               </Link>
             ))}
           </div>

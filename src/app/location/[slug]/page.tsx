@@ -160,11 +160,11 @@ export default async function LocationPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-28 md:pb-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-32 md:pb-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
-      {/* Back */}
-      <Link href="/search" className="inline-flex items-center gap-1 text-sm text-[#6b7280] hover:text-[#2c2c2c] mb-6 transition-colors">
+      {/* Back — 44px tap target */}
+      <Link href="/search" className="inline-flex items-center gap-1 text-sm text-[#6b7280] hover:text-[#2c2c2c] mb-6 transition-colors min-h-[44px]">
         ← Back to search
       </Link>
 
@@ -309,18 +309,18 @@ export default async function LocationPage({ params }: Props) {
       </div>
 
       {/* Sticky mobile CTA bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-white border-t border-gray-100 px-4 py-3 flex gap-3">
+      <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-3 flex gap-3 safe-area-inset-bottom">
         <a
           href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 bg-[#edf8f8] text-[#1a5f5f] font-semibold text-sm py-3 rounded-2xl transition-colors hover:bg-[#c8eded]"
+          className="flex-1 flex items-center justify-center gap-2 bg-[#edf8f8] text-[#1a5f5f] font-semibold text-sm py-3.5 rounded-2xl transition-colors hover:bg-[#c8eded] min-h-[52px]"
         >
-          <Navigation className="w-4 h-4" /> Get Directions
+          <Navigation className="w-4 h-4" /> Directions
         </a>
         <a
           href="#write-review"
-          className="flex-1 flex items-center justify-center gap-2 bg-[#4abfc0] hover:bg-[#38a5a0] text-white font-semibold text-sm py-3 rounded-2xl transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 bg-[#4abfc0] hover:bg-[#38a5a0] text-white font-semibold text-sm py-3.5 rounded-2xl transition-colors min-h-[52px]"
         >
           <Star className="w-4 h-4" /> Write a Review
         </a>

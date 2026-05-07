@@ -33,7 +33,7 @@ function TagPill({ label, active, onClick }: { label: string; active: boolean; o
     <button
       onClick={onClick}
       className={cn(
-        'shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer whitespace-nowrap',
+        'shrink-0 px-3 py-3 rounded-full text-xs font-medium border transition-colors cursor-pointer whitespace-nowrap min-h-[44px] flex items-center',
         active ? 'bg-[#4abfc0] text-white border-transparent' : 'bg-white text-[#2c2c2c] border-gray-200 shadow-sm'
       )}
     >
@@ -50,13 +50,13 @@ function ListRow({ loc, selected, onClick }: { loc: Location; selected: boolean;
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-3 w-full px-4 py-3 text-left transition-colors cursor-pointer',
+        'flex items-center gap-3 w-full px-4 py-4 text-left transition-colors cursor-pointer min-h-[72px]',
         selected ? 'bg-[#edf8f8]' : 'hover:bg-gray-50'
       )}
     >
-      <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+      <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0">
         {photo ? (
-          <Image src={photo.url} alt="" fill className="object-cover" sizes="48px" />
+          <Image src={photo.url} alt="" fill className="object-cover" sizes="56px" />
         ) : (
           <span className="absolute inset-0 flex items-center justify-center text-xl">{meta.emoji}</span>
         )}
@@ -95,14 +95,14 @@ function ListStrip({
 }) {
   return (
     <div className="flex flex-col h-full min-h-0">
-      <div className="flex items-center justify-between px-4 py-2 shrink-0 border-b border-gray-100">
-        <span className="text-xs text-[#6b7280] font-medium">
+      <div className="flex items-center justify-between px-4 py-3 shrink-0 border-b border-gray-100 min-h-[48px]">
+        <span className="text-sm text-[#6b7280] font-medium">
           {loading ? 'Searching…' : `${locations.length} place${locations.length !== 1 ? 's' : ''}${q ? ` near ${q}` : ''}`}
         </span>
         <select
           value={sortParam}
           onChange={(e) => onSortChange(e.target.value)}
-          className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white text-[#2c2c2c] cursor-pointer"
+          className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white text-[#2c2c2c] cursor-pointer min-h-[44px]"
         >
           {SORT_OPTIONS.map((s) => (
             <option key={s.value} value={s.value}>{s.label}</option>

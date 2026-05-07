@@ -6,9 +6,10 @@ const CSP = [
   "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' https: data: blob:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.geoapify.com https://*.mapbox.com wss://*.mapbox.com https://challenges.cloudflare.com",
-  "font-src 'self' data:",
-  // Mapbox GL JS uses blob: workers
+  // OpenFreeMap tile sources + Geoapify for geocoding + Supabase + MapLibre CDN deps
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.geoapify.com https://tiles.openfreemap.org https://*.openfreemap.org https://places.googleapis.com https://challenges.cloudflare.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
+  // MapLibre GL JS uses blob: workers
   "worker-src blob:",
   "frame-src https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
@@ -18,7 +19,8 @@ const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+  // Allow geolocation from same origin (needed for "Near me" button)
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=()' },
   { key: 'Content-Security-Policy', value: CSP },
 ]
 
