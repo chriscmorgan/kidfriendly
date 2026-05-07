@@ -3,6 +3,7 @@ import SearchBar from '@/components/search/SearchBar'
 import LocationCard from '@/components/location/LocationCard'
 import { TAGS } from '@/lib/constants'
 import type { Location } from '@/lib/types'
+import { safeJsonLd } from '@/lib/utils'
 
 interface Props {
   locations: Location[]
@@ -23,6 +24,36 @@ const HOW_IT_WORKS = [
     emoji: '⭐',
     title: 'Share your experience',
     desc: 'Leave a review to help other parents find their next great eat-and-play spot.',
+  },
+]
+
+const CITY_LINKS = [
+  { city: 'Melbourne', href: '/melbourne', emoji: '☕' },
+  { city: 'Sydney', href: '/sydney', emoji: '🌞' },
+  { city: 'Brisbane', href: '/search?q=Brisbane', emoji: '🌴' },
+  { city: 'Perth', href: '/search?q=Perth', emoji: '🏖️' },
+]
+
+const FAQS = [
+  {
+    q: 'What is KidFriendlyEats?',
+    a: 'KidFriendlyEats is a free community directory of cafes, restaurants and venues across Australia that have dedicated play areas for kids — like indoor playgrounds, on-site equipment, or spots right next to a public playground.',
+  },
+  {
+    q: 'How do I find kid-friendly cafes near me?',
+    a: 'Use the search bar to enter your suburb or postcode. The map will show nearby venues with play areas, which you can filter by type (indoor playground, outdoor run area, adjacent playground, etc.).',
+  },
+  {
+    q: 'Are the reviews written by real parents?',
+    a: 'Yes. Every review is written by a community member who has visited the venue. Reviewers rate specific things parents care about — noise level, safety, cleanliness, age suitability, and more.',
+  },
+  {
+    q: 'Can I add a place that\'s not listed?',
+    a: 'Absolutely. Sign in for free and use the Submit page to add a venue. Every submission is reviewed before going live to keep quality high.',
+  },
+  {
+    q: 'Is it free to use?',
+    a: 'Completely free — no ads, no subscriptions. KidFriendlyEats is a community project built by parents for parents.',
   },
 ]
 
@@ -55,19 +86,32 @@ export default function HomeLanding({ locations }: Props) {
           </div>
 
           <h1 className="text-[clamp(1.6rem,7vw,4rem)] leading-tight font-extrabold text-[#2c2c2c] tracking-tight">
-            Find a place you can eat and{' '}
-            <span className="text-[#e8756a]">the kids can play</span>
+            Find Cafes Where{' '}
+            <span className="text-[#e8756a]">Kids Can Actually Play</span>
           </h1>
-          <p className="text-[#4a7a7a] text-base sm:text-xl mt-5 max-w-lg mx-auto leading-relaxed">
-            Cafes, restaurants and venues with play areas — reviewed by local parents who&apos;ve been there.
+          <p className="text-[#4a7a7a] text-base sm:text-xl mt-5 max-w-xl mx-auto leading-relaxed">
+            Cafes, restaurants and play centres with real play areas — reviewed by local parents across Melbourne, Sydney, Brisbane and beyond.
           </p>
 
           <div className="w-full max-w-xl mt-8 mx-auto">
             <SearchBar size="hero" />
           </div>
 
+          {/* City quick links */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
+            {CITY_LINKS.map(({ city, href, emoji }) => (
+              <Link
+                key={city}
+                href={href}
+                className="inline-flex items-center gap-1.5 bg-white/70 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-white transition-colors"
+              >
+                <span>{emoji}</span> {city}
+              </Link>
+            ))}
+          </div>
+
           {/* Stats strip */}
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-8 text-[#4a7a7a] text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-6 text-[#4a7a7a] text-sm">
             <span className="flex items-center gap-1.5"><span className="text-base">📍</span> {locations.length > 0 ? `${locations.length}+ places listed` : 'Places listed'}</span>
             <span className="text-[#b5e6e6]">·</span>
             <span className="flex items-center gap-1.5"><span className="text-base">⭐</span> Parent reviews</span>
@@ -130,6 +174,36 @@ export default function HomeLanding({ locations }: Props) {
           </div>
         </section>
       )}
+
+      {/* ── FAQ ── */}
+      <section className="bg-[#faf8f4] px-4 py-12 border-t border-gray-100">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Frequently asked questions</h2>
+          <p className="text-sm text-[#6b7280] mb-8">Everything parents want to know</p>
+          <div className="space-y-4">
+            {FAQS.map((faq, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5">
+                <h3 className="font-semibold text-[#2c2c2c] text-sm mb-2">{faq.q}</h3>
+                <p className="text-sm text-[#4b5563] leading-relaxed">{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: safeJsonLd({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: FAQS.map((faq) => ({
+                '@type': 'Question',
+                name: faq.q,
+                acceptedAnswer: { '@type': 'Answer', text: faq.a },
+              })),
+            }),
+          }}
+        />
+      </section>
 
       {/* ── Add a place CTA ── */}
       <section className="bg-gradient-to-br from-[#3aaeae] to-[#2a9494] px-4 py-16 text-center">

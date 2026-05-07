@@ -1,7 +1,10 @@
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 
-export const metadata: Metadata = { title: 'About' }
+export const metadata: Metadata = {
+  title: 'About',
+  description: 'KidFriendlyEats is a free community directory of cafes and venues with kids play areas across Australia — built by parents, for parents.',
+}
 
 export default function AboutPage() {
   return (

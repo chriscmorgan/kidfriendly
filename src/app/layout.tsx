@@ -4,6 +4,7 @@ import './globals.css'
 import { AuthProvider } from '@/components/auth/AuthProvider'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import { safeJsonLd } from '@/lib/utils'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
 
@@ -11,9 +12,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.sp
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: 'KidFriendlyEats', template: '%s | KidFriendlyEats' },
-  description: 'Find cafes and restaurants where kids can play — on-site play areas, spots next to playgrounds, and more. Reviewed by local parents.',
-  keywords: ['kids play area', 'cafe with play area', 'family cafe', 'Australia', 'playground nearby', 'family restaurant', 'indoor playground cafe', 'kid friendly restaurant'],
+  title: {
+    default: 'Kid-Friendly Cafes with Play Areas in Australia | KidFriendlyEats',
+    template: '%s | KidFriendlyEats',
+  },
+  description: 'Find cafes, restaurants and venues with kids play areas across Australia — reviewed by local parents. Discover indoor playgrounds, spots next to parks, and family-friendly cafes in Melbourne, Sydney, Brisbane and beyond.',
+  keywords: ['kids play area', 'cafe with play area', 'family cafe Australia', 'indoor playground cafe', 'kid friendly cafe Melbourne', 'kid friendly cafe Sydney', 'cafes next to playgrounds', 'family restaurant Australia'],
   openGraph: {
     siteName: 'KidFriendlyEats',
     type: 'website',
@@ -53,8 +57,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geist.variable} h-full`}>
       <head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(organizationSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteSchema) }} />
       </head>
       <body className="min-h-full flex flex-col antialiased bg-[#edf6f6] text-[#2c2c2c]">
         <AuthProvider>
