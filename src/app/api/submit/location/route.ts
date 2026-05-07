@@ -11,7 +11,7 @@ const VALID_AGE_RANGES = new Set(AGE_RANGES.map((a) => a.value))
 
 export async function POST(request: Request) {
   const ip = (await headers()).get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
-  if (!checkRateLimit(ip, 5, 60 * 60 * 1000)) {
+  if (!checkRateLimit(ip, 500, 60 * 60 * 1000)) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
 
