@@ -19,13 +19,15 @@ export default function ReportButton({ locationId }: { locationId: string }) {
 
   async function handleSubmit() {
     if (!user || !reason.trim()) return
-    await fetch('/api/report', {
+    const res = await fetch('/api/report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ locationId, reason }),
     })
-    setSubmitted(true)
-    setOpen(false)
+    if (res.ok) {
+      setSubmitted(true)
+      setOpen(false)
+    }
   }
 
   if (submitted) return (

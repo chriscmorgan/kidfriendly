@@ -41,12 +41,31 @@ async function getAllLocations(): Promise<Location[]> {
 
 async function getReports(): Promise<Report[]> {
   const supabase = await createClient()
-  const { data } = await supabase
+  const { data: rows } = await supabase
     .from('reports')
-    .select(`id, target_id, reason, created_at, location:locations!target_id(name, slug), reporter:users!reported_by(display_name)`)
+    .select('id, target_id, reason, created_at, reported_by')
     .order('created_at', { ascending: false })
-  if (!data) return []
-  return data as unknown as Report[]
+  if (!rows || rows.length === 0) return []
+
+  const locationIds = [...new Set(rows.map((r) => r.target_id as string))]
+  const reporterIds = [...new Set(rows.map((r) => r.reported_by as string))]
+
+  const [{ data: locations }, { data: reporters }] = await Promise.all([
+    supabase.from('locations').select('id, name, slug').in('id', locationIds),
+    supabase.from('users').select('id, display_name').in('id', reporterIds),
+  ])
+
+  const locMap = new Map((locations ?? []).map((l) => [l.id, l]))
+  const repMap = new Map((reporters ?? []).map((u) => [u.id, u]))
+
+  return rows.map((r) => ({
+    id: r.id,
+    target_id: r.target_id,
+    reason: r.reason,
+    created_at: r.created_at,
+    location: locMap.get(r.target_id) ?? null,
+    reporter: repMap.get(r.reported_by) ?? null,
+  }))
 }
 
 export default async function AdminPage() {
