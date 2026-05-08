@@ -3,7 +3,7 @@
 
 -- ─── Extensions ─────────────────────────────────────────────────────────────
 create extension if not exists "uuid-ossp";
-create extension if not exists postgis;
+create extension if not exists postgis schema extensions;
 
 -- ─── Enums ───────────────────────────────────────────────────────────────────
 create type user_role as enum ('contributor', 'admin');
@@ -25,7 +25,11 @@ create policy "Users can read all profiles" on public.users
   for select using (true);
 
 create policy "Users can update their own profile" on public.users
-  for update using (auth.uid() = id);
+  for update using (auth.uid() = id)
+  with check (
+    auth.uid() = id
+    and role = (select role from public.users where id = auth.uid())
+  );
 
 -- Auto-create user row on sign-up
 create or replace function public.handle_new_user()
@@ -50,7 +54,7 @@ create table public.locations (
   id uuid primary key default uuid_generate_v4(),
   slug text unique not null,
   name text not null,
-  description text not null check (char_length(description) between 50 and 1000),
+  description text not null check (char_length(description) between 1 and 1000),
   address text not null,
   lat double precision not null,
   lng double precision not null,
@@ -119,7 +123,14 @@ create policy "Admins can view all photos" on public.location_photos
   );
 
 create policy "Authenticated users can upload photos" on public.location_photos
-  for insert with check (auth.uid() = uploaded_by);
+  for insert with check (
+    auth.uid() = uploaded_by
+    and exists (
+      select 1 from public.locations
+      where id = location_id
+        and submitted_by = auth.uid()
+    )
+  );
 
 create policy "Admins can delete photos" on public.location_photos
   for delete using (
