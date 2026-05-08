@@ -15,7 +15,7 @@ const STEPS = [
   {
     n: '1',
     title: 'Add a spot you know',
-    desc: 'Sign in with Google and add a place in about 2 minutes. It goes live after a quick check.',
+    desc: 'Create a free account with Google (one tap) and add a place in about 2 minutes. It goes live after a quick check.',
   },
   {
     n: '2',
@@ -135,7 +135,7 @@ export default function HomeLanding({ locations }: Props) {
               href="/submit"
               className="text-sm font-medium text-rust hover:text-rust-dark underline underline-offset-2 min-h-[44px] flex items-center"
             >
-              + Add a place
+              + Add a place — free, 2 min
             </Link>
           </div>
 
@@ -152,7 +152,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-rust-light px-4 py-4">
         <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-sm text-ink">
-            Know a spot we&apos;ve missed? Add it — takes about 2 minutes.
+            Know a spot we&apos;ve missed? Sign in with Google and add it — free, takes about 2 minutes.
           </p>
           <Link
             href="/submit"
@@ -348,7 +348,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-paper px-4 py-14 text-center">
         <div className="max-w-md mx-auto">
           <h2 className="font-display italic font-700 text-3xl text-ink mb-3">Know a spot? Add it.</h2>
-          <p className="text-sm text-stone mb-6">Sign in with Google — takes about 2 minutes.</p>
+          <p className="text-sm text-stone mb-6">Free account — one tap with Google, then 2 minutes to add a place.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/submit"

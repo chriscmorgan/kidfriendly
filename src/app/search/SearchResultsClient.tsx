@@ -99,15 +99,23 @@ function ListStrip({
         <span className="text-sm text-stone font-medium">
           {loading ? 'Searching…' : `${locations.length} place${locations.length !== 1 ? 's' : ''}${q ? ` near ${q}` : ''}`}
         </span>
-        <select
-          value={sortParam}
-          onChange={(e) => onSortChange(e.target.value)}
-          className="text-sm border border-border rounded px-3 py-2 bg-paper text-ink cursor-pointer min-h-[44px]"
-        >
-          {SORT_OPTIONS.map((s) => (
-            <option key={s.value} value={s.value}>{s.label}</option>
-          ))}
-        </select>
+        <div className="flex items-center gap-3">
+          <a
+            href="/submit"
+            className="text-xs font-medium text-rust hover:text-rust-dark underline underline-offset-2 whitespace-nowrap"
+          >
+            + Add a place
+          </a>
+          <select
+            value={sortParam}
+            onChange={(e) => onSortChange(e.target.value)}
+            className="text-sm border border-border rounded px-3 py-2 bg-paper text-ink cursor-pointer min-h-[44px]"
+          >
+            {SORT_OPTIONS.map((s) => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="flex-1 overflow-y-auto overscroll-contain divide-y divide-gray-50">
         {loading ? (
@@ -404,6 +412,14 @@ export default function SearchResultsClient() {
         <div className="absolute top-3 left-3 right-3 z-20 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-full md:max-w-md">
           <SearchBar defaultValue={q} onSearch={handleSearch} />
         </div>
+
+        {/* Add a place — desktop only (mobile gets the list-strip link) */}
+        <a
+          href="/submit"
+          className="hidden md:flex absolute top-3 right-3 z-20 items-center gap-1.5 bg-rust hover:bg-rust-dark text-paper text-xs font-semibold px-4 py-2.5 rounded-full shadow-md transition-colors whitespace-nowrap"
+        >
+          + Add a place
+        </a>
 
         {/* Search this area button */}
         {showSearchArea && (
