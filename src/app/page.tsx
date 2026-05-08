@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { createClient } from '@/lib/supabase/server'
 import HomeLanding from './HomeLanding'
-import type { Location, LocationPhoto, AvgRatings } from '@/lib/types'
+import type { Location, LocationPhoto, AvgRatings, SiteStats } from '@/lib/types'
 
 const USE_MOCK = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true
 
@@ -18,7 +18,8 @@ async function getLocations(): Promise<Location[]> {
     .select(`
       *,
       photos:location_photos(id, url, sort_order),
-      reviews(rating_food, rating_noise, rating_safety, rating_cleanliness, rating_access, rating_weather, rating_age_suitability)
+      reviews(rating_food, rating_noise, rating_safety, rating_cleanliness, rating_access, rating_weather, rating_age_suitability),
+      submitter:profiles!submitted_by(display_name, avatar_url)
     `)
     .eq('status', 'approved')
     .order('approved_at', { ascending: false })
@@ -26,6 +27,30 @@ async function getLocations(): Promise<Location[]> {
 
   if (!data) return []
   return data.map(enrichLocation)
+}
+
+async function getSiteStats(): Promise<SiteStats> {
+  if (USE_MOCK) {
+    const { mockStats } = await import('@/lib/mock/locations')
+    return mockStats
+  }
+
+  const supabase = await createClient()
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+
+  const [venuesRes, weekRes, contributorsRes] = await Promise.all([
+    supabase.from('locations').select('id', { count: 'exact', head: true }).eq('status', 'approved'),
+    supabase.from('locations').select('id', { count: 'exact', head: true }).eq('status', 'approved').gte('approved_at', oneWeekAgo),
+    supabase.from('locations').select('submitted_by').eq('status', 'approved'),
+  ])
+
+  const uniqueContributors = new Set((contributorsRes.data ?? []).map((r) => r.submitted_by)).size
+
+  return {
+    total_venues: venuesRes.count ?? 0,
+    total_contributors: uniqueContributors,
+    added_this_week: weekRes.count ?? 0,
+  }
 }
 
 function enrichLocation(loc: Record<string, unknown>): Location {
@@ -46,6 +71,6 @@ function enrichLocation(loc: Record<string, unknown>): Location {
 }
 
 export default async function HomePage() {
-  const locations = await getLocations()
-  return <HomeLanding locations={locations} />
+  const [locations, stats] = await Promise.all([getLocations(), getSiteStats()])
+  return <HomeLanding locations={locations} stats={stats} />
 }

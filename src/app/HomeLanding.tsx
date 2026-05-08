@@ -1,42 +1,39 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import SearchBar from '@/components/search/SearchBar'
 import LocationCard from '@/components/location/LocationCard'
 import { TAGS } from '@/lib/constants'
-import type { Location } from '@/lib/types'
+import type { Location, SiteStats } from '@/lib/types'
 import { safeJsonLd } from '@/lib/utils'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
 interface Props {
   locations: Location[]
+  stats: SiteStats
 }
 
 const HOW_IT_WORKS = [
   {
+    emoji: '📍',
+    title: 'Add a place you love',
+    desc: 'Sign in free and add a spot in 2 minutes. Your submission goes live after a quick review.',
+  },
+  {
     emoji: '🔍',
     title: 'Search your area',
-    desc: 'Search your suburb or postcode to find nearby cafes and spots with play areas.',
+    desc: 'Find nearby cafes and spots with play areas by suburb or postcode.',
   },
   {
-    emoji: '📍',
-    title: 'Discover great spots',
-    desc: 'Browse venues with on-site play areas or right next to a playground.',
+    emoji: '📣',
+    title: 'Share with other parents',
+    desc: 'Send the link to your parents group. Every share brings in more places.',
   },
-  {
-    emoji: '📸',
-    title: 'Add a missing place',
-    desc: 'Know a spot that\'s not listed? Add it in two minutes and help other families find it.',
-  },
-]
-
-const CITY_LINKS = [
-  { city: 'Melbourne', href: '/melbourne', emoji: '☕' },
 ]
 
 const FAQS = [
   {
     q: 'What is KidFriendlyEats?',
-    a: 'KidFriendlyEats is a free community directory of cafes, restaurants and venues in Melbourne that have dedicated play areas for kids — like indoor playgrounds, on-site equipment, or spots right next to a public playground.',
+    a: 'KidFriendlyEats is a free community directory built by Melbourne parents — a map of cafes, restaurants and venues with real play areas for kids. No ads, no paid listings. Just places real parents have been to and taken the time to share.',
   },
   {
     q: 'How do I find kid-friendly venues near me?',
@@ -48,15 +45,15 @@ const FAQS = [
   },
   {
     q: 'Can I add a place that\'s not listed?',
-    a: 'Absolutely. Sign in for free and use the Submit page to add a venue. Every submission is reviewed before going live to keep quality high.',
+    a: 'Yes — and we\'d love you to. Sign in free and use the Submit page. It takes about 2 minutes. Every submission is reviewed before going live to keep quality high.',
   },
   {
     q: 'How do I know the information is accurate?',
-    a: 'Every listing is submitted and reviewed by real parents who have visited. We rely on the community to flag anything that\'s outdated — use the "Report" button on any listing if something looks wrong.',
+    a: 'Every listing is submitted by a real parent who has visited. We rely on the community to flag anything outdated — use the "Report" button on any listing if something looks wrong.',
   },
   {
     q: 'What areas of Melbourne are covered?',
-    a: 'All of Greater Melbourne — inner suburbs, outer suburbs, and the Peninsula. Coverage grows as the community adds more places, so if your area is light on listings, add a place you know.',
+    a: 'All of Greater Melbourne. Coverage grows as the community adds more places — if your area is light on listings, you can change that in 2 minutes.',
   },
   {
     q: 'Is it free to use?',
@@ -64,7 +61,7 @@ const FAQS = [
   },
   {
     q: 'Do venues pay to be listed?',
-    a: 'No. Listings are not paid placements — they are added by community members who have visited. We do not accept sponsored or promotional content.',
+    a: 'No. Listings are added by community members who have visited. We do not accept sponsored or promotional content.',
   },
 ]
 
@@ -76,72 +73,140 @@ const TAG_DESCRIPTIONS: Record<string, string> = {
   play_centre: 'Dedicated play venue',
 }
 
-export default function HomeLanding({ locations }: Props) {
+function StatsBadge({ stats }: { stats: SiteStats }) {
+  return (
+    <div className="inline-flex flex-wrap items-center justify-center gap-x-4 gap-y-1 bg-white/80 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-xs font-semibold px-4 py-2 rounded-full">
+      <span>📍 {stats.total_venues} venues</span>
+      <span className="text-[#5ecece]/50">·</span>
+      <span>👤 {stats.total_contributors} contributors</span>
+      <span className="text-[#5ecece]/50">·</span>
+      <span>✨ {stats.added_this_week} added this week</span>
+    </div>
+  )
+}
+
+function ContributorAvatar({ name, index }: { name: string; index: number }) {
+  const colors = [
+    'bg-[#f4a090] text-white',
+    'bg-[#4abfc0] text-white',
+    'bg-[#a8d5a2] text-[#2c5f2e]',
+    'bg-[#f9d56e] text-[#7a5c00]',
+    'bg-[#c5a3e8] text-[#4a1080]',
+    'bg-[#f0a070] text-white',
+  ]
+  const initials = name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+  return (
+    <div
+      className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ring-2 ring-white ${colors[index % colors.length]}`}
+      title={name}
+    >
+      {initials}
+    </div>
+  )
+}
+
+export default function HomeLanding({ locations, stats }: Props) {
+  const recentContributors = Array.from(
+    new Map(
+      locations
+        .filter((l) => l.submitter)
+        .map((l) => [l.submitted_by, l.submitter!.display_name])
+    ).entries()
+  ).slice(0, 6)
+
   return (
     <div className="flex flex-col overflow-x-hidden">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#b8e4e4] via-[#cceece] to-[#e8f5f0] min-h-[56vh] flex flex-col justify-center text-center py-16 sm:py-24">
+      <section className="relative overflow-hidden bg-[#fdf8f2] border-b border-[#e8ddd0] py-14 sm:py-20">
 
-        {/* Decorative floating emojis */}
-        <span className="absolute top-8 left-[8%] text-4xl opacity-15 rotate-[-15deg] select-none" aria-hidden>🛝</span>
-        <span className="absolute top-16 right-[10%] text-5xl opacity-10 rotate-[12deg] select-none" aria-hidden>☕</span>
-        <span className="absolute bottom-12 left-[15%] text-3xl opacity-15 rotate-[8deg] select-none" aria-hidden>🍰</span>
-        <span className="absolute bottom-8 right-[12%] text-4xl opacity-15 rotate-[-10deg] select-none" aria-hidden>🧒</span>
-        <span className="absolute top-1/2 left-[3%] text-2xl opacity-10 select-none" aria-hidden>🍴</span>
+        {/* Subtle texture dots */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #2c2c2c 1px, transparent 1px)', backgroundSize: '24px 24px' }} aria-hidden />
 
-        <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-xs font-semibold px-3 py-1.5 rounded-full mb-5">
-            <span>👶</span> Made by parents, for parents
+        <div className="relative z-10 w-full max-w-2xl mx-auto px-4 text-center">
+
+          {/* Live stats pill */}
+          <div className="mb-5">
+            <StatsBadge stats={stats} />
           </div>
 
-          <h1 className="text-[clamp(1.6rem,7vw,4rem)] leading-tight font-extrabold text-[#2c2c2c] tracking-tight">
-            Find Venues Where You Can Eat{' '}
-            <span className="text-[#e8756a]">and the Kids Can Actually Play</span>
+          <h1 className="text-[clamp(1.75rem,7vw,3.75rem)] leading-tight font-extrabold text-[#2c2c2c] tracking-tight">
+            The Kid-Friendly Map{' '}
+            <span className="text-[#4abfc0]">Built by Melbourne Parents</span>
           </h1>
-          <p className="text-[#4a7a7a] text-base sm:text-xl mt-5 max-w-xl mx-auto leading-relaxed">
-            Cafes, restaurants and play centres in Melbourne with real play areas — discovered and shared by local parents.
+
+          <p className="text-[#5a6b6b] text-base sm:text-lg mt-4 max-w-xl mx-auto leading-relaxed">
+            No ads. No paid listings. Just real cafes and venues with play areas —{' '}
+            <strong className="text-[#2c2c2c] font-semibold">added by parents who have actually been there.</strong>
           </p>
 
-          <div className="w-full max-w-xl mt-8 mx-auto">
-            <SearchBar size="hero" />
-          </div>
-
-          {/* City quick links — min 44px tap targets */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
-            {CITY_LINKS.map(({ city, href, emoji }) => (
-              <Link
-                key={city}
-                href={href}
-                className="inline-flex items-center gap-1.5 bg-white/70 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-sm font-semibold px-4 py-3 rounded-full hover:bg-white transition-colors min-h-[44px]"
-              >
-                <span>{emoji}</span> {city}
-              </Link>
-            ))}
+          {/* Primary CTA — Add a place */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
             <Link
               href="/submit"
-              className="inline-flex items-center gap-1.5 bg-white/70 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-sm font-semibold px-4 py-3 rounded-full hover:bg-white transition-colors min-h-[44px]"
+              className="inline-flex items-center gap-2 bg-[#f4a090] text-white font-bold text-base px-8 py-3.5 rounded-2xl hover:bg-[#e8887a] transition-colors shadow-md min-h-[48px]"
             >
-              <span>📍</span> Add a place
+              📍 Add a place — free, 2 min
+            </Link>
+            <Link
+              href="/search"
+              className="inline-flex items-center gap-2 bg-white border border-[#d0e0e0] text-[#38a5a0] font-semibold text-base px-8 py-3.5 rounded-2xl hover:bg-[#edf8f8] transition-colors min-h-[48px]"
+            >
+              Search the map →
             </Link>
           </div>
 
-          <p className="text-xs text-[#4a7a7a]/70 mt-3">
-            Know a spot that&apos;s missing? <Link href="/submit" className="underline underline-offset-2 hover:text-[#38a5a0] transition-colors">Sign in free and add it</Link> — takes 2 minutes.
-          </p>
+          {/* Search bar */}
+          <div className="w-full max-w-xl mt-5 mx-auto">
+            <SearchBar size="hero" />
+          </div>
 
+          {/* Recent contributors */}
+          {recentContributors.length > 0 && (
+            <div className="mt-6 flex flex-col items-center gap-2">
+              <div className="flex -space-x-2">
+                {recentContributors.map(([id, name], i) => (
+                  <ContributorAvatar key={id} name={name} index={i} />
+                ))}
+              </div>
+              <p className="text-xs text-[#6b8080]">
+                Recently added by {recentContributors.map(([, name]) => name.split(' ')[0]).slice(0, 3).join(', ')} and others
+              </p>
+            </div>
+          )}
+
+        </div>
+      </section>
+
+      {/* ── Community call-to-action banner ── */}
+      <section className="bg-[#fff8ee] border-b border-[#f0d8b0] px-4 py-5">
+        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div>
+            <p className="font-semibold text-[#2c2c2c] text-sm">
+              Know a great spot that&apos;s not listed?
+            </p>
+            <p className="text-xs text-[#7a6040] mt-0.5">
+              Every place you add helps the next parent have a better day out. Takes 2 minutes.
+            </p>
+          </div>
+          <Link
+            href="/submit"
+            className="shrink-0 inline-flex items-center gap-1.5 bg-[#f4a090] text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#e8887a] transition-colors min-h-[44px]"
+          >
+            📍 Add it now
+          </Link>
         </div>
       </section>
 
       {/* ── How it works ── */}
       <section className="bg-white border-b border-gray-100 px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-center text-xl font-bold text-[#2c2c2c] mb-8">How it works</h2>
+          <h2 className="text-center text-xl font-bold text-[#2c2c2c] mb-1">How the community works</h2>
+          <p className="text-center text-sm text-[#6b7280] mb-8">Anyone can contribute — the more parents add, the better it gets for everyone</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {HOW_IT_WORKS.map((step, i) => (
               <div key={i} className="flex flex-col items-center text-center px-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#edf8f8] flex items-center justify-center text-2xl mb-3 shadow-sm">
+                <div className="w-14 h-14 rounded-2xl bg-[#fff3ee] flex items-center justify-center text-2xl mb-3 shadow-sm">
                   {step.emoji}
                 </div>
                 <h3 className="font-semibold text-[#2c2c2c] mb-1">{step.title}</h3>
@@ -149,28 +214,53 @@ export default function HomeLanding({ locations }: Props) {
               </div>
             ))}
           </div>
-          <div className="mt-8 text-center">
-            <Link
-              href="/submit"
-              className="inline-flex items-center gap-2 bg-[#edf8f8] border border-[#aadbd8] text-[#38a5a0] font-semibold text-sm px-6 py-3 rounded-full hover:bg-[#d5f0f0] transition-colors"
-            >
-              📍 Add a place — free sign-up, 2 minutes
-            </Link>
-          </div>
         </div>
       </section>
 
+      {/* ── Recently added — community feed ── */}
+      {locations.length > 0 && (
+        <section className="bg-[#faf8f4] px-4 py-12 border-b border-gray-100">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-baseline justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-[#2c2c2c]">Recently added by the community</h2>
+                <p className="text-sm text-[#6b7280] mt-0.5">Fresh spots from parents who have just been</p>
+              </div>
+              <Link href="/search" className="text-sm font-semibold text-[#38a5a0] hover:underline shrink-0 ml-4">
+                See all →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {locations.map((loc) => (
+                <LocationCard key={loc.id} location={loc} showContributor />
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <p className="text-sm text-[#6b7280] mb-3">
+                Don&apos;t see your suburb? You can fix that.
+              </p>
+              <Link
+                href="/submit"
+                className="inline-flex items-center gap-2 bg-[#f4a090] text-white font-bold text-sm px-6 py-3 rounded-xl hover:bg-[#e8887a] transition-colors shadow-sm"
+              >
+                📍 Add a place — free sign-up, 2 minutes
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── Categories ── */}
-      <section className="bg-[#faf8f4] px-4 py-12">
+      <section className="bg-white px-4 py-12 border-b border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Browse by type</h2>
-          <p className="text-sm text-[#6b7280] mb-6">Filter by what kind of play setup the venue has</p>
+          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Browse by play type</h2>
+          <p className="text-sm text-[#6b7280] mb-6">Filter by what kind of setup the venue has</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {TAGS.map((tag) => (
               <Link
                 key={tag.value}
                 href={`/search?tag=${tag.value}`}
-                className={`group flex flex-col items-center text-center p-4 rounded-2xl border-2 border-transparent bg-white hover:border-current transition-all shadow-sm hover:shadow-md min-h-[100px] ${tag.color}`}
+                className={`group flex flex-col items-center text-center p-4 rounded-2xl border-2 border-transparent bg-[#faf8f4] hover:border-current transition-all shadow-sm hover:shadow-md min-h-[100px] ${tag.color}`}
               >
                 <span className="text-3xl mb-2">{tag.emoji}</span>
                 <span className="text-xs font-semibold leading-tight mb-1">{tag.label}</span>
@@ -181,17 +271,17 @@ export default function HomeLanding({ locations }: Props) {
         </div>
       </section>
 
-      {/* ── Feature guides ── */}
-      <section className="bg-white px-4 py-12 border-b border-gray-100">
+      {/* ── Popular guides ── */}
+      <section className="bg-[#faf8f4] px-4 py-12 border-b border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Popular guides</h2>
-          <p className="text-sm text-[#6b7280] mb-6">Curated lists by play type</p>
+          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Community guides</h2>
+          <p className="text-sm text-[#6b7280] mb-6">Curated by parents, for parents</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
               href="/indoor-playground-cafes"
-              className="group flex items-start gap-4 bg-[#edf8f8] border border-[#aadbd8] rounded-2xl p-5 hover:border-[#4abfc0] transition-colors"
+              className="group flex items-start gap-4 bg-white border border-[#e0e0e0] rounded-2xl p-5 hover:border-[#4abfc0] transition-colors"
             >
-              <div className="w-12 h-12 shrink-0 rounded-2xl bg-white flex items-center justify-center text-2xl shadow-sm">🛝</div>
+              <div className="w-12 h-12 shrink-0 rounded-2xl bg-[#fff3ee] flex items-center justify-center text-2xl shadow-sm">🛝</div>
               <div>
                 <h3 className="font-semibold text-[#2c2c2c] text-sm group-hover:text-[#38a5a0] transition-colors">Cafes with Indoor Playgrounds</h3>
                 <p className="text-xs text-[#6b7280] mt-1 leading-relaxed">A proper playground inside the venue — drink your coffee while it&apos;s hot.</p>
@@ -199,9 +289,9 @@ export default function HomeLanding({ locations }: Props) {
             </Link>
             <Link
               href="/cafes-next-to-playgrounds"
-              className="group flex items-start gap-4 bg-[#f0fdf0] border border-[#a8dba8] rounded-2xl p-5 hover:border-[#4abfc0] transition-colors"
+              className="group flex items-start gap-4 bg-white border border-[#e0e0e0] rounded-2xl p-5 hover:border-[#4abfc0] transition-colors"
             >
-              <div className="w-12 h-12 shrink-0 rounded-2xl bg-white flex items-center justify-center text-2xl shadow-sm">🏞️</div>
+              <div className="w-12 h-12 shrink-0 rounded-2xl bg-[#f0fdf0] flex items-center justify-center text-2xl shadow-sm">🏞️</div>
               <div>
                 <h3 className="font-semibold text-[#2c2c2c] text-sm group-hover:text-[#38a5a0] transition-colors">Cafes Next to Playgrounds</h3>
                 <p className="text-xs text-[#6b7280] mt-1 leading-relaxed">A playground right next door — perfect for good-weather days out.</p>
@@ -211,22 +301,36 @@ export default function HomeLanding({ locations }: Props) {
         </div>
       </section>
 
-      {/* ── Recently added ── */}
-      {locations.length > 0 && (
-        <section className="bg-white px-4 py-12">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-[#2c2c2c]">Recently added</h2>
-              <p className="text-sm text-[#6b7280] mt-0.5">Fresh spots added by the community</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {locations.map((loc) => (
-                <LocationCard key={loc.id} location={loc} />
-              ))}
-            </div>
+      {/* ── Share the community ── */}
+      <section className="bg-white px-4 py-12 border-b border-gray-100">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="w-14 h-14 rounded-2xl bg-[#fff3ee] flex items-center justify-center text-3xl mx-auto mb-4">
+            📣
           </div>
-        </section>
-      )}
+          <h2 className="text-xl font-bold text-[#2c2c2c]">Know other parents who&apos;d find this useful?</h2>
+          <p className="text-sm text-[#6b7280] mt-3 max-w-md mx-auto leading-relaxed">
+            Share KidFriendlyEats in your parents group, your local Facebook group, or with anyone who&apos;s ever asked for a cafe recommendation. The more people share, the more places get added.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#1877F2] text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#1464d4] transition-colors min-h-[44px]"
+            >
+              Share on Facebook
+            </a>
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent('Found this — it\'s a community map of cafes and places with real play areas in Melbourne, added by parents: ' + SITE_URL)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#25D366] text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#1dba57] transition-colors min-h-[44px]"
+            >
+              Share on WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
 
       {/* ── FAQ ── */}
       <section className="bg-[#faf8f4] px-4 py-12 border-t border-gray-100">
@@ -277,54 +381,35 @@ export default function HomeLanding({ locations }: Props) {
             }),
           }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: safeJsonLd({
-              '@context': 'https://schema.org',
-              '@type': 'Organization',
-              '@id': `${SITE_URL}/#organization`,
-              name: 'KidFriendlyEats',
-              url: SITE_URL,
-              contactPoint: {
-                '@type': 'ContactPoint',
-                email: 'support@kidfriendlyeats.space',
-                contactType: 'customer support',
-              },
-            }),
-          }}
-        />
       </section>
 
-      {/* ── Add a place CTA ── */}
-      <section className="bg-gradient-to-br from-[#3aaeae] to-[#2a9494] px-4 py-16 text-center">
+      {/* ── Final CTA ── */}
+      <section className="bg-[#2c2c2c] px-4 py-16 text-center">
         <div className="max-w-lg mx-auto">
-          <div className="w-16 h-16 bg-white/30 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
-            📍
-          </div>
-          <h2 className="text-2xl font-bold text-white">Know a great spot?</h2>
-          <p className="text-white/80 mt-3 text-sm leading-relaxed max-w-sm mx-auto">
-            Help other families discover it. Sign in free and add a place in 2 minutes — every submission is reviewed before going live.
+          <p className="text-[#a0b0b0] text-xs font-semibold tracking-widest uppercase mb-3">Join the community</p>
+          <h2 className="text-2xl font-bold text-white">Know a great spot? Add it.</h2>
+          <p className="text-[#9ab0b0] mt-3 text-sm leading-relaxed max-w-sm mx-auto">
+            Every place you add helps a family have a better day out. Sign in free — it takes 2 minutes.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-3 text-white/60 text-xs font-medium">
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-3 text-[#6a9090] text-xs font-medium">
             <span>✓ Free forever</span>
             <span>·</span>
-            <span>✓ Takes 2 minutes</span>
+            <span>✓ Sign in with Google</span>
             <span>·</span>
-            <span>✓ Sign in with Google or email</span>
+            <span>✓ Reviewed before going live</span>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
             <Link
               href="/submit"
-              className="inline-flex items-center gap-2 bg-white text-[#38a5a0] font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#f0fbfb] transition-colors shadow-lg"
+              className="inline-flex items-center gap-2 bg-[#f4a090] text-white font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#e8887a] transition-colors shadow-lg"
             >
-              <span>📍</span> Add a place — it&apos;s free
+              📍 Add a place — it&apos;s free
             </Link>
             <Link
               href="/search"
-              className="inline-flex items-center gap-2 bg-white/20 border border-white/40 text-white font-semibold text-sm px-7 py-3.5 rounded-2xl hover:bg-white/30 transition-colors"
+              className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white font-semibold text-sm px-7 py-3.5 rounded-2xl hover:bg-white/20 transition-colors"
             >
-              Explore the map →
+              Browse the map →
             </Link>
           </div>
         </div>

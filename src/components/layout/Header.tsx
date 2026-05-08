@@ -60,11 +60,12 @@ export default function Header() {
                 <>
                   {user ? (
                     <>
-                      <Link href="/submit">
-                        <Button size="sm" className="hidden sm:flex">
-                          <PlusCircle className="w-4 h-4" />
-                          Add a place
-                        </Button>
+                      <Link
+                        href="/submit"
+                        className="hidden sm:flex items-center gap-1.5 bg-[#f4a090] text-white font-semibold text-sm px-4 py-2 rounded-xl hover:bg-[#e8887a] transition-colors min-h-[36px]"
+                      >
+                        <PlusCircle className="w-4 h-4" />
+                        Add a place
                       </Link>
                       <div className="relative">
                         <button
@@ -116,9 +117,13 @@ export default function Header() {
                       </div>
                     </>
                   ) : (
-                    <Button size="sm" onClick={() => setShowSignIn(true)}>
-                      Sign in
-                    </Button>
+                    <button
+                      onClick={() => setShowSignIn(true)}
+                      className="inline-flex items-center gap-1.5 bg-[#f4a090] text-white font-semibold text-sm px-4 py-2 rounded-xl hover:bg-[#e8887a] transition-colors min-h-[36px] cursor-pointer"
+                    >
+                      <PlusCircle className="w-4 h-4" />
+                      Add a place
+                    </button>
                   )}
                 </>
               )}

@@ -48,6 +48,13 @@ export interface Location {
   avg_ratings?: AvgRatings
   review_count?: number
   distance_km?: number
+  submitter?: { display_name: string; avatar_url: string | null }
+}
+
+export interface SiteStats {
+  total_venues: number
+  total_contributors: number
+  added_this_week: number
 }
 
 export interface LocationPhoto {

@@ -10,9 +10,24 @@ interface LocationCardProps {
   location: Location
   className?: string
   compact?: boolean
+  showContributor?: boolean
 }
 
-export default function LocationCard({ location, className, compact = false }: LocationCardProps) {
+const AVATAR_COLORS = [
+  'bg-[#f4a090] text-white',
+  'bg-[#4abfc0] text-white',
+  'bg-[#a8d5a2] text-[#2c5f2e]',
+  'bg-[#f9d56e] text-[#7a5c00]',
+  'bg-[#c5a3e8] text-[#4a1080]',
+]
+
+function avatarColor(seed: string) {
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) | 0
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
+}
+
+export default function LocationCard({ location, className, compact = false, showContributor = false }: LocationCardProps) {
   const heroPhoto = location.photos?.[0]
   const ageLabels = AGE_RANGES
     .filter((a) => location.age_ranges.includes(a.value))
@@ -85,6 +100,17 @@ export default function LocationCard({ location, className, compact = false }: L
                 {label}
               </span>
             ))}
+          </div>
+        )}
+
+        {showContributor && location.submitter && (
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${avatarColor(location.submitted_by)}`}>
+              {location.submitter.display_name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)}
+            </div>
+            <span className="text-xs text-[#6b7280]">
+              Added by <span className="font-medium text-[#4b5563]">{location.submitter.display_name}</span>
+            </span>
           </div>
         )}
       </div>

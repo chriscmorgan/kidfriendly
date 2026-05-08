@@ -1,6 +1,18 @@
-import type { Location } from '@/lib/types'
+import type { Location, SiteStats } from '@/lib/types'
 
-export const mockLocations: Location[] = [
+export const mockStats: SiteStats = {
+  total_venues: 47,
+  total_contributors: 23,
+  added_this_week: 6,
+}
+
+const MOCK_SUBMITTERS: Record<string, { display_name: string; avatar_url: null }> = {
+  'mock-user-1': { display_name: 'Sarah M.', avatar_url: null },
+  'mock-user-2': { display_name: 'James K.', avatar_url: null },
+  'mock-user-3': { display_name: 'Priya T.', avatar_url: null },
+}
+
+const RAW_MOCK_LOCATIONS: Location[] = [
   {
     id: 'mock-1',
     slug: 'centennial-park-sydney',
@@ -154,3 +166,8 @@ export const mockLocations: Location[] = [
     review_count: 12, distance_km: 34.1,
   },
 ]
+
+export const mockLocations: Location[] = RAW_MOCK_LOCATIONS.map((loc) => ({
+  ...loc,
+  submitter: MOCK_SUBMITTERS[loc.submitted_by] ?? { display_name: 'A parent', avatar_url: null },
+}))
