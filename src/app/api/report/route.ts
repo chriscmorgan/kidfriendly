@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       html: `
         <p><strong>A listing has been reported.</strong></p>
         <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
-          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Venue</td><td><strong>${loc?.name ?? locationId}</strong></td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Venue</td><td><strong>${escapeHtml(loc?.name ?? locationId)}</strong></td></tr>
           <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Reason</td><td>${escapeHtml(reason)}</td></tr>
           <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Reporter</td><td>${escapeHtml(user.email ?? user.id)}</td></tr>
         </table>
