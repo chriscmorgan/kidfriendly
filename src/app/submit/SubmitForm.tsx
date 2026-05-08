@@ -20,7 +20,7 @@ interface AddressData {
 }
 
 export default function SubmitForm() {
-  const { user } = useAuth()
+  const { user, session } = useAuth()
   const router = useRouter()
   const [showSignIn, setShowSignIn] = useState(false)
 
@@ -140,8 +140,7 @@ export default function SubmitForm() {
     if (!user) return
     setSubmitting(true)
     const supabase = createClient()
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) supabase.storage.setAuth(session.access_token)
+    if (session) await supabase.auth.setSession({ access_token: session.access_token, refresh_token: session.refresh_token })
 
     const locRes = await fetch('/api/submit/location', {
       method: 'POST',
