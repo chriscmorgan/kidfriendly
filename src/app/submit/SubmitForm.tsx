@@ -140,7 +140,8 @@ export default function SubmitForm() {
     if (!user) return
     setSubmitting(true)
     const supabase = createClient()
-    await supabase.auth.getSession()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) supabase.storage.setAuth(session.access_token)
 
     const locRes = await fetch('/api/submit/location', {
       method: 'POST',
