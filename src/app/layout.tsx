@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist } from 'next/font/google'
+import { Geist, Fraunces } from 'next/font/google'
 import { Suspense } from 'react'
 import './globals.css'
 import { AuthProvider } from '@/components/auth/AuthProvider'
@@ -9,6 +9,7 @@ import AuthGate from '@/components/auth/AuthGate'
 import { safeJsonLd } from '@/lib/utils'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
+const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-fraunces', style: ['italic', 'normal'], weight: ['400', '600', '700', '900'] })
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
@@ -62,12 +63,12 @@ const websiteSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-AU" className={`${geist.variable} h-full`}>
+    <html lang="en-AU" className={`${geist.variable} ${fraunces.variable} h-full`}>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(organizationSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteSchema) }} />
       </head>
-      <body className="min-h-full flex flex-col antialiased bg-[#edf6f6] text-[#2c2c2c]">
+      <body className="min-h-full flex flex-col antialiased bg-parchment text-ink">
         <AuthProvider>
           <Header />
           <main className="flex-1">{children}</main>

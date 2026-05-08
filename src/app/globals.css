@@ -1,7 +1,25 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Brand palette */
+  /* Display font — Fraunces (quirky editorial serif) */
+  --font-display: var(--font-fraunces), Georgia, 'Times New Roman', serif;
+
+  /* Body / UI font — Geist */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Primary palette — warm, earthy */
+  --color-parchment: #f8f3ec;
+  --color-paper: #ffffff;
+  --color-ink: #1c1917;
+  --color-stone: #78716c;
+  --color-rust: #b5451b;
+  --color-rust-dark: #943a16;
+  --color-rust-light: #fdf0ea;
+  --color-leaf: #3d6b4f;
+  --color-border: #e5ddd4;
+
+  /* Sage — keep for map / search / filter UI */
   --color-sage-50: #e8f7f7;
   --color-sage-100: #c8eded;
   --color-sage-200: #a5dede;
@@ -9,25 +27,22 @@
   --color-sage-600: #38a5a0;
   --color-sage-700: #2a8a85;
 
+  /* Sand — misc UI compat */
   --color-sand-50: #fdf9f4;
   --color-sand-100: #f7eed9;
   --color-sand-200: #eeddb8;
   --color-sand-400: #d4b07a;
   --color-sand-600: #9e7c48;
 
-  /* Neutrals */
+  /* Legacy compat — used in search/map pages */
   --color-cream: #ffffff;
   --color-charcoal: #1a1a1a;
   --color-muted: #6b7280;
-
-  /* Typography */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
+  --background: #f8f3ec;
+  --foreground: #1c1917;
 }
 
 body {
@@ -37,7 +52,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
@@ -50,29 +64,28 @@ body {
 /* MapLibre popup */
 .kid-popup .maplibregl-popup-content {
   padding: 12px;
-  border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   font-family: var(--font-sans);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .kid-popup .maplibregl-popup-close-button {
   right: 8px;
   top: 8px;
   font-size: 18px;
   line-height: 1;
-  color: #6b7280;
+  color: #78716c;
   padding: 2px;
   border-radius: 4px;
 }
 .kid-popup .maplibregl-popup-close-button:hover {
-  background: #f3f4f6;
-  color: #1a1a1a;
+  background: #f5f0e8;
+  color: #1c1917;
 }
 .kid-popup .maplibregl-popup-tip {
   border-top-color: white;
 }
 
-/* Hide scrollbars */
 .scrollbar-hide {
   scrollbar-width: none;
   -ms-overflow-style: none;

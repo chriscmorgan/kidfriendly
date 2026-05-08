@@ -13,19 +13,19 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-sage-500 text-white hover:bg-sage-600 active:bg-sage-700 shadow-sm',
+    'bg-rust text-paper hover:bg-rust-dark active:bg-rust-dark',
   secondary:
-    'bg-white text-charcoal border border-gray-200 hover:bg-sand-50 active:bg-sand-100 shadow-sm',
+    'bg-paper text-ink border border-border hover:bg-parchment active:bg-parchment',
   ghost:
-    'text-charcoal hover:bg-sand-100 active:bg-sand-200',
+    'text-ink hover:bg-parchment active:bg-parchment',
   danger:
-    'bg-red-500 text-white hover:bg-red-600 active:bg-red-700 shadow-sm',
+    'bg-red-600 text-white hover:bg-red-700 active:bg-red-800',
 }
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'px-3 py-2.5 text-sm rounded-lg min-h-[44px]',
-  md: 'px-4 py-2.5 text-sm rounded-xl min-h-[44px]',
-  lg: 'px-6 py-3 text-base rounded-xl min-h-[44px]',
+  sm: 'px-3 py-2 text-sm rounded min-h-[44px]',
+  md: 'px-4 py-2.5 text-sm rounded min-h-[44px]',
+  lg: 'px-6 py-3 text-base rounded min-h-[44px]',
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -35,7 +35,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={cn(
-          'inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer',
+          'inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer',
           variantClasses[variant],
           sizeClasses[size],
           className

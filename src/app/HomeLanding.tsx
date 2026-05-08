@@ -11,19 +11,19 @@ interface Props {
   locations: Location[]
 }
 
-const HOW_IT_WORKS = [
+const STEPS = [
   {
-    emoji: '📍',
+    n: '1',
     title: 'Add a spot you know',
     desc: 'Sign in with Google and add a place in about 2 minutes. It goes live after a quick check.',
   },
   {
-    emoji: '🔍',
+    n: '2',
     title: 'Search your suburb',
     desc: 'Enter a suburb or postcode to find what\'s nearby. Filter by type of play area.',
   },
   {
-    emoji: '📣',
+    n: '3',
     title: 'Send it to your group',
     desc: 'Drop the link in your parents WhatsApp or Facebook group. More people = more spots added.',
   },
@@ -65,36 +65,26 @@ const FAQS = [
 ]
 
 const TAG_DESCRIPTIONS: Record<string, string> = {
-  indoor_playground: 'Indoor playground inside the venue',
+  indoor_playground: 'Playground built inside the venue',
   kids_play_area: 'Dedicated equipment on-site',
   adjacent_playground: 'Playground right next door',
-  outdoor_run_area: 'Outdoor space to burn energy',
+  outdoor_run_area: 'Space to run around outside',
   play_centre: 'Dedicated play venue',
 }
 
-function EarlyBadge() {
-  return (
-    <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-[#f0d8b0] text-[#a07030] text-xs font-semibold px-4 py-2 rounded-full">
-      New — still adding places in Melbourne
-    </div>
-  )
-}
-
-function ContributorAvatar({ name, index }: { name: string; index: number }) {
-  const colors = [
-    'bg-[#f4a090] text-white',
-    'bg-[#4abfc0] text-white',
-    'bg-[#a8d5a2] text-[#2c5f2e]',
-    'bg-[#f9d56e] text-[#7a5c00]',
-    'bg-[#c5a3e8] text-[#4a1080]',
-    'bg-[#f0a070] text-white',
+function ContributorInitial({ name, seed }: { name: string; seed: string }) {
+  const palettes = [
+    'bg-[#f4d4c8] text-[#7a2a14]',
+    'bg-[#c8e4d4] text-[#1a4a2e]',
+    'bg-[#d4d0c8] text-[#3a3428]',
+    'bg-[#f0e4c8] text-[#6a4a10]',
+    'bg-[#c8d4e4] text-[#1a2e4a]',
   ]
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) | 0
   const initials = name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
   return (
-    <div
-      className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ring-2 ring-white ${colors[index % colors.length]}`}
-      title={name}
-    >
+    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0 ring-2 ring-paper ${palettes[Math.abs(hash) % palettes.length]}`}>
       {initials}
     </div>
   )
@@ -107,123 +97,110 @@ export default function HomeLanding({ locations }: Props) {
         .filter((l) => l.submitter)
         .map((l) => [l.submitted_by, l.submitter!.display_name])
     ).entries()
-  ).slice(0, 6)
+  ).slice(0, 5)
 
   return (
-    <div className="flex flex-col overflow-x-hidden">
+    <div className="flex flex-col">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-[#fdf8f2] border-b border-[#e8ddd0] py-14 sm:py-20">
+      <section className="bg-parchment px-4 pt-14 pb-12 sm:pt-20 sm:pb-16">
+        <div className="max-w-2xl mx-auto">
 
-        {/* Subtle texture dots */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #2c2c2c 1px, transparent 1px)', backgroundSize: '24px 24px' }} aria-hidden />
-
-        <div className="relative z-10 w-full max-w-2xl mx-auto px-4 text-center">
-
-          {/* Early community badge */}
-          <div className="mb-5">
-            <EarlyBadge />
-          </div>
-
-          <h1 className="text-[clamp(1.75rem,7vw,3.75rem)] leading-tight font-extrabold text-[#2c2c2c] tracking-tight">
-            Melbourne cafes and places{' '}
-            <span className="text-[#4abfc0]">where the kids can actually play</span>
-          </h1>
-
-          <p className="text-[#5a6b6b] text-base sm:text-lg mt-4 max-w-xl mx-auto leading-relaxed">
-            Good places to go with kids are hard to find. They&apos;re not well-covered on Google Maps
-            and the lists floating around are mostly out of date. This is our attempt at keeping a better one.
-            If you know a spot, add it.
+          <p className="text-xs font-medium text-stone tracking-wide uppercase mb-6">
+            Melbourne · new, still adding places
           </p>
 
-          {/* Primary CTA — Add a place */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+          <h1 className="font-display italic font-700 text-[clamp(2.4rem,8vw,4.5rem)] leading-[1.05] text-ink">
+            Melbourne cafes and places where the kids can actually play
+          </h1>
+
+          <p className="text-stone text-base sm:text-lg mt-5 max-w-lg leading-relaxed">
+            Good places to go with kids are hard to find. They&apos;re not well-covered on Google Maps
+            and the lists floating around are mostly out of date. This is our attempt at keeping
+            a better one. If you know a spot, add it.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 mt-8">
             <Link
               href="/submit"
-              className="inline-flex items-center gap-2 bg-[#f4a090] text-white font-bold text-base px-8 py-3.5 rounded-2xl hover:bg-[#e8887a] transition-colors shadow-md min-h-[48px]"
+              className="inline-flex items-center justify-center gap-2 bg-rust text-paper text-sm font-medium px-6 py-3 rounded hover:bg-rust-dark transition-colors min-h-[48px]"
             >
-              📍 Add a place — free, 2 min
+              + Add a place
             </Link>
             <Link
               href="/search"
-              className="inline-flex items-center gap-2 bg-white border border-[#d0e0e0] text-[#38a5a0] font-semibold text-base px-8 py-3.5 rounded-2xl hover:bg-[#edf8f8] transition-colors min-h-[48px]"
+              className="inline-flex items-center justify-center gap-2 bg-paper border border-border text-ink text-sm font-medium px-6 py-3 rounded hover:bg-parchment transition-colors min-h-[48px]"
             >
-              Search the map →
+              Search the map
             </Link>
           </div>
 
-          {/* Search bar */}
-          <div className="w-full max-w-xl mt-5 mx-auto">
+          <div className="mt-8 max-w-xl">
             <SearchBar size="hero" />
           </div>
 
-          {/* Recent contributors */}
           {recentContributors.length > 0 && (
-            <div className="mt-6 flex flex-col items-center gap-2">
-              <div className="flex -space-x-2">
-                {recentContributors.map(([id, name], i) => (
-                  <ContributorAvatar key={id} name={name} index={i} />
+            <div className="mt-6 flex items-center gap-3">
+              <div className="flex -space-x-1.5">
+                {recentContributors.map(([id, name]) => (
+                  <ContributorInitial key={id} name={name} seed={id} />
                 ))}
               </div>
-              <p className="text-xs text-[#6b8080]">
-                Added by {recentContributors.map(([, name]) => name.split(' ')[0]).slice(0, 3).join(', ')} and others
+              <p className="text-xs text-stone">
+                Added by {recentContributors.map(([, n]) => n.split(' ')[0]).slice(0, 3).join(', ')} and others
               </p>
             </div>
           )}
-
         </div>
       </section>
 
-      {/* ── Community call-to-action banner ── */}
-      <section className="bg-[#fff8ee] border-b border-[#f0d8b0] px-4 py-5">
-        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <div>
-            <p className="font-semibold text-[#2c2c2c] text-sm">
-              Know a spot we&apos;ve missed?
-            </p>
-            <p className="text-xs text-[#7a6040] mt-0.5">
-              Add it — takes about 2 minutes.
-            </p>
-          </div>
+      <div className="border-t border-border" />
+
+      {/* ── Miss a spot banner ── */}
+      <section className="bg-rust-light px-4 py-4">
+        <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <p className="text-sm text-ink">
+            Know a spot we&apos;ve missed? Add it — takes about 2 minutes.
+          </p>
           <Link
             href="/submit"
-            className="shrink-0 inline-flex items-center gap-1.5 bg-[#f4a090] text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#e8887a] transition-colors min-h-[44px]"
+            className="shrink-0 text-sm font-medium text-rust hover:text-rust-dark underline underline-offset-2 min-h-[44px] flex items-center"
           >
-            📍 Add it now
+            Add it now →
           </Link>
         </div>
       </section>
 
+      <div className="border-t border-border" />
+
       {/* ── How it works ── */}
-      <section className="bg-white border-b border-gray-100 px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-center text-xl font-bold text-[#2c2c2c] mb-1">How it works</h2>
-          <p className="text-center text-sm text-[#6b7280] mb-8">Anyone can add a place or search for one</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {HOW_IT_WORKS.map((step, i) => (
-              <div key={i} className="flex flex-col items-center text-center px-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#fff3ee] flex items-center justify-center text-2xl mb-3 shadow-sm">
-                  {step.emoji}
+      <section className="bg-paper px-4 py-12">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="font-display italic font-700 text-2xl text-ink mb-8">How it works</h2>
+          <div className="space-y-8">
+            {STEPS.map((step) => (
+              <div key={step.n} className="flex gap-5">
+                <span className="font-display italic text-3xl text-border select-none shrink-0 leading-tight">{step.n}</span>
+                <div>
+                  <h3 className="text-sm font-semibold text-ink mb-1">{step.title}</h3>
+                  <p className="text-sm text-stone leading-relaxed">{step.desc}</p>
                 </div>
-                <h3 className="font-semibold text-[#2c2c2c] mb-1">{step.title}</h3>
-                <p className="text-sm text-[#6b7280] leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Recently added — community feed ── */}
+      <div className="border-t border-border" />
+
+      {/* ── Recently added ── */}
       {locations.length > 0 && (
-        <section className="bg-[#faf8f4] px-4 py-12 border-b border-gray-100">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-baseline justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-[#2c2c2c]">Recently added</h2>
-                <p className="text-sm text-[#6b7280] mt-0.5">Spots parents have added lately</p>
-              </div>
-              <Link href="/search" className="text-sm font-semibold text-[#38a5a0] hover:underline shrink-0 ml-4">
-                See all →
+        <section className="bg-parchment px-4 py-12">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-baseline justify-between mb-6 max-w-5xl">
+              <h2 className="font-display italic font-700 text-2xl text-ink">Recently added</h2>
+              <Link href="/search" className="text-xs text-stone hover:text-ink underline underline-offset-2">
+                See all
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -231,96 +208,92 @@ export default function HomeLanding({ locations }: Props) {
                 <LocationCard key={loc.id} location={loc} showContributor />
               ))}
             </div>
-            <div className="mt-8 text-center">
-              <p className="text-sm text-[#6b7280] mb-3">
-                Don&apos;t see your suburb? You can fix that.
-              </p>
-              <Link
-                href="/submit"
-                className="inline-flex items-center gap-2 bg-[#f4a090] text-white font-bold text-sm px-6 py-3 rounded-xl hover:bg-[#e8887a] transition-colors shadow-sm"
-              >
-                📍 Add a place — free sign-up, 2 minutes
+            <p className="text-sm text-stone mt-8">
+              Don&apos;t see your suburb?{' '}
+              <Link href="/submit" className="text-rust hover:text-rust-dark underline underline-offset-2">
+                Add a place — it takes about 2 minutes.
               </Link>
-            </div>
+            </p>
           </div>
         </section>
       )}
 
-      {/* ── Categories ── */}
-      <section className="bg-white px-4 py-12 border-b border-gray-100">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Browse by type</h2>
-          <p className="text-sm text-[#6b7280] mb-6">Filter by what kind of play setup the venue has</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="border-t border-border" />
+
+      {/* ── Browse by type ── */}
+      <section className="bg-paper px-4 py-12">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="font-display italic font-700 text-2xl text-ink mb-1">Browse by type</h2>
+          <p className="text-sm text-stone mb-6">Filter by what kind of play setup the venue has</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
             {TAGS.map((tag) => (
               <Link
                 key={tag.value}
                 href={`/search?tag=${tag.value}`}
-                className={`group flex flex-col items-center text-center p-4 rounded-2xl border-2 border-transparent bg-[#faf8f4] hover:border-current transition-all shadow-sm hover:shadow-md min-h-[100px] ${tag.color}`}
+                className="flex flex-col p-4 rounded border border-border bg-parchment hover:border-ink hover:bg-paper transition-colors"
               >
-                <span className="text-3xl mb-2">{tag.emoji}</span>
-                <span className="text-xs font-semibold leading-tight mb-1">{tag.label}</span>
-                <span className="text-xs text-[#6b7280] leading-snug">{TAG_DESCRIPTIONS[tag.value]}</span>
+                <span className="text-2xl mb-2">{tag.emoji}</span>
+                <span className="text-xs font-semibold text-ink leading-snug mb-1">{tag.label}</span>
+                <span className="text-xs text-stone leading-snug">{TAG_DESCRIPTIONS[tag.value]}</span>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Popular guides ── */}
-      <section className="bg-[#faf8f4] px-4 py-12 border-b border-gray-100">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Filtered lists</h2>
-          <p className="text-sm text-[#6b7280] mb-6">If you know what you&apos;re after</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="border-t border-border" />
+
+      {/* ── Filtered lists ── */}
+      <section className="bg-parchment px-4 py-12">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="font-display italic font-700 text-2xl text-ink mb-1">Filtered lists</h2>
+          <p className="text-sm text-stone mb-6">If you know what you&apos;re after</p>
+          <div className="space-y-3">
             <Link
               href="/indoor-playground-cafes"
-              className="group flex items-start gap-4 bg-white border border-[#e0e0e0] rounded-2xl p-5 hover:border-[#4abfc0] transition-colors"
+              className="flex items-center justify-between py-4 border-b border-border hover:text-rust transition-colors group"
             >
-              <div className="w-12 h-12 shrink-0 rounded-2xl bg-[#fff3ee] flex items-center justify-center text-2xl shadow-sm">🛝</div>
               <div>
-                <h3 className="font-semibold text-[#2c2c2c] text-sm group-hover:text-[#38a5a0] transition-colors">Cafes with Indoor Playgrounds</h3>
-                <p className="text-xs text-[#6b7280] mt-1 leading-relaxed">A proper playground inside the venue — drink your coffee while it&apos;s hot.</p>
+                <p className="text-sm font-medium text-ink group-hover:text-rust transition-colors">Cafes with indoor playgrounds</p>
+                <p className="text-xs text-stone mt-0.5">A proper playground inside the venue — drink your coffee while it&apos;s hot.</p>
               </div>
+              <span className="text-stone group-hover:text-rust text-lg ml-4 transition-colors">→</span>
             </Link>
             <Link
               href="/cafes-next-to-playgrounds"
-              className="group flex items-start gap-4 bg-white border border-[#e0e0e0] rounded-2xl p-5 hover:border-[#4abfc0] transition-colors"
+              className="flex items-center justify-between py-4 border-b border-border hover:text-rust transition-colors group"
             >
-              <div className="w-12 h-12 shrink-0 rounded-2xl bg-[#f0fdf0] flex items-center justify-center text-2xl shadow-sm">🏞️</div>
               <div>
-                <h3 className="font-semibold text-[#2c2c2c] text-sm group-hover:text-[#38a5a0] transition-colors">Cafes Next to Playgrounds</h3>
-                <p className="text-xs text-[#6b7280] mt-1 leading-relaxed">A playground right next door — perfect for good-weather days out.</p>
+                <p className="text-sm font-medium text-ink group-hover:text-rust transition-colors">Cafes next to playgrounds</p>
+                <p className="text-xs text-stone mt-0.5">A playground right next door — perfect for good-weather days out.</p>
               </div>
+              <span className="text-stone group-hover:text-rust text-lg ml-4 transition-colors">→</span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Share the community ── */}
-      <section className="bg-white px-4 py-12 border-b border-gray-100">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="w-14 h-14 rounded-2xl bg-[#fff3ee] flex items-center justify-center text-3xl mx-auto mb-4">
-            📣
-          </div>
-          <h2 className="text-xl font-bold text-[#2c2c2c]">Know someone who&apos;d find this useful?</h2>
-          <p className="text-sm text-[#6b7280] mt-3 max-w-md mx-auto leading-relaxed">
-            Drop the link in your parents WhatsApp or local Facebook group. More people finding it means more spots getting added.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+      <div className="border-t border-border" />
+
+      {/* ── Share ── */}
+      <section className="bg-paper px-4 py-12">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="font-display italic font-700 text-2xl text-ink mb-2">Know someone who&apos;d find this useful?</h2>
+          <p className="text-sm text-stone mb-6">Drop the link in your parents WhatsApp or local Facebook group. More people finding it means more spots getting added.</p>
+          <div className="flex flex-wrap gap-3">
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#1877F2] text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#1464d4] transition-colors min-h-[44px]"
+              className="inline-flex items-center gap-2 border border-border bg-parchment text-ink text-sm font-medium px-4 py-2.5 rounded hover:border-ink transition-colors min-h-[44px]"
             >
               Share on Facebook
             </a>
             <a
-              href={`https://wa.me/?text=${encodeURIComponent('Found this — it\'s a community map of cafes and places with real play areas in Melbourne, added by parents: ' + SITE_URL)}`}
+              href={`https://wa.me/?text=${encodeURIComponent('Found this — a map of cafes and places in Melbourne where the kids can play, added by parents: ' + SITE_URL)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#25D366] text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#1dba57] transition-colors min-h-[44px]"
+              className="inline-flex items-center gap-2 border border-border bg-parchment text-ink text-sm font-medium px-4 py-2.5 rounded hover:border-ink transition-colors min-h-[44px]"
             >
               Share on WhatsApp
             </a>
@@ -328,15 +301,17 @@ export default function HomeLanding({ locations }: Props) {
         </div>
       </section>
 
-      {/* ── FAQ ── */}
-      <section className="bg-[#faf8f4] px-4 py-12 border-t border-gray-100">
+      <div className="border-t border-border" />
+
+      {/* ── Questions ── */}
+      <section className="bg-parchment px-4 py-12">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-8">Questions</h2>
-          <div className="space-y-4">
+          <h2 className="font-display italic font-700 text-2xl text-ink mb-8">Questions</h2>
+          <div className="space-y-0">
             {FAQS.map((faq, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5">
-                <h3 className="font-semibold text-[#2c2c2c] text-sm mb-2">{faq.q}</h3>
-                <p className="text-sm text-[#4b5563] leading-relaxed">{faq.a}</p>
+              <div key={i} className="border-b border-border py-5">
+                <p className="text-sm font-semibold text-ink mb-2">{faq.q}</p>
+                <p className="text-sm text-stone leading-relaxed">{faq.a}</p>
               </div>
             ))}
           </div>
@@ -364,13 +339,10 @@ export default function HomeLanding({ locations }: Props) {
               '@id': `${SITE_URL}/#website`,
               url: SITE_URL,
               name: 'KidFriendlyEats',
-              description: 'Community directory of kid-friendly cafes and venues with play areas in Melbourne',
+              description: 'Melbourne cafes and places where the kids can play',
               potentialAction: {
                 '@type': 'SearchAction',
-                target: {
-                  '@type': 'EntryPoint',
-                  urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-                },
+                target: { '@type': 'EntryPoint', urlTemplate: `${SITE_URL}/search?q={search_term_string}` },
                 'query-input': 'required name=search_term_string',
               },
             }),
@@ -378,25 +350,25 @@ export default function HomeLanding({ locations }: Props) {
         />
       </section>
 
-      {/* ── Final CTA ── */}
-      <section className="bg-[#2c2c2c] px-4 py-16 text-center">
-        <div className="max-w-lg mx-auto">
-          <h2 className="text-2xl font-bold text-white">Know a spot? Add it.</h2>
-          <p className="text-[#9ab0b0] mt-3 text-sm leading-relaxed max-w-sm mx-auto">
-            Sign in with Google — takes about 2 minutes. We check it before it goes live.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+      <div className="border-t border-border" />
+
+      {/* ── Bottom CTA ── */}
+      <section className="bg-paper px-4 py-14 text-center">
+        <div className="max-w-md mx-auto">
+          <h2 className="font-display italic font-700 text-3xl text-ink mb-3">Know a spot? Add it.</h2>
+          <p className="text-sm text-stone mb-6">Sign in with Google — takes about 2 minutes.</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/submit"
-              className="inline-flex items-center gap-2 bg-[#f4a090] text-white font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#e8887a] transition-colors shadow-lg"
+              className="inline-flex items-center gap-2 bg-rust text-paper text-sm font-medium px-6 py-3 rounded hover:bg-rust-dark transition-colors"
             >
-              📍 Add a place — it&apos;s free
+              + Add a place
             </Link>
             <Link
               href="/search"
-              className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white font-semibold text-sm px-7 py-3.5 rounded-2xl hover:bg-white/20 transition-colors"
+              className="text-sm text-stone hover:text-ink underline underline-offset-2"
             >
-              Browse the map →
+              Browse the map first
             </Link>
           </div>
         </div>
