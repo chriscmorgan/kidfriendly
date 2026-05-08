@@ -195,6 +195,15 @@ export default async function LocationPage({ params }: Props) {
               <Navigation className="w-3.5 h-3.5" />
               Get directions
             </a>
+            <a
+              href={`https://maps.google.com/?q=${loc.lat},${loc.lng}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-[#38a5a0] hover:text-[#2a8a85] mt-1.5 font-medium transition-colors"
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              View on Google Maps
+            </a>
             {loc.website && (
               <a
                 href={loc.website}
