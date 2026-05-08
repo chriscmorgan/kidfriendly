@@ -2,14 +2,13 @@ import Link from 'next/link'
 import SearchBar from '@/components/search/SearchBar'
 import LocationCard from '@/components/location/LocationCard'
 import { TAGS } from '@/lib/constants'
-import type { Location, SiteStats } from '@/lib/types'
+import type { Location } from '@/lib/types'
 import { safeJsonLd } from '@/lib/utils'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
 interface Props {
   locations: Location[]
-  stats: SiteStats
 }
 
 const HOW_IT_WORKS = [
@@ -73,14 +72,10 @@ const TAG_DESCRIPTIONS: Record<string, string> = {
   play_centre: 'Dedicated play venue',
 }
 
-function StatsBadge({ stats }: { stats: SiteStats }) {
+function EarlyBadge() {
   return (
-    <div className="inline-flex flex-wrap items-center justify-center gap-x-4 gap-y-1 bg-white/80 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-xs font-semibold px-4 py-2 rounded-full">
-      <span>📍 {stats.total_venues} venues</span>
-      <span className="text-[#5ecece]/50">·</span>
-      <span>👤 {stats.total_contributors} contributors</span>
-      <span className="text-[#5ecece]/50">·</span>
-      <span>✨ {stats.added_this_week} added this week</span>
+    <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-[#f0d8b0] text-[#a07030] text-xs font-semibold px-4 py-2 rounded-full">
+      <span>✨</span> Just launched · Be one of the first to add a spot
     </div>
   )
 }
@@ -105,7 +100,7 @@ function ContributorAvatar({ name, index }: { name: string; index: number }) {
   )
 }
 
-export default function HomeLanding({ locations, stats }: Props) {
+export default function HomeLanding({ locations }: Props) {
   const recentContributors = Array.from(
     new Map(
       locations
@@ -125,9 +120,9 @@ export default function HomeLanding({ locations, stats }: Props) {
 
         <div className="relative z-10 w-full max-w-2xl mx-auto px-4 text-center">
 
-          {/* Live stats pill */}
+          {/* Early community badge */}
           <div className="mb-5">
-            <StatsBadge stats={stats} />
+            <EarlyBadge />
           </div>
 
           <h1 className="text-[clamp(1.75rem,7vw,3.75rem)] leading-tight font-extrabold text-[#2c2c2c] tracking-tight">
@@ -136,8 +131,10 @@ export default function HomeLanding({ locations, stats }: Props) {
           </h1>
 
           <p className="text-[#5a6b6b] text-base sm:text-lg mt-4 max-w-xl mx-auto leading-relaxed">
-            No ads. No paid listings. Just real cafes and venues with play areas —{' '}
-            <strong className="text-[#2c2c2c] font-semibold">added by parents who have actually been there.</strong>
+            Finding genuinely good spots with the kids is harder than it should be. We kept sharing
+            them in group chats and thought —{' '}
+            <strong className="text-[#2c2c2c] font-semibold">there should be a proper place for this.</strong>
+            {' '}So we built one. Add the places you love and help other Melbourne parents find them.
           </p>
 
           {/* Primary CTA — Add a place */}

@@ -13,7 +13,7 @@ export default function AboutPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16">
       <h1 className="text-3xl font-bold text-[#2c2c2c] mb-2">About KidFriendlyEats</h1>
-      <p className="text-[#6b7280] text-sm mb-10">A community project. No ads, no paid listings, no fluff.</p>
+      <p className="text-[#6b7280] text-sm mb-10">A community project built by Melbourne parents.</p>
 
       <div className="space-y-8 text-[15px] leading-relaxed text-[#2c2c2c]">
 
