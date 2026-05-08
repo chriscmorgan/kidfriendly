@@ -15,7 +15,7 @@ const STEPS = [
   {
     n: '1',
     title: 'Add a spot you know',
-    desc: 'Create a free account with Google (one tap) and add a place in about 2 minutes. It goes live after a quick check.',
+    desc: 'Create a free account with Google or your email and add a place in about 2 minutes. It goes live after a quick check.',
   },
   {
     n: '2',
@@ -44,7 +44,7 @@ const FAQS = [
   },
   {
     q: 'Can I add a place?',
-    a: 'Yes — that\'s the whole point. Sign in with Google and use the Add page. Takes about 2 minutes. We check each submission before it goes live.',
+    a: 'Yes — that\'s the whole point. Create a free account with Google or your email and use the Add page. Takes about 2 minutes. We check each submission before it goes live.',
   },
   {
     q: 'How do I know the info is right?',
@@ -152,7 +152,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-rust-light px-4 py-4">
         <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-sm text-ink">
-            Know a spot we&apos;ve missed? Sign in with Google and add it — free, takes about 2 minutes.
+            Know a spot we&apos;ve missed? Create a free account with Google or your email and add it — takes about 2 minutes.
           </p>
           <Link
             href="/submit"
@@ -348,7 +348,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-paper px-4 py-14 text-center">
         <div className="max-w-md mx-auto">
           <h2 className="font-display italic font-700 text-3xl text-ink mb-3">Know a spot? Add it.</h2>
-          <p className="text-sm text-stone mb-6">Free account — one tap with Google, then 2 minutes to add a place.</p>
+          <p className="text-sm text-stone mb-6">Free account — sign up with Google or your email, then 2 minutes to add a place.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/submit"
