@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
+import { Suspense } from 'react'
 import './globals.css'
 import { AuthProvider } from '@/components/auth/AuthProvider'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import AuthGate from '@/components/auth/AuthGate'
 import { safeJsonLd } from '@/lib/utils'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
@@ -70,6 +72,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
+          <Suspense>
+            <AuthGate />
+          </Suspense>
         </AuthProvider>
       </body>
     </html>
