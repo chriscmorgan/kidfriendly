@@ -237,9 +237,9 @@ export default function HomeMapClient({ locations }: Props) {
               </span>
               <Link
                 href="/submit"
-                className="text-xs font-semibold text-[#5e8e5c] hover:text-[#426340] transition-colors"
+                className="inline-flex items-center gap-1 text-xs font-semibold bg-[#edf8f8] text-[#38a5a0] border border-[#aadbd8] px-2.5 py-1 rounded-full hover:bg-[#d5f0f0] transition-colors"
               >
-                + Add a place
+                <span>+</span> Add a place
               </Link>
             </div>
 
@@ -298,6 +298,21 @@ export default function HomeMapClient({ locations }: Props) {
                   )
                 })
               )}
+              {/* Add a place promo card — always shown at the end */}
+              <div className="shrink-0">
+                <Link
+                  href="/submit"
+                  className="flex flex-col w-36 h-full rounded-2xl border-2 border-dashed border-[#aadbd8] bg-[#edf8f8] hover:border-[#4abfc0] hover:bg-[#d5f0f0] transition-all items-center justify-center text-center p-3 gap-2 min-h-[108px]"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-xl shadow-sm shrink-0">
+                    📍
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-[#38a5a0] leading-tight">Add a place</p>
+                    <p className="text-[10px] text-[#6b7280] mt-0.5">Free · 2 min</p>
+                  </div>
+                </Link>
+              </div>
               <div className="shrink-0 w-1" aria-hidden />
             </div>
           </div>

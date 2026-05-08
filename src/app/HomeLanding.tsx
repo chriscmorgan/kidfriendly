@@ -119,7 +119,17 @@ export default function HomeLanding({ locations }: Props) {
                 <span>{emoji}</span> {city}
               </Link>
             ))}
+            <Link
+              href="/submit"
+              className="inline-flex items-center gap-1.5 bg-white/70 backdrop-blur-sm border border-[#5ecece]/30 text-[#38a5a0] text-sm font-semibold px-4 py-3 rounded-full hover:bg-white transition-colors min-h-[44px]"
+            >
+              <span>📍</span> Add a place
+            </Link>
           </div>
+
+          <p className="text-xs text-[#4a7a7a]/70 mt-3">
+            Know a spot that&apos;s missing? <Link href="/submit" className="underline underline-offset-2 hover:text-[#38a5a0] transition-colors">Sign in free and add it</Link> — takes 2 minutes.
+          </p>
 
         </div>
       </section>
@@ -138,6 +148,14 @@ export default function HomeLanding({ locations }: Props) {
                 <p className="text-sm text-[#6b7280] leading-relaxed">{step.desc}</p>
               </div>
             ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link
+              href="/submit"
+              className="inline-flex items-center gap-2 bg-[#edf8f8] border border-[#aadbd8] text-[#38a5a0] font-semibold text-sm px-6 py-3 rounded-full hover:bg-[#d5f0f0] transition-colors"
+            >
+              📍 Add a place — free sign-up, 2 minutes
+            </Link>
           </div>
         </div>
       </section>
@@ -286,14 +304,21 @@ export default function HomeLanding({ locations }: Props) {
           </div>
           <h2 className="text-2xl font-bold text-white">Know a great spot?</h2>
           <p className="text-white/80 mt-3 text-sm leading-relaxed max-w-sm mx-auto">
-            Help other families discover it. Takes 2 minutes to add a place to the map.
+            Help other families discover it. Sign in free and add a place in 2 minutes — every submission is reviewed before going live.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-3 text-white/60 text-xs font-medium">
+            <span>✓ Free forever</span>
+            <span>·</span>
+            <span>✓ Takes 2 minutes</span>
+            <span>·</span>
+            <span>✓ Sign in with Google or email</span>
+          </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
             <Link
               href="/submit"
               className="inline-flex items-center gap-2 bg-white text-[#38a5a0] font-bold text-sm px-7 py-3.5 rounded-2xl hover:bg-[#f0fbfb] transition-colors shadow-lg"
             >
-              <span>📍</span> Add a place
+              <span>📍</span> Add a place — it&apos;s free
             </Link>
             <Link
               href="/search"

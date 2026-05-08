@@ -6,7 +6,6 @@ import SignInModal from '@/components/auth/SignInModal'
 import AddressSearch from '@/components/forms/AddressSearch'
 import VenueSearch, { type PlaceResult } from '@/components/forms/VenueSearch'
 import Button from '@/components/ui/Button'
-import { createClient } from '@/lib/supabase/client'
 import { TAGS, OPEN_TIMES, AGE_RANGES } from '@/lib/constants'
 import type { Tag, OpenTime, AgeRange } from '@/lib/types'
 import { Upload, X, MapPin } from 'lucide-react'
@@ -20,7 +19,7 @@ interface AddressData {
 }
 
 export default function SubmitForm() {
-  const { user, session } = useAuth()
+  const { user } = useAuth()
   const router = useRouter()
   const [showSignIn, setShowSignIn] = useState(false)
 
@@ -137,10 +136,8 @@ export default function SubmitForm() {
     if (selectedTags.length === 0) { setError('Select at least one tag'); return }
     if (!description.trim() || description.length < 30) { setError('Description must be at least 30 characters'); return }
 
-    if (!user || !session?.access_token) return
+    if (!user) return
     setSubmitting(true)
-    const supabase = createClient()
-    const storageUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 
     const locRes = await fetch('/api/submit/location', {
       method: 'POST',
@@ -174,30 +171,18 @@ export default function SubmitForm() {
       const file = photos[i]
       const ext = file.name.split('.').pop()
       const path = `${loc.id}/${i}.${ext}`
-      const uploadRes = await fetch(`${storageUrl}/storage/v1/object/Photos/${path}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': file.type || 'application/octet-stream',
-          'x-upsert': 'true',
-        },
-        body: file,
-      })
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('location_id', loc.id)
+      fd.append('sort_order', String(i))
+      const uploadRes = await fetch('/api/photos', { method: 'POST', body: fd })
       if (!uploadRes.ok) {
-        const err = await uploadRes.json().catch(() => ({ message: 'Upload failed' }))
-        console.error('[photo upload] failed:', err.message, { path })
-        setError(`Photo upload failed: ${err.message}`)
+        const err = await uploadRes.json().catch(() => ({ error: 'Upload failed' }))
+        console.error('[photo upload] failed:', err.error, { path })
+        setError(`Photo upload failed: ${err.error}`)
         setSubmitting(false)
         return
       }
-      const publicUrl = `${storageUrl}/storage/v1/object/public/Photos/${path}`
-      const { error: insertError } = await supabase.from('location_photos').insert({
-        location_id: loc.id,
-        url: publicUrl,
-        sort_order: i,
-        uploaded_by: user.id,
-      })
-      if (insertError) console.error('[photo insert] failed:', insertError.message)
     }
 
     setSubmitting(false)

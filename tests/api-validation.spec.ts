@@ -38,6 +38,15 @@ test('POST /api/submit/location: returns 401 without authentication', async ({ r
   expect(res.status()).toBe(401)
 })
 
+test('POST /api/photos: returns 401 without authentication', async ({ request }) => {
+  const res = await request.post('/api/photos', {
+    multipart: { location_id: 'test-id', sort_order: '0' },
+  })
+  expect(res.status()).toBe(401)
+  const body = await res.json()
+  expect(body.error).toBe('Unauthorized')
+})
+
 // ── Method not allowed ──────────────────────────────────────────────────────
 // Next.js App Router returns 405 when the HTTP method has no handler defined.
 
@@ -53,6 +62,11 @@ test('GET /api/report: returns 405 method not allowed', async ({ request }) => {
 
 test('GET /api/submit/location: returns 405 method not allowed', async ({ request }) => {
   const res = await request.get('/api/submit/location')
+  expect(res.status()).toBe(405)
+})
+
+test('GET /api/photos: returns 405 method not allowed', async ({ request }) => {
+  const res = await request.get('/api/photos')
   expect(res.status()).toBe(405)
 })
 
