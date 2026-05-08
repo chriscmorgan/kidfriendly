@@ -114,43 +114,35 @@ export default function HomeLanding({ locations }: Props) {
             Melbourne cafes and places where the kids can actually play
           </h1>
 
-          <p className="text-stone text-base sm:text-lg mt-5 max-w-lg leading-relaxed">
-            Good places to go with kids are hard to find. They&apos;re not well-covered on Google Maps
-            and the lists floating around are mostly out of date. This is our attempt at keeping
-            a better one. If you know a spot, add it.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 mt-8">
-            <Link
-              href="/submit"
-              className="inline-flex items-center justify-center gap-2 bg-rust text-paper text-sm font-medium px-6 py-3 rounded hover:bg-rust-dark transition-colors min-h-[48px]"
-            >
-              + Add a place
-            </Link>
-            <Link
-              href="/search"
-              className="inline-flex items-center justify-center gap-2 bg-paper border border-border text-ink text-sm font-medium px-6 py-3 rounded hover:bg-parchment transition-colors min-h-[48px]"
-            >
-              Search the map
-            </Link>
-          </div>
-
-          <div className="mt-8 max-w-xl">
+          <div className="mt-6 max-w-xl">
             <SearchBar size="hero" />
           </div>
 
-          {recentContributors.length > 0 && (
-            <div className="mt-6 flex items-center gap-3">
-              <div className="flex -space-x-1.5">
-                {recentContributors.map(([id, name]) => (
-                  <ContributorInitial key={id} name={name} seed={id} />
-                ))}
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+            {recentContributors.length > 0 && (
+              <div className="flex items-center gap-3">
+                <div className="flex -space-x-1.5">
+                  {recentContributors.map(([id, name]) => (
+                    <ContributorInitial key={id} name={name} seed={id} />
+                  ))}
+                </div>
+                <p className="text-xs text-stone">
+                  Added by {recentContributors.map(([, n]) => n.split(' ')[0]).slice(0, 3).join(', ')} and others
+                </p>
               </div>
-              <p className="text-xs text-stone">
-                Added by {recentContributors.map(([, n]) => n.split(' ')[0]).slice(0, 3).join(', ')} and others
-              </p>
-            </div>
-          )}
+            )}
+            <Link
+              href="/submit"
+              className="text-sm font-medium text-rust hover:text-rust-dark underline underline-offset-2 min-h-[44px] flex items-center"
+            >
+              + Add a place
+            </Link>
+          </div>
+
+          <p className="text-stone text-sm mt-6 max-w-lg leading-relaxed">
+            Good places to go with kids are hard to find. They&apos;re not well-covered on Google Maps
+            and the lists floating around are mostly out of date. This is parents adding what they know.
+          </p>
         </div>
       </section>
 

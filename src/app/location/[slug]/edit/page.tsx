@@ -35,9 +35,9 @@ export default async function EditPage({ params }: Props) {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <a href="/admin" className="text-sm text-[#38a5a0] hover:underline">← Back to admin</a>
-        <h1 className="text-2xl font-bold text-[#2c2c2c] mt-3">Edit location</h1>
-        <p className="text-sm text-[#6b7280] mt-1">{loc.name}</p>
+        <a href="/admin" className="text-sm text-rust hover:underline">← Back to admin</a>
+        <h1 className="font-display italic font-700 text-2xl text-ink mt-3">Edit location</h1>
+        <p className="text-sm text-stone mt-1">{loc.name}</p>
       </div>
       <EditForm location={location} />
     </div>

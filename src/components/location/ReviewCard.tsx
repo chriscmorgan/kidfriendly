@@ -8,30 +8,30 @@ export default function ReviewCard({ review }: { review: Review }) {
   )
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+    <div className="bg-paper border border-border rounded p-4">
       <div className="flex items-start gap-3">
         {review.user?.avatar_url ? (
           <img src={review.user.avatar_url} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
         ) : (
-          <div className="w-9 h-9 rounded-full bg-[#c8eded] flex items-center justify-center shrink-0">
-            <User className="w-4 h-4 text-[#38a5a0]" />
+          <div className="w-9 h-9 rounded-full bg-parchment border border-border flex items-center justify-center shrink-0">
+            <User className="w-4 h-4 text-stone" />
           </div>
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-sm font-semibold text-[#2c2c2c] truncate">
+            <span className="text-sm font-semibold text-ink truncate">
               {review.user?.display_name ?? 'Anonymous'}
             </span>
-            <span className="text-xs text-[#6b7280] shrink-0">
+            <span className="text-xs text-stone shrink-0">
               {new Date(review.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}
             </span>
           </div>
 
           {/* Comment first — primary content */}
           {review.comment ? (
-            <p className="text-[15px] text-[#2c2c2c] mt-2 leading-relaxed">{review.comment}</p>
+            <p className="text-[15px] text-ink mt-2 leading-relaxed">{review.comment}</p>
           ) : (
-            <p className="text-sm text-[#6b7280] italic mt-2">Rated the experience</p>
+            <p className="text-sm text-stone italic mt-2">Rated the experience</p>
           )}
 
           {/* Rating chips — secondary */}
@@ -40,7 +40,7 @@ export default function ReviewCard({ review }: { review: Review }) {
               {ratedDimensions.map((d) => {
                 const val = review[`rating_${d.key}` as keyof Review] as number
                 return (
-                  <span key={d.key} className="inline-flex items-center gap-1 bg-[#edf8f8] text-[#2a8a85] text-[11px] px-2 py-0.5 rounded-full font-medium">
+                  <span key={d.key} className="inline-flex items-center gap-1 bg-parchment text-stone text-[11px] px-2 py-0.5 rounded font-medium border border-border">
                     {d.emoji} {val}/5
                   </span>
                 )

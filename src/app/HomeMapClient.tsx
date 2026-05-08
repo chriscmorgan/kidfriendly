@@ -100,16 +100,16 @@ export default function HomeMapClient({ locations }: Props) {
         sheetOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
       )}>
         <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-2xl px-3 py-2.5 shadow-lg focus-within:border-[#7da87b] transition-colors">
-          <Search className="w-4 h-4 text-[#6b7280] shrink-0" />
+          <Search className="w-4 h-4 text-stone shrink-0" />
           <input
             type="text"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             placeholder="Filter by name or suburb…"
-            className="flex-1 bg-transparent outline-none text-sm text-[#2c2c2c] placeholder:text-[#6b7280]"
+            className="flex-1 bg-transparent outline-none text-sm text-ink placeholder:text-stone"
           />
           {filter && (
-            <button onClick={() => setFilter('')} className="text-[#6b7280] hover:text-[#2c2c2c] cursor-pointer">
+            <button onClick={() => setFilter('')} className="text-stone hover:text-ink cursor-pointer">
               <X className="w-3.5 h-3.5" />
             </button>
           )}
@@ -136,15 +136,15 @@ export default function HomeMapClient({ locations }: Props) {
                 className="p-1.5 -ml-1 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
                 aria-label="Back"
               >
-                <ArrowLeft className="w-5 h-5 text-[#2c2c2c]" />
+                <ArrowLeft className="w-5 h-5 text-ink" />
               </button>
-              <span className="text-xs text-[#6b7280] font-medium flex-1 truncate">{selectedLoc.suburb}</span>
+              <span className="text-xs text-stone font-medium flex-1 truncate">{selectedLoc.suburb}</span>
               <button
                 onClick={handleClose}
                 className="p-1.5 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
                 aria-label="Close"
               >
-                <X className="w-4 h-4 text-[#6b7280]" />
+                <X className="w-4 h-4 text-stone" />
               </button>
             </div>
 
@@ -166,10 +166,10 @@ export default function HomeMapClient({ locations }: Props) {
 
               <div className="px-5 pt-4 pb-6">
                 {/* Name */}
-                <h2 className="text-xl font-bold text-[#2c2c2c] leading-tight">{selectedLoc.name}</h2>
+                <h2 className="text-xl font-bold text-ink leading-tight">{selectedLoc.name}</h2>
 
                 {/* Suburb + distance + rating */}
-                <div className="flex items-center gap-3 mt-1 text-sm text-[#6b7280]">
+                <div className="flex items-center gap-3 mt-1 text-sm text-stone">
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5" />
                     {selectedLoc.suburb}
@@ -180,11 +180,11 @@ export default function HomeMapClient({ locations }: Props) {
                   {(() => {
                     const r = overallRating(selectedLoc)
                     return r != null ? (
-                      <span className="flex items-center gap-1 ml-auto font-medium text-[#2c2c2c]">
+                      <span className="flex items-center gap-1 ml-auto font-medium text-ink">
                         <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                         {r.toFixed(1)}
                         {selectedLoc.review_count != null && (
-                          <span className="text-[#6b7280] font-normal">({selectedLoc.review_count})</span>
+                          <span className="text-stone font-normal">({selectedLoc.review_count})</span>
                         )}
                       </span>
                     ) : null
@@ -232,12 +232,12 @@ export default function HomeMapClient({ locations }: Props) {
           <div className="flex flex-col flex-1 min-h-0">
             {/* Strip header */}
             <div className="flex items-center justify-between px-4 pb-1 shrink-0">
-              <span className="text-xs font-medium text-[#6b7280]">
+              <span className="text-xs font-medium text-stone">
                 {filtered.length} {filtered.length === 1 ? 'place' : 'places'}
               </span>
               <Link
                 href="/submit"
-                className="inline-flex items-center gap-1 text-xs font-semibold bg-[#edf8f8] text-[#38a5a0] border border-[#aadbd8] px-2.5 py-1 rounded-full hover:bg-[#d5f0f0] transition-colors"
+                className="inline-flex items-center gap-1 text-xs font-semibold bg-rust-light text-rust border border-border px-2.5 py-1 rounded-full hover:bg-rust hover:text-paper transition-colors"
               >
                 <span>+</span> Add a place
               </Link>
@@ -249,7 +249,7 @@ export default function HomeMapClient({ locations }: Props) {
               className="flex gap-3 overflow-x-auto overscroll-x-contain px-4 pb-4 pt-1 scrollbar-hide flex-1"
             >
               {filtered.length === 0 ? (
-                <div className="flex items-center gap-2 text-sm text-[#6b7280] py-4 w-full justify-center">
+                <div className="flex items-center gap-2 text-sm text-stone py-4 w-full justify-center">
                   No places match —{' '}
                   <button onClick={() => setFilter('')} className="text-[#5e8e5c] underline cursor-pointer">
                     clear filter
@@ -270,10 +270,10 @@ export default function HomeMapClient({ locations }: Props) {
                       <button
                         onClick={() => handleCardClick(loc)}
                         className={cn(
-                          'flex flex-col w-36 rounded-2xl overflow-hidden border transition-all cursor-pointer text-left bg-white',
+                          'flex flex-col w-36 rounded overflow-hidden border transition-all cursor-pointer text-left bg-paper',
                           isSelected
-                            ? 'border-[#7da87b] shadow-lg ring-2 ring-[#7da87b]/20'
-                            : 'border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200'
+                            ? 'border-rust shadow-md ring-2 ring-rust/10'
+                            : 'border-border hover:border-ink'
                         )}
                       >
                         <div className="relative h-20 w-full bg-gray-100">
@@ -287,8 +287,8 @@ export default function HomeMapClient({ locations }: Props) {
                           <span className="absolute top-1.5 left-1.5 text-base leading-none">{meta.emoji}</span>
                         </div>
                         <div className="px-2.5 py-2">
-                          <p className="text-xs font-semibold text-[#2c2c2c] truncate leading-tight">{loc.name}</p>
-                          <p className="text-[11px] text-[#6b7280] mt-0.5 flex items-center gap-0.5 truncate">
+                          <p className="text-xs font-semibold text-ink truncate leading-tight">{loc.name}</p>
+                          <p className="text-[11px] text-stone mt-0.5 flex items-center gap-0.5 truncate">
                             <MapPin className="w-2.5 h-2.5 shrink-0" />
                             {loc.suburb}
                           </p>
@@ -302,14 +302,14 @@ export default function HomeMapClient({ locations }: Props) {
               <div className="shrink-0">
                 <Link
                   href="/submit"
-                  className="flex flex-col w-36 h-full rounded-2xl border-2 border-dashed border-[#aadbd8] bg-[#edf8f8] hover:border-[#4abfc0] hover:bg-[#d5f0f0] transition-all items-center justify-center text-center p-3 gap-2 min-h-[108px]"
+                  className="flex flex-col w-36 h-full rounded border-2 border-dashed border-border bg-parchment hover:border-rust hover:bg-rust-light transition-all items-center justify-center text-center p-3 gap-2 min-h-[108px]"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-xl shadow-sm shrink-0">
+                  <div className="w-10 h-10 rounded bg-paper flex items-center justify-center text-xl shrink-0 border border-border">
                     📍
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-[#38a5a0] leading-tight">Add a place</p>
-                    <p className="text-[10px] text-[#6b7280] mt-0.5">Free · 2 min</p>
+                    <p className="text-xs font-semibold text-rust leading-tight">Add a place</p>
+                    <p className="text-[10px] text-stone mt-0.5">Free · 2 min</p>
                   </div>
                 </Link>
               </div>

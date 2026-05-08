@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16">
-      <h1 className="text-3xl font-bold text-[#2c2c2c] mb-2">About</h1>
+      <h1 className="text-3xl font-bold text-ink mb-2">About</h1>
 
-      <div className="space-y-8 text-[15px] leading-relaxed text-[#2c2c2c]">
+      <div className="space-y-8 text-[15px] leading-relaxed text-ink">
 
         <div className="bg-[#fff8ee] border border-[#f0d8b0] rounded-2xl p-6 space-y-4 text-base leading-relaxed">
           <p>
@@ -35,7 +35,7 @@ export default function AboutPage() {
 
         <div>
           <h2 className="text-lg font-semibold mb-3">Adding a place</h2>
-          <p className="text-[#4b5563]">
+          <p className="text-stone">
             Sign in with Google and hit the Add button. Takes about 2 minutes. We do a quick check on each
             submission before it goes live — just to make sure it&apos;s a real place that fits.
             If something looks outdated on an existing listing, hit the Report button and we&apos;ll look at it.
@@ -44,7 +44,7 @@ export default function AboutPage() {
 
         <div>
           <h2 className="text-lg font-semibold mb-3">Ratings</h2>
-          <p className="text-[#4b5563]">
+          <p className="text-stone">
             Rather than a single star rating, you can rate the things that actually matter when you&apos;re
             going out with kids — how safe the play area is, noise level, parking, whether it suits
             toddlers vs older kids, and so on. Gives a more useful picture than just &quot;four stars&quot;.
@@ -53,21 +53,21 @@ export default function AboutPage() {
 
         <div>
           <h2 className="text-lg font-semibold mb-3">A few ground rules</h2>
-          <ul className="space-y-2 text-[#4b5563]">
+          <ul className="space-y-2 text-stone">
             <li className="flex items-start gap-2">
-              <span className="text-[#4abfc0] mt-0.5">–</span>
+              <span className="text-rust mt-0.5">–</span>
               Only add real places that are actually open to the public
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[#4abfc0] mt-0.5">–</span>
+              <span className="text-rust mt-0.5">–</span>
               Photos should be your own
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[#4abfc0] mt-0.5">–</span>
+              <span className="text-rust mt-0.5">–</span>
               Reviews should be honest — if a place wasn&apos;t great, say so
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[#4abfc0] mt-0.5">–</span>
+              <span className="text-rust mt-0.5">–</span>
               No listings from the venues themselves or promotional content
             </li>
           </ul>
@@ -75,9 +75,9 @@ export default function AboutPage() {
 
         <div>
           <h2 className="text-lg font-semibold mb-3">Get in touch</h2>
-          <p className="text-[#4b5563]">
+          <p className="text-stone">
             Questions or spotted something wrong?{' '}
-            <a href="mailto:support@kidfriendlyeats.space" className="text-[#4abfc0] hover:underline">
+            <a href="mailto:support@kidfriendlyeats.space" className="text-rust hover:underline">
               support@kidfriendlyeats.space
             </a>
           </p>
@@ -88,13 +88,13 @@ export default function AboutPage() {
       <div className="mt-10 flex gap-3">
         <Link
           href="/submit"
-          className="bg-[#f4a090] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#e8887a] transition-colors"
+          className="bg-rust text-paper px-5 py-2.5 rounded text-sm font-medium hover:bg-rust-dark transition-colors"
         >
           Add a place
         </Link>
         <Link
           href="/search"
-          className="bg-white border border-gray-200 text-[#2c2c2c] px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-[#faf8f4] transition-colors"
+          className="bg-paper border border-border text-ink px-5 py-2.5 rounded text-sm font-medium hover:bg-parchment transition-colors"
         >
           Browse the map
         </Link>

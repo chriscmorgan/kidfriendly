@@ -20,12 +20,12 @@ export default function RatingsChart({ ratings, reviewCount }: RatingsChartProps
     .filter((d) => d.hasData)
 
   if (!data.length) return (
-    <div className="text-sm text-[#6b7280] italic">No ratings yet — be the first to review.</div>
+    <div className="text-sm text-stone italic">No ratings yet — be the first to review.</div>
   )
 
   return (
     <div>
-      <p className="text-xs text-[#6b7280] mb-4">Based on {reviewCount} review{reviewCount !== 1 ? 's' : ''}</p>
+      <p className="text-xs text-stone mb-4">Based on {reviewCount} review{reviewCount !== 1 ? 's' : ''}</p>
       <div className="space-y-3">
         {RATING_DIMENSIONS.map((dim) => {
           const val = ratings[dim.key as keyof AvgRatings]
@@ -33,14 +33,14 @@ export default function RatingsChart({ ratings, reviewCount }: RatingsChartProps
           return (
             <div key={dim.key} className="flex items-center gap-3">
               <span className="text-lg w-6 shrink-0">{dim.emoji}</span>
-              <span className="text-sm text-[#2c2c2c] w-36 shrink-0">{dim.label}</span>
-              <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
+              <span className="text-sm text-ink w-36 shrink-0">{dim.label}</span>
+              <div className="flex-1 bg-parchment rounded-full h-2 overflow-hidden border border-border">
                 <div
-                  className="h-full bg-[#4abfc0] rounded-full transition-all duration-500"
+                  className="h-full bg-rust rounded-full transition-all duration-500"
                   style={{ width: `${(val / 5) * 100}%` }}
                 />
               </div>
-              <span className="text-sm font-semibold text-[#2c2c2c] w-8 text-right">{formatRating(val)}</span>
+              <span className="text-sm font-semibold text-ink w-8 text-right">{formatRating(val)}</span>
             </div>
           )
         })}

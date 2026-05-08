@@ -92,49 +92,45 @@ export default async function CafesNextToPlaygroundsPage() {
       {itemListSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(itemListSchema) }} />}
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#b8e4e4] via-[#cceece] to-[#e8f5f0] py-14 px-4 text-center">
+      <section className="bg-parchment py-14 px-4 text-center">
         <div className="max-w-2xl mx-auto">
-          <nav className="flex items-center justify-center gap-2 text-xs text-[#4a7a7a] mb-6">
+          <nav className="flex items-center justify-center gap-2 text-xs text-stone mb-6">
             <Link href="/" className="hover:underline">Home</Link>
             <span>/</span>
-            <span className="font-medium text-[#2c2c2c]">Cafes Next to Playgrounds</span>
+            <span className="font-medium text-ink">Cafes Next to Playgrounds</span>
           </nav>
-          <div className="inline-flex items-center gap-2 bg-white/80 border border-[#5ecece]/30 text-[#38a5a0] text-xs font-semibold px-3 py-1.5 rounded-full mb-5">
-            🏞️ Playground right next door
-          </div>
-          <h1 className="text-[clamp(1.5rem,6vw,3rem)] font-extrabold text-[#2c2c2c] leading-tight tracking-tight">
+          <p className="text-xs font-medium text-stone tracking-wide uppercase mb-4">🏞️ Playground right next door</p>
+          <h1 className="font-display italic font-700 text-[clamp(1.5rem,6vw,3rem)] text-ink leading-tight">
             Cafes Next to Playgrounds
           </h1>
-          <p className="text-[#4a7a7a] text-base sm:text-lg mt-4 max-w-lg mx-auto leading-relaxed">
-            Sit outside, sip your coffee, and watch the kids wear themselves out — cafes with a playground right next door.
+          <p className="text-stone text-base sm:text-lg mt-4 max-w-lg mx-auto leading-relaxed">
+            Sit outside, drink your coffee, and watch the kids wear themselves out — cafes with a playground right next door.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
             <Link
               href="/search?tag=adjacent_playground"
-              className="inline-flex items-center gap-2 bg-[#4abfc0] text-white font-bold text-sm px-6 py-3 rounded-2xl hover:bg-[#38a5a0] transition-colors shadow-md"
+              className="inline-flex items-center gap-2 bg-rust text-paper font-medium text-sm px-6 py-3 rounded hover:bg-rust-dark transition-colors"
             >
-              🗺️ See all on map
+              See all on map
             </Link>
           </div>
         </div>
       </section>
 
       {/* What makes it great */}
-      <section className="bg-white px-4 py-12 border-b border-gray-100">
+      <section className="bg-paper px-4 py-12 border-b border-border">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-4">Why it works so well</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <h2 className="font-display italic font-700 text-xl text-ink mb-6">Why it works so well</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {[
-              { emoji: '🌤️', title: 'Perfect for good weather', desc: 'Open air, sunscreen, and a flat white — the ideal Melbourne or Sydney morning.' },
-              { emoji: '🏃', title: 'Energy burn guaranteed', desc: 'Public playgrounds have more space to run. Expect tired (happy) kids at nap time.' },
+              { emoji: '🌤️', title: 'Perfect for good weather', desc: 'Open air, sunscreen, and a flat white — the ideal Melbourne morning.' },
+              { emoji: '🏃', title: 'Energy burn guaranteed', desc: 'Public playgrounds have more space to run. Expect tired, happy kids at nap time.' },
               { emoji: '🐕', title: 'Usually dog-friendly too', desc: 'Many park-adjacent cafes welcome dogs. Double win for the whole family.' },
             ].map((item, i) => (
-              <div key={i} className="flex flex-col items-center text-center px-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#edf8f8] flex items-center justify-center text-2xl mb-3">
-                  {item.emoji}
-                </div>
-                <h3 className="font-semibold text-[#2c2c2c] text-sm mb-1">{item.title}</h3>
-                <p className="text-xs text-[#6b7280] leading-relaxed">{item.desc}</p>
+              <div key={i} className="flex flex-col px-2">
+                <span className="text-2xl mb-3">{item.emoji}</span>
+                <h3 className="font-semibold text-ink text-sm mb-1">{item.title}</h3>
+                <p className="text-xs text-stone leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -142,12 +138,12 @@ export default async function CafesNextToPlaygroundsPage() {
       </section>
 
       {/* Venue grid */}
-      <section className="bg-[#faf8f4] px-4 py-12">
+      <section className="bg-parchment px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">
+          <h2 className="font-display italic font-700 text-xl text-ink mb-2">
             {locations.length > 0 ? `${locations.length} cafes next to playgrounds` : 'Cafes next to playgrounds'}
           </h2>
-          <p className="text-sm text-[#6b7280] mb-8">All reviewed by parents who have visited.</p>
+          <p className="text-sm text-stone mb-8">All added by parents who have been there.</p>
 
           {locations.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -156,7 +152,7 @@ export default async function CafesNextToPlaygroundsPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 text-[#6b7280]">
+            <div className="text-center py-16 text-stone">
               <p className="text-lg font-medium mb-2">No listings yet</p>
               <p className="text-sm">Know a cafe next to a playground? Add it to the map.</p>
             </div>
@@ -165,7 +161,7 @@ export default async function CafesNextToPlaygroundsPage() {
           <div className="mt-8 text-center">
             <Link
               href="/search?tag=adjacent_playground"
-              className="inline-flex items-center gap-2 bg-[#4abfc0] text-white font-semibold text-sm px-7 py-3 rounded-2xl hover:bg-[#38a5a0] transition-colors"
+              className="inline-flex items-center gap-2 bg-rust text-paper font-medium text-sm px-7 py-3 rounded hover:bg-rust-dark transition-colors"
             >
               See all on map →
             </Link>

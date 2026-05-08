@@ -161,7 +161,7 @@ export default async function LocationPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
       {/* Back — 44px tap target */}
-      <Link href="/search" className="inline-flex items-center gap-1 text-sm text-[#6b7280] hover:text-[#2c2c2c] mb-6 transition-colors min-h-[44px]">
+      <Link href="/search" className="inline-flex items-center gap-1 text-sm text-stone hover:text-ink mb-6 transition-colors min-h-[44px]">
         ← Back to search
       </Link>
 
@@ -181,8 +181,8 @@ export default async function LocationPage({ params }: Props) {
                 <OpenTimeBadge key={t} time={t} />
               ))}
             </div>
-            <h1 className="text-3xl font-bold text-[#2c2c2c] leading-tight">{loc.name}</h1>
-            <div className="flex items-center gap-2 mt-2 text-[#6b7280]">
+            <h1 className="font-display italic font-700 text-3xl text-ink leading-tight">{loc.name}</h1>
+            <div className="flex items-center gap-2 mt-2 text-stone">
               <MapPin className="w-4 h-4 shrink-0" />
               <span className="text-sm">{loc.address}</span>
             </div>
@@ -190,7 +190,7 @@ export default async function LocationPage({ params }: Props) {
               href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-[#38a5a0] hover:text-[#2a8a85] mt-2 font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-rust hover:text-rust-dark mt-2 font-medium transition-colors"
             >
               <Navigation className="w-3.5 h-3.5" />
               Get directions
@@ -199,7 +199,7 @@ export default async function LocationPage({ params }: Props) {
               href={`https://maps.google.com/?q=${loc.lat},${loc.lng}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-[#38a5a0] hover:text-[#2a8a85] mt-1.5 font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-rust hover:text-rust-dark mt-1.5 font-medium transition-colors"
             >
               <MapPin className="w-3.5 h-3.5" />
               View on Google Maps
@@ -209,7 +209,7 @@ export default async function LocationPage({ params }: Props) {
                 href={loc.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-[#38a5a0] hover:text-[#2a8a85] mt-1.5 font-medium transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm text-rust hover:text-rust-dark mt-1.5 font-medium transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 Visit website
@@ -219,15 +219,15 @@ export default async function LocationPage({ params }: Props) {
 
           {/* Description */}
           <section>
-            <h2 className="text-lg font-semibold text-[#2c2c2c] mb-2">About</h2>
-            <p className="text-[#2c2c2c] leading-relaxed text-[15px]">{loc.description}</p>
+            <h2 className="text-lg font-semibold text-ink mb-2">About</h2>
+            <p className="text-ink leading-relaxed text-[15px]">{loc.description}</p>
           </section>
 
           {/* Tips */}
           {loc.tips && (
-            <section className="bg-[#f7eed9] rounded-2xl p-4">
-              <h2 className="text-sm font-semibold text-[#9e7c48] mb-1">💡 Visitor tips</h2>
-              <p className="text-sm text-[#2c2c2c]">{loc.tips}</p>
+            <section className="bg-parchment border border-border rounded p-4">
+              <h2 className="text-sm font-semibold text-stone mb-1">Visitor tips</h2>
+              <p className="text-sm text-ink">{loc.tips}</p>
             </section>
           )}
 
@@ -236,8 +236,8 @@ export default async function LocationPage({ params }: Props) {
         {/* Sidebar */}
         <aside className="space-y-4">
           {ageLabels.length > 0 && (
-            <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
-              <h3 className="text-sm font-semibold text-[#2c2c2c] mb-3">👶 Best for</h3>
+            <div className="bg-paper border border-border rounded p-4">
+              <h3 className="text-sm font-semibold text-ink mb-3">👶 Best for</h3>
               <div className="flex flex-wrap gap-2">
                 {ageLabels.map((label) => (
                   <Badge key={label} bgColor="bg-[#f7eed9]" color="text-[#9e7c48]">{label}</Badge>
@@ -246,15 +246,15 @@ export default async function LocationPage({ params }: Props) {
             </div>
           )}
 
-          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-[#2c2c2c] mb-3">Submitted by</h3>
+          <div className="bg-paper border border-border rounded p-4">
+            <h3 className="text-sm font-semibold text-ink mb-3">Submitted by</h3>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#c8eded] flex items-center justify-center">
-                <User className="w-4 h-4 text-[#38a5a0]" />
+              <div className="w-8 h-8 rounded-full bg-parchment flex items-center justify-center">
+                <User className="w-4 h-4 text-stone" />
               </div>
               <div>
-                <p className="text-sm font-medium text-[#2c2c2c]">{loc.submitter?.display_name ?? 'Community member'}</p>
-                <p className="text-xs text-[#6b7280] flex items-center gap-1 mt-0.5">
+                <p className="text-sm font-medium text-ink">{loc.submitter?.display_name ?? 'Community member'}</p>
+                <p className="text-xs text-stone flex items-center gap-1 mt-0.5">
                   <Calendar className="w-3 h-3" />
                   {new Date(loc.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </p>
@@ -269,12 +269,12 @@ export default async function LocationPage({ params }: Props) {
       </div>
 
       {/* Sticky mobile CTA bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-3 safe-area-inset-bottom">
+      <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-paper border-t border-border px-4 py-3 safe-area-inset-bottom">
         <a
           href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 bg-[#4abfc0] hover:bg-[#38a5a0] text-white font-semibold text-sm py-3.5 rounded-2xl transition-colors min-h-[52px] w-full"
+          className="flex items-center justify-center gap-2 bg-rust hover:bg-rust-dark text-paper font-semibold text-sm py-3.5 rounded transition-colors min-h-[52px] w-full"
         >
           <Navigation className="w-4 h-4" /> Get Directions
         </a>

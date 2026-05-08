@@ -41,36 +41,22 @@ export default function SubmitForm() {
 
   if (!user) return (
     <>
-      <div className="bg-[#edf8f8] border border-[#aadbd8] rounded-2xl p-8 text-center">
-        <div className="text-4xl mb-4">📍</div>
-        <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Add a kid-friendly spot</h2>
-        <p className="text-sm text-[#4b5563] mb-6 max-w-xs mx-auto leading-relaxed">
-          Know a cafe with a play area that other parents would love? Sign in for free — it only takes 2 minutes to add it to the map.
+      <div className="bg-parchment border border-border rounded p-8 text-center">
+        <h2 className="font-display italic font-700 text-xl text-ink mb-2">Sign in to add a place</h2>
+        <p className="text-sm text-stone mb-6 max-w-xs mx-auto leading-relaxed">
+          Know a cafe with a play area? Sign in for free — it takes about 2 minutes to add it to the map.
         </p>
-        <div className="flex flex-col gap-3 max-w-xs mx-auto mb-6">
-          {[
-            '📍 Pin it on the map for families nearby',
-            '🛝 Describe the play setup in detail',
-            '⭐ Help parents make better decisions',
-          ].map((line) => (
-            <div key={line} className="flex items-start gap-2 text-sm text-[#4b5563] text-left">
-              <span className="shrink-0">{line.slice(0, 2)}</span>
-              <span>{line.slice(3)}</span>
-            </div>
-          ))}
-        </div>
         <Button size="lg" onClick={() => setShowSignIn(true)}>Sign in to add a place</Button>
-        <p className="text-xs text-[#9ca3af] mt-4">Free · No password needed · Reviewed before going live</p>
+        <p className="text-xs text-stone mt-4">Free · No password needed · Reviewed before going live</p>
       </div>
       {showSignIn && <SignInModal onClose={() => setShowSignIn(false)} />}
     </>
   )
 
   if (done) return (
-    <div className="bg-[#edf8f8] border border-[#aadbd8] rounded-2xl p-8 text-center">
-      <div className="text-4xl mb-3">🎉</div>
-      <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Thanks! Your submission is under review.</h2>
-      <p className="text-sm text-[#6b7280] mb-6">We&apos;ll have it live as soon as our team takes a look.</p>
+    <div className="bg-parchment border border-border rounded p-8 text-center">
+      <h2 className="font-display italic font-700 text-xl text-ink mb-2">Thanks — submitted for review.</h2>
+      <p className="text-sm text-stone mb-6">We&apos;ll have it live as soon as we take a look.</p>
       <div className="flex gap-3 justify-center">
         <Button variant="secondary" onClick={() => router.push('/')}>Go home</Button>
         <Button onClick={() => {
@@ -192,15 +178,15 @@ export default function SubmitForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Venue search shortcut */}
-      <div className="bg-[#f0fbfb] border border-[#b5e6e6] rounded-2xl p-4">
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1">
-          Find your venue <span className="text-[#6b7280] font-normal">(optional shortcut)</span>
+      <div className="bg-parchment border border-border rounded p-4">
+        <label className="block text-sm font-semibold text-ink mb-1">
+          Find your venue <span className="text-stone font-normal">(optional shortcut)</span>
         </label>
-        <p className="text-xs text-[#6b7280] mb-2.5">Search by business name to auto-fill details below.</p>
+        <p className="text-xs text-stone mb-2.5">Search by business name to auto-fill details below.</p>
         {venueSelected ? (
-          <div className="flex items-center justify-between bg-white border border-[#a5dede] rounded-xl px-3 py-2.5">
-            <span className="text-sm text-[#38a5a0] font-medium truncate">✓ Auto-filled from &ldquo;{name}&rdquo;</span>
-            <button type="button" onClick={clearVenue} className="text-xs text-[#6b7280] hover:text-red-500 transition-colors ml-3 shrink-0 cursor-pointer">Clear ×</button>
+          <div className="flex items-center justify-between bg-paper border border-border rounded px-3 py-2.5">
+            <span className="text-sm text-rust font-medium truncate">✓ Auto-filled from &ldquo;{name}&rdquo;</span>
+            <button type="button" onClick={clearVenue} className="text-xs text-stone hover:text-red-500 transition-colors ml-3 shrink-0 cursor-pointer">Clear ×</button>
           </div>
         ) : (
           <VenueSearch onSelect={handleVenueSelect} />
@@ -209,44 +195,44 @@ export default function SubmitForm() {
 
       {/* Name */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+        <label className="block text-sm font-semibold text-ink mb-1.5">
           Place name <span className="text-red-500">*</span>
         </label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. The Grounds of Alexandria"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm outline-none focus:border-rust text-ink placeholder:text-stone"
           maxLength={120}
         />
       </div>
 
       {/* Address */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+        <label className="block text-sm font-semibold text-ink mb-1.5">
           Address / location <span className="text-red-500">*</span>
         </label>
         {venueSelected && address ? (
-          <div className="flex items-center justify-between border border-gray-200 rounded-xl px-3 py-2.5 bg-gray-50">
+          <div className="flex items-center justify-between border border-border rounded px-3 py-2.5 bg-parchment">
             <div className="flex items-center gap-2 min-w-0">
-              <MapPin className="w-4 h-4 text-[#6b7280] shrink-0" />
-              <span className="text-sm text-[#2c2c2c] truncate">{address.place_name}</span>
+              <MapPin className="w-4 h-4 text-stone shrink-0" />
+              <span className="text-sm text-ink truncate">{address.place_name}</span>
             </div>
-            <button type="button" onClick={clearVenue} className="text-xs text-[#38a5a0] hover:underline ml-3 shrink-0 cursor-pointer">Change</button>
+            <button type="button" onClick={clearVenue} className="text-xs text-rust hover:underline ml-3 shrink-0 cursor-pointer">Change</button>
           </div>
         ) : (
           <AddressSearch value={address?.place_name ?? ''} onChange={setAddress} />
         )}
         {address && (
-          <p className="text-xs text-[#38a5a0] mt-1">✓ Geocoded: {address.lat.toFixed(5)}, {address.lng.toFixed(5)}</p>
+          <p className="text-xs text-rust mt-1">✓ Geocoded: {address.lat.toFixed(5)}, {address.lng.toFixed(5)}</p>
         )}
       </div>
 
       {/* Tags */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+        <label className="block text-sm font-semibold text-ink mb-1.5">
           What kind of place is it? <span className="text-red-500">*</span>
-          <span className="text-[#6b7280] font-normal ml-1">(select all that apply)</span>
+          <span className="text-stone font-normal ml-1">(select all that apply)</span>
         </label>
         <div className="flex flex-wrap gap-2">
           {TAGS.map((tag) => (
@@ -255,10 +241,10 @@ export default function SubmitForm() {
               type="button"
               onClick={() => toggleTag(tag.value)}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
+                'flex items-center gap-1.5 px-3 py-2 rounded border text-sm font-medium transition-colors cursor-pointer',
                 selectedTags.includes(tag.value)
                   ? `${tag.bgColor} ${tag.color} border-transparent`
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#edf8f8]'
+                  : 'bg-paper border-border text-stone hover:bg-rust-light'
               )}
             >
               {tag.emoji} {tag.label}
@@ -269,8 +255,8 @@ export default function SubmitForm() {
 
       {/* Open times */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Open for <span className="text-[#6b7280] font-normal">(optional)</span>
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Open for <span className="text-stone font-normal">(optional)</span>
         </label>
         <div className="flex flex-wrap gap-2">
           {OPEN_TIMES.map((t) => (
@@ -279,10 +265,10 @@ export default function SubmitForm() {
               type="button"
               onClick={() => toggleOpenTime(t.value)}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
+                'flex items-center gap-1.5 px-3 py-2 rounded border text-sm font-medium transition-colors cursor-pointer',
                 selectedOpenTimes.includes(t.value)
                   ? `${t.bgColor} ${t.color} border-transparent`
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#edf8f8]'
+                  : 'bg-paper border-border text-stone hover:bg-rust-light'
               )}
             >
               {t.emoji} {t.label}
@@ -293,7 +279,7 @@ export default function SubmitForm() {
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+        <label className="block text-sm font-semibold text-ink mb-1.5">
           Description <span className="text-red-500">*</span>
         </label>
         <textarea
@@ -301,9 +287,9 @@ export default function SubmitForm() {
           onChange={(e) => setDescription(e.target.value)}
           maxLength={1000}
           placeholder="What's the play area like? What can parents eat or drink while kids play? How long can kids keep themselves busy? What to expect…"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-rust text-ink placeholder:text-stone"
         />
-        <div className="flex justify-between text-xs text-[#6b7280] mt-1">
+        <div className="flex justify-between text-xs text-stone mt-1">
           <span>{description.length < 30 ? `${30 - description.length} more characters needed` : '✓ Good to go'}</span>
           <span>{description.length}/1000</span>
         </div>
@@ -311,39 +297,39 @@ export default function SubmitForm() {
 
       {/* Tips */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Tips <span className="text-[#6b7280] font-normal">(optional)</span>
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Tips <span className="text-stone font-normal">(optional)</span>
         </label>
         <textarea
           value={tips}
           onChange={(e) => setTips(e.target.value)}
           maxLength={280}
           placeholder="e.g. 'Bring your own food', 'Parking tricky on weekends', 'Arrive before 10am'…"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-rust text-ink placeholder:text-stone"
         />
-        <p className="text-xs text-[#6b7280] mt-1 text-right">{tips.length}/280</p>
+        <p className="text-xs text-stone mt-1 text-right">{tips.length}/280</p>
       </div>
 
       {/* Website */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Website <span className="text-[#6b7280] font-normal">(optional)</span>
-          {venueSelected && website && <span className="text-xs text-[#38a5a0] ml-2">✓ auto-filled</span>}
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Website <span className="text-stone font-normal">(optional)</span>
+          {venueSelected && website && <span className="text-xs text-rust ml-2">✓ auto-filled</span>}
         </label>
         <input
           value={website}
           onChange={(e) => setWebsite(e.target.value)}
           placeholder="https://..."
           type="url"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm outline-none focus:border-rust text-ink placeholder:text-stone"
         />
       </div>
 
       {/* Opening hours */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Opening hours <span className="text-[#6b7280] font-normal">(optional)</span>
-          {venueSelected && openingHours && <span className="text-xs text-[#38a5a0] ml-2">✓ auto-filled</span>}
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Opening hours <span className="text-stone font-normal">(optional)</span>
+          {venueSelected && openingHours && <span className="text-xs text-rust ml-2">✓ auto-filled</span>}
         </label>
         <textarea
           value={openingHours}
@@ -351,13 +337,13 @@ export default function SubmitForm() {
           placeholder="e.g. Mon–Fri 9am–5pm, Sat–Sun 8am–6pm"
           maxLength={500}
           rows={openingHours.includes('\n') ? 7 : 2}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280] resize-none"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm outline-none focus:border-rust text-ink placeholder:text-stone resize-none"
         />
       </div>
 
       {/* Age ranges */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">Age ranges</label>
+        <label className="block text-sm font-semibold text-ink mb-1.5">Age ranges</label>
         <div className="flex flex-wrap gap-2">
           {AGE_RANGES.map((range) => (
             <button
@@ -365,10 +351,10 @@ export default function SubmitForm() {
               type="button"
               onClick={() => toggleAgeRange(range.value)}
               className={cn(
-                'px-3 py-1.5 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
+                'px-3 py-1.5 rounded border text-sm font-medium transition-colors cursor-pointer',
                 ageRanges.includes(range.value)
                   ? 'bg-[#f7eed9] text-[#9e7c48] border-transparent'
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#f7eed9]'
+                  : 'bg-paper border-border text-stone hover:bg-[#f7eed9]'
               )}
             >
               {range.label}
@@ -379,14 +365,14 @@ export default function SubmitForm() {
 
       {/* Photos */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Photos <span className="text-[#6b7280] font-normal">(optional, max 10, ≤5MB each)</span>
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Photos <span className="text-stone font-normal">(optional, max 10, ≤5MB each)</span>
         </label>
 
         {previews.length > 0 && (
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-3">
             {previews.map((src, i) => (
-              <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 group">
+              <div key={i} className="relative aspect-square rounded overflow-hidden bg-parchment group">
                 <img src={src} alt="" className="w-full h-full object-cover" />
                 <button
                   type="button"
@@ -401,10 +387,10 @@ export default function SubmitForm() {
         )}
 
         {photos.length < 10 && (
-          <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-[#4abfc0] hover:bg-[#edf8f8] transition-colors">
-            <Upload className="w-6 h-6 text-[#6b7280] mb-2" />
-            <span className="text-sm text-[#6b7280]">Click to upload photos</span>
-            <span className="text-xs text-[#6b7280] mt-0.5">JPEG, PNG, WEBP</span>
+          <label className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded p-6 cursor-pointer hover:border-rust hover:bg-rust-light transition-colors">
+            <Upload className="w-6 h-6 text-stone mb-2" />
+            <span className="text-sm text-stone">Click to upload photos</span>
+            <span className="text-xs text-stone mt-0.5">JPEG, PNG, WEBP</span>
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp"
@@ -417,7 +403,7 @@ export default function SubmitForm() {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded px-4 py-3 text-sm">
           {error}
         </div>
       )}

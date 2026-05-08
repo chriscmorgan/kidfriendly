@@ -63,7 +63,7 @@ export default function AdminDashboardClient({
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#2c2c2c]">🛡️ Admin</h1>
+        <h1 className="text-2xl font-bold text-ink">🛡️ Admin</h1>
         {tab === 'pending' && (
           <div className="flex items-center gap-2 bg-[#f7eed9] text-[#9e7c48] px-3 py-1.5 rounded-full text-sm font-medium">
             <Clock className="w-4 h-4" />
@@ -73,14 +73,14 @@ export default function AdminDashboardClient({
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-100 mb-8 gap-1">
-        <button onClick={() => setTab('pending')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg', tab === 'pending' ? 'text-[#38a5a0] border-b-2 border-[#4abfc0]' : 'text-[#6b7280] hover:text-[#2c2c2c]')}>
+      <div className="flex border-b border-border mb-8 gap-1">
+        <button onClick={() => setTab('pending')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg', tab === 'pending' ? 'text-rust border-b-2 border-rust' : 'text-stone hover:text-ink')}>
           Pending ({pending.length})
         </button>
-        <button onClick={() => setTab('all')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg', tab === 'all' ? 'text-[#38a5a0] border-b-2 border-[#4abfc0]' : 'text-[#6b7280] hover:text-[#2c2c2c]')}>
+        <button onClick={() => setTab('all')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg', tab === 'all' ? 'text-rust border-b-2 border-rust' : 'text-stone hover:text-ink')}>
           All locations ({all.length})
         </button>
-        <button onClick={() => setTab('reports')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg flex items-center gap-1.5', tab === 'reports' ? 'text-[#38a5a0] border-b-2 border-[#4abfc0]' : 'text-[#6b7280] hover:text-[#2c2c2c]')}>
+        <button onClick={() => setTab('reports')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg flex items-center gap-1.5', tab === 'reports' ? 'text-rust border-b-2 border-rust' : 'text-stone hover:text-ink')}>
           <Flag className="w-3.5 h-3.5" />
           Reports {reports.length > 0 && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{reports.length}</span>}
         </button>
@@ -90,8 +90,8 @@ export default function AdminDashboardClient({
         reports.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">✅</div>
-            <p className="font-semibold text-[#2c2c2c]">No open reports</p>
-            <p className="text-sm text-[#6b7280] mt-1">Nothing to action right now.</p>
+            <p className="font-semibold text-ink">No open reports</p>
+            <p className="text-sm text-stone mt-1">Nothing to action right now.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -104,8 +104,8 @@ export default function AdminDashboardClient({
         pending.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">✅</div>
-            <p className="font-semibold text-[#2c2c2c]">All caught up!</p>
-            <p className="text-sm text-[#6b7280] mt-1">No pending submissions.</p>
+            <p className="font-semibold text-ink">All caught up!</p>
+            <p className="text-sm text-stone mt-1">No pending submissions.</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -127,7 +127,7 @@ export default function AdminDashboardClient({
       ) : (
         all.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-[#6b7280]">No approved or rejected locations yet.</p>
+            <p className="text-stone">No approved or rejected locations yet.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -175,17 +175,17 @@ function PendingCard({ location: loc, processingId, rejectNote, onApprove, onRej
           <div className="flex flex-wrap gap-2 mb-2">
             {(loc.tags ?? []).map((tag) => <TagBadge key={tag} tag={tag} />)}
           </div>
-          <h2 className="text-lg font-bold text-[#2c2c2c]">{loc.name}</h2>
-          <div className="flex items-center gap-1.5 text-sm text-[#6b7280] mt-1">
+          <h2 className="text-lg font-bold text-ink">{loc.name}</h2>
+          <div className="flex items-center gap-1.5 text-sm text-stone mt-1">
             <MapPin className="w-3.5 h-3.5" />{loc.address}
           </div>
           {submitter && (
-            <div className="flex items-center gap-1.5 text-xs text-[#6b7280] mt-1">
+            <div className="flex items-center gap-1.5 text-xs text-stone mt-1">
               <User className="w-3 h-3" />
               Submitted by {submitter.display_name} · {new Date(loc.created_at).toLocaleDateString('en-AU')}
             </div>
           )}
-          <p className="text-sm text-[#6b7280] mt-3 line-clamp-3">{loc.description}</p>
+          <p className="text-sm text-stone mt-3 line-clamp-3">{loc.description}</p>
           {ageLabels.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-3">
               {ageLabels.map((l) => <span key={l} className="text-xs bg-[#f7eed9] text-[#9e7c48] px-2 py-0.5 rounded-full">{l}</span>)}
@@ -214,7 +214,7 @@ function PendingCard({ location: loc, processingId, rejectNote, onApprove, onRej
                 placeholder="Rejection note (optional)…"
                 value={rejectNote?.note ?? ''}
                 onChange={(e) => onRejectNoteChange(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20 outline-none focus:border-[#4abfc0]"
+                className="w-full border border-border rounded p-3 text-sm resize-none h-20 outline-none focus:border-rust text-ink placeholder:text-stone"
               />
               <div className="flex gap-2">
                 <Button variant="danger" size="sm" loading={isProcessing} onClick={onRejectConfirm}>Confirm rejection</Button>
@@ -236,7 +236,7 @@ function AllLocationRow({ location: loc, onDelete }: { location: Location; onDel
 
   return (
     <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden flex items-center gap-4 p-4">
-      <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-[#f7eed9] shrink-0">
+      <div className="relative w-16 h-16 rounded overflow-hidden bg-[#f7eed9] shrink-0">
         {heroPhoto ? (
           <Image src={heroPhoto.url} alt={loc.name} fill className="object-cover" sizes="64px" />
         ) : (
@@ -246,15 +246,15 @@ function AllLocationRow({ location: loc, onDelete }: { location: Location; onDel
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-semibold text-[#2c2c2c] truncate">{loc.name}</span>
+          <span className="font-semibold text-ink truncate">{loc.name}</span>
           <span className={cn(
             'text-xs px-2 py-0.5 rounded-full font-medium',
-            loc.status === 'approved' ? 'bg-[#edf8f8] text-[#2a8a85]' : 'bg-red-50 text-red-600'
+            loc.status === 'approved' ? 'bg-rust-light text-rust-dark' : 'bg-red-50 text-red-600'
           )}>
             {loc.status === 'approved' ? '✓ Live' : '✗ Rejected'}
           </span>
         </div>
-        <div className="flex items-center gap-1 text-xs text-[#6b7280] mt-0.5">
+        <div className="flex items-center gap-1 text-xs text-stone mt-0.5">
           <MapPin className="w-3 h-3" />{loc.suburb}
         </div>
       </div>
@@ -271,7 +271,7 @@ function AllLocationRow({ location: loc, onDelete }: { location: Location; onDel
           </>
         ) : (
           <>
-            <span className="text-xs text-[#6b7280]">Sure?</span>
+            <span className="text-xs text-stone">Sure?</span>
             <Button variant="danger" size="sm" onClick={() => onDelete(loc.id)}>Yes, delete</Button>
             <Button variant="ghost" size="sm" onClick={() => setConfirming(false)}>Cancel</Button>
           </>
@@ -292,11 +292,11 @@ function ReportRow({ report: r, onDismiss }: { report: Report; onDismiss: (id: s
         <div className="flex items-center gap-2 flex-wrap mb-1">
           <Flag className="w-3.5 h-3.5 text-red-400 shrink-0" />
           {r.location ? (
-            <Link href={`/location/${r.location.slug}`} target="_blank" className="font-semibold text-[#2c2c2c] hover:text-[#38a5a0] transition-colors">
+            <Link href={`/location/${r.location.slug}`} target="_blank" className="font-semibold text-ink hover:text-rust transition-colors">
               {r.location.name}
             </Link>
           ) : (
-            <span className="font-semibold text-[#2c2c2c]">Unknown venue</span>
+            <span className="font-semibold text-ink">Unknown venue</span>
           )}
         </div>
         <p className="text-sm text-[#4b5563] mb-1">{r.reason}</p>
@@ -317,7 +317,7 @@ function ReportRow({ report: r, onDismiss }: { report: Report; onDismiss: (id: s
           <Button variant="ghost" size="sm" onClick={() => setConfirming(true)}>Dismiss</Button>
         ) : (
           <>
-            <span className="text-xs text-[#6b7280]">Dismiss?</span>
+            <span className="text-xs text-stone">Dismiss?</span>
             <Button variant="danger" size="sm" onClick={() => onDismiss(r.id)}>Yes</Button>
             <Button variant="ghost" size="sm" onClick={() => setConfirming(false)}>Cancel</Button>
           </>

@@ -145,39 +145,39 @@ export default function EditForm({ location: loc }: { location: Location }) {
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Name */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+        <label className="block text-sm font-semibold text-ink mb-1.5">
           Place name <span className="text-red-500">*</span>
         </label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c]"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm outline-none focus:border-rust text-ink"
           maxLength={120}
         />
       </div>
 
       {/* Address */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+        <label className="block text-sm font-semibold text-ink mb-1.5">
           Address / location <span className="text-red-500">*</span>
         </label>
         <AddressSearch value={address.place_name} onChange={setAddress} />
-        <p className="text-xs text-[#38a5a0] mt-1">✓ {address.lat.toFixed(5)}, {address.lng.toFixed(5)}</p>
+        <p className="text-xs text-rust mt-1">✓ {address.lat.toFixed(5)}, {address.lng.toFixed(5)}</p>
       </div>
 
       {/* Tags */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+        <label className="block text-sm font-semibold text-ink mb-1.5">
           What kind of place is it? <span className="text-red-500">*</span>
         </label>
         <div className="flex flex-wrap gap-2">
           {TAGS.map((tag) => (
             <button key={tag.value} type="button" onClick={() => toggleTag(tag.value)}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
+                'flex items-center gap-1.5 px-3 py-2 rounded border text-sm font-medium transition-colors cursor-pointer',
                 selectedTags.includes(tag.value)
                   ? `${tag.bgColor} ${tag.color} border-transparent`
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#edf8f8]'
+                  : 'bg-paper border-border text-stone hover:bg-rust-light'
               )}>
               {tag.emoji} {tag.label}
             </button>
@@ -187,17 +187,17 @@ export default function EditForm({ location: loc }: { location: Location }) {
 
       {/* Open times */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Open for <span className="text-[#6b7280] font-normal">(optional)</span>
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Open for <span className="text-stone font-normal">(optional)</span>
         </label>
         <div className="flex flex-wrap gap-2">
           {OPEN_TIMES.map((t) => (
             <button key={t.value} type="button" onClick={() => toggleOpenTime(t.value)}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
+                'flex items-center gap-1.5 px-3 py-2 rounded border text-sm font-medium transition-colors cursor-pointer',
                 selectedOpenTimes.includes(t.value)
                   ? `${t.bgColor} ${t.color} border-transparent`
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#edf8f8]'
+                  : 'bg-paper border-border text-stone hover:bg-rust-light'
               )}>
               {t.emoji} {t.label}
             </button>
@@ -207,16 +207,16 @@ export default function EditForm({ location: loc }: { location: Location }) {
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
+        <label className="block text-sm font-semibold text-ink mb-1.5">
           Description <span className="text-red-500">*</span>
         </label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           maxLength={1000}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-[#4abfc0] text-[#2c2c2c]"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-rust text-ink"
         />
-        <div className="flex justify-between text-xs text-[#6b7280] mt-1">
+        <div className="flex justify-between text-xs text-stone mt-1">
           <span>{description.length < 50 ? `${50 - description.length} more characters needed` : '✓ Good to go'}</span>
           <span>{description.length}/1000</span>
         </div>
@@ -224,56 +224,56 @@ export default function EditForm({ location: loc }: { location: Location }) {
 
       {/* Tips */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Tips <span className="text-[#6b7280] font-normal">(optional)</span>
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Tips <span className="text-stone font-normal">(optional)</span>
         </label>
         <textarea
           value={tips}
           onChange={(e) => setTips(e.target.value)}
           maxLength={280}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-[#4abfc0] text-[#2c2c2c]"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-rust text-ink"
         />
       </div>
 
       {/* Website */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Website <span className="text-[#6b7280] font-normal">(optional)</span>
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Website <span className="text-stone font-normal">(optional)</span>
         </label>
         <input
           value={website}
           onChange={(e) => setWebsite(e.target.value)}
           type="url"
           placeholder="https://..."
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm outline-none focus:border-rust text-ink placeholder:text-stone"
         />
       </div>
 
       {/* Opening hours */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Opening hours <span className="text-[#6b7280] font-normal">(optional)</span>
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Opening hours <span className="text-stone font-normal">(optional)</span>
         </label>
         <input
           value={openingHours}
           onChange={(e) => setOpeningHours(e.target.value)}
           placeholder="e.g. Mon–Fri 9am–5pm, Sat–Sun 8am–6pm"
           maxLength={200}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#4abfc0] text-[#2c2c2c] placeholder:text-[#6b7280]"
+          className="w-full border border-border rounded px-3 py-2.5 text-sm outline-none focus:border-rust text-ink placeholder:text-stone"
         />
       </div>
 
       {/* Age ranges */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">Age ranges</label>
+        <label className="block text-sm font-semibold text-ink mb-1.5">Age ranges</label>
         <div className="flex flex-wrap gap-2">
           {AGE_RANGES.map((range) => (
             <button key={range.value} type="button" onClick={() => toggleAgeRange(range.value)}
               className={cn(
-                'px-3 py-1.5 rounded-xl border text-sm font-medium transition-colors cursor-pointer',
+                'px-3 py-1.5 rounded border text-sm font-medium transition-colors cursor-pointer',
                 ageRanges.includes(range.value)
                   ? 'bg-[#f7eed9] text-[#9e7c48] border-transparent'
-                  : 'bg-white border-gray-200 text-[#6b7280] hover:bg-[#f7eed9]'
+                  : 'bg-paper border-border text-stone hover:bg-[#f7eed9]'
               )}>
               {range.label}
             </button>
@@ -283,14 +283,14 @@ export default function EditForm({ location: loc }: { location: Location }) {
 
       {/* Photos */}
       <div>
-        <label className="block text-sm font-semibold text-[#2c2c2c] mb-1.5">
-          Photos <span className="text-[#6b7280] font-normal">(optional, max 10 total, ≤5MB each)</span>
+        <label className="block text-sm font-semibold text-ink mb-1.5">
+          Photos <span className="text-stone font-normal">(optional, max 10 total, ≤5MB each)</span>
         </label>
 
         {existingPhotos.length > 0 && (
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-3">
             {existingPhotos.map((photo) => (
-              <div key={photo.id} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 group">
+              <div key={photo.id} className="relative aspect-square rounded overflow-hidden bg-parchment group">
                 <img src={photo.url} alt="" className="w-full h-full object-cover" />
                 <button
                   type="button"
@@ -307,7 +307,7 @@ export default function EditForm({ location: loc }: { location: Location }) {
         {newPreviews.length > 0 && (
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-3">
             {newPreviews.map((src, i) => (
-              <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 group">
+              <div key={i} className="relative aspect-square rounded overflow-hidden bg-parchment group">
                 <img src={src} alt="" className="w-full h-full object-cover" />
                 <button
                   type="button"
@@ -322,10 +322,10 @@ export default function EditForm({ location: loc }: { location: Location }) {
         )}
 
         {existingPhotos.length + newPhotos.length < 10 && (
-          <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-[#4abfc0] hover:bg-[#edf8f8] transition-colors">
-            <Upload className="w-6 h-6 text-[#6b7280] mb-2" />
-            <span className="text-sm text-[#6b7280]">Click to upload photos</span>
-            <span className="text-xs text-[#6b7280] mt-0.5">JPEG, PNG, WEBP</span>
+          <label className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded p-6 cursor-pointer hover:border-rust hover:bg-rust-light transition-colors">
+            <Upload className="w-6 h-6 text-stone mb-2" />
+            <span className="text-sm text-stone">Click to upload photos</span>
+            <span className="text-xs text-stone mt-0.5">JPEG, PNG, WEBP</span>
             <input type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden"
               onChange={(e) => handleNewFiles(e.target.files)} />
           </label>
@@ -333,7 +333,7 @@ export default function EditForm({ location: loc }: { location: Location }) {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">{error}</div>
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded px-4 py-3 text-sm">{error}</div>
       )}
 
       <div className="flex gap-3">

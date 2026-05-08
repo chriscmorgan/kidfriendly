@@ -6,13 +6,13 @@ export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
       <div className="text-6xl mb-4">🗺️</div>
-      <h1 className="text-3xl font-bold text-[#2c2c2c] mb-2">Page not found</h1>
-      <p className="text-[#6b7280] mb-8 max-w-sm">
+      <h1 className="font-display italic font-700 text-3xl text-ink mb-2">Page not found</h1>
+      <p className="text-stone mb-8 max-w-sm">
         We couldn&apos;t find what you were looking for.
       </p>
       <Link
         href="/"
-        className="bg-[#4abfc0] text-white px-6 py-3 rounded-xl font-medium hover:bg-[#38a5a0] transition-colors"
+        className="bg-rust text-paper px-6 py-3 rounded font-medium hover:bg-rust-dark transition-colors"
       >
         Back to map
       </Link>

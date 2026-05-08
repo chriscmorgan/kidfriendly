@@ -95,43 +95,43 @@ export default async function MelbournePage() {
       )}
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#b8e4e4] via-[#cceece] to-[#e8f5f0] py-14 px-4 text-center">
+      <section className="bg-parchment py-14 px-4 text-center">
         <div className="max-w-2xl mx-auto">
-          <nav className="flex items-center justify-center gap-2 text-xs text-[#4a7a7a] mb-6">
+          <nav className="flex items-center justify-center gap-2 text-xs text-stone mb-6">
             <Link href="/" className="hover:underline">Home</Link>
             <span>/</span>
-            <span className="font-medium text-[#2c2c2c]">Melbourne</span>
+            <span className="font-medium text-ink">Melbourne</span>
           </nav>
-          <h1 className="text-[clamp(1.5rem,6vw,3rem)] font-extrabold text-[#2c2c2c] leading-tight tracking-tight">
+          <h1 className="font-display italic font-700 text-[clamp(1.5rem,6vw,3rem)] text-ink leading-tight">
             Kid-Friendly Cafes in Melbourne
           </h1>
-          <p className="text-[#4a7a7a] text-base sm:text-lg mt-4 max-w-lg mx-auto leading-relaxed">
-            Cafes, restaurants and play venues across Melbourne with real play areas — reviewed by local parents.
+          <p className="text-stone text-base sm:text-lg mt-4 max-w-lg mx-auto leading-relaxed">
+            Cafes, restaurants and venues across Melbourne with real play areas — added by local parents.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
             <Link
               href="/search?lat=-37.8136&lng=144.9631&q=Melbourne"
-              className="inline-flex items-center gap-2 bg-[#4abfc0] text-white font-bold text-sm px-6 py-3 rounded-2xl hover:bg-[#38a5a0] transition-colors shadow-md"
+              className="inline-flex items-center gap-2 bg-rust text-paper font-medium text-sm px-6 py-3 rounded hover:bg-rust-dark transition-colors"
             >
-              🗺️ Open map
+              Open map
             </Link>
             <Link
               href="/submit"
-              className="inline-flex items-center gap-2 bg-white/80 border border-[#5ecece]/40 text-[#38a5a0] font-semibold text-sm px-6 py-3 rounded-2xl hover:bg-white transition-colors"
+              className="inline-flex items-center gap-2 bg-paper border border-border text-ink font-medium text-sm px-6 py-3 rounded hover:bg-parchment transition-colors"
             >
-              📍 Add a place
+              + Add a place
             </Link>
           </div>
         </div>
       </section>
 
       {/* Venue grid */}
-      <section className="bg-white px-4 py-12">
+      <section className="bg-paper px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">
+          <h2 className="font-display italic font-700 text-xl text-ink mb-2">
             {locations.length > 0 ? `${locations.length} places listed in Melbourne` : 'Places in Melbourne'}
           </h2>
-          <p className="text-sm text-[#6b7280] mb-8">
+          <p className="text-sm text-stone mb-8">
             Browse suburbs, search the map, or filter by play area type to find your next family outing.
           </p>
 
@@ -142,7 +142,7 @@ export default async function MelbournePage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 text-[#6b7280]">
+            <div className="text-center py-16 text-stone">
               <p className="text-lg font-medium mb-2">No Melbourne listings yet</p>
               <p className="text-sm">Be the first to add a kid-friendly spot in Melbourne.</p>
             </div>
@@ -151,7 +151,7 @@ export default async function MelbournePage() {
           <div className="mt-8 text-center">
             <Link
               href="/search?lat=-37.8136&lng=144.9631&q=Melbourne"
-              className="inline-flex items-center gap-2 bg-[#4abfc0] text-white font-semibold text-sm px-7 py-3 rounded-2xl hover:bg-[#38a5a0] transition-colors"
+              className="inline-flex items-center gap-2 bg-rust text-paper font-medium text-sm px-7 py-3 rounded hover:bg-rust-dark transition-colors"
             >
               See all on map →
             </Link>
@@ -160,9 +160,9 @@ export default async function MelbournePage() {
       </section>
 
       {/* Popular suburbs */}
-      <section className="bg-[#faf8f4] px-4 py-12 border-t border-gray-100">
+      <section className="bg-parchment px-4 py-12 border-t border-border">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-6">Browse Melbourne by suburb</h2>
+          <h2 className="font-display italic font-700 text-xl text-ink mb-6">Browse Melbourne by suburb</h2>
           <div className="flex flex-wrap gap-2">
             {[
               'South Yarra', 'Fitzroy', 'Richmond', 'St Kilda', 'Brunswick',
@@ -172,7 +172,7 @@ export default async function MelbournePage() {
               <Link
                 key={suburb}
                 href={`/search?q=${encodeURIComponent(suburb)}`}
-                className="inline-flex items-center bg-white border border-gray-200 text-[#4b5563] text-xs font-medium px-3 py-1.5 rounded-full hover:border-[#4abfc0] hover:text-[#38a5a0] transition-colors"
+                className="inline-flex items-center bg-paper border border-border text-stone text-xs font-medium px-3 py-1.5 rounded-full hover:border-ink hover:text-ink transition-colors"
               >
                 {suburb}
               </Link>

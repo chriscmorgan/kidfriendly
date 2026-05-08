@@ -31,14 +31,14 @@ export default function ReportButton({ locationId }: { locationId: string }) {
   }
 
   if (submitted) return (
-    <span className="text-xs text-[#6b7280]">✓ Reported — thank you</span>
+    <span className="text-xs text-stone">✓ Reported — thank you</span>
   )
 
   return (
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 text-xs text-[#6b7280] hover:text-red-500 transition-colors cursor-pointer"
+        className="flex items-center gap-1.5 text-xs text-stone hover:text-red-500 transition-colors cursor-pointer"
       >
         <Flag className="w-3.5 h-3.5" />
         Report this listing
@@ -47,25 +47,25 @@ export default function ReportButton({ locationId }: { locationId: string }) {
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
-          <div className="relative bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-            <h3 className="font-semibold text-[#2c2c2c] mb-1">Report this listing</h3>
+          <div className="relative bg-paper rounded p-6 w-full max-w-sm shadow-lg">
+            <h3 className="font-semibold text-ink mb-1">Report this listing</h3>
 
             {!user ? (
               <div className="py-4 text-center">
                 <p className="text-sm text-[#4b5563] mb-4">Sign in to submit a report — it only takes a few seconds.</p>
                 <button
                   onClick={() => { setOpen(false); setShowSignIn(true) }}
-                  className="w-full bg-[#4abfc0] hover:bg-[#38a5a0] text-white font-semibold text-sm py-3 rounded-xl transition-colors cursor-pointer"
+                  className="w-full bg-rust hover:bg-rust-dark text-paper font-semibold text-sm py-3 rounded transition-colors cursor-pointer"
                 >
                   Sign in to report
                 </button>
-                <button onClick={() => setOpen(false)} className="mt-3 text-xs text-[#9ca3af] hover:text-[#6b7280] cursor-pointer">
+                <button onClick={() => setOpen(false)} className="mt-3 text-xs text-[#9ca3af] hover:text-stone cursor-pointer">
                   Cancel
                 </button>
               </div>
             ) : (
               <>
-                <p className="text-xs text-[#6b7280] mb-4">Select a reason or describe the issue below.</p>
+                <p className="text-xs text-stone mb-4">Select a reason or describe the issue below.</p>
 
                 <div className="flex flex-col gap-2 mb-4">
                   {QUICK_REASONS.map((r) => (
@@ -73,10 +73,10 @@ export default function ReportButton({ locationId }: { locationId: string }) {
                       key={r.value}
                       type="button"
                       onClick={() => setReason(r.value)}
-                      className={`text-left text-sm px-3 py-2.5 rounded-xl border transition-colors cursor-pointer ${
+                      className={`text-left text-sm px-3 py-2.5 rounded border transition-colors cursor-pointer ${
                         reason === r.value
-                          ? 'border-[#4abfc0] bg-[#f0fbfb] text-[#2a8a85]'
-                          : 'border-gray-200 hover:bg-gray-50 text-[#2c2c2c]'
+                          ? 'border-rust bg-rust-light text-rust-dark'
+                          : 'border-border hover:bg-parchment text-ink'
                       }`}
                     >
                       {r.label}
@@ -88,16 +88,16 @@ export default function ReportButton({ locationId }: { locationId: string }) {
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   placeholder="Or describe the issue…"
-                  className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20 outline-none focus:border-[#4abfc0]"
+                  className="w-full border border-border rounded p-3 text-sm resize-none h-20 outline-none focus:border-rust text-ink placeholder:text-stone"
                 />
                 <div className="flex gap-2 mt-3 justify-end">
-                  <button onClick={() => setOpen(false)} className="px-4 py-2 text-sm text-[#6b7280] hover:bg-gray-100 rounded-xl cursor-pointer">
+                  <button onClick={() => setOpen(false)} className="px-4 py-2 text-sm text-stone hover:bg-parchment rounded cursor-pointer">
                     Cancel
                   </button>
                   <button
                     onClick={handleSubmit}
                     disabled={!reason.trim()}
-                    className="px-4 py-2 text-sm bg-red-500 text-white rounded-xl hover:bg-red-600 disabled:opacity-50 cursor-pointer"
+                    className="px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 cursor-pointer"
                   >
                     Submit report
                   </button>

@@ -106,10 +106,10 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
     <div ref={containerRef} className={cn('relative w-full', className)}>
       <form onSubmit={handleSubmit}>
         <div className={cn(
-          'flex items-center gap-1 bg-white border border-gray-200 rounded-2xl shadow-sm transition-shadow focus-within:shadow-md focus-within:border-[#4abfc0]',
+          'flex items-center gap-1 bg-white border border-border rounded shadow-sm transition-shadow focus-within:shadow-md focus-within:border-rust',
           isHero ? 'p-2 pr-2' : 'p-1.5 pr-1.5'
         )}>
-          <Search className={cn('shrink-0 text-[#6b7280] ml-2', isHero ? 'w-5 h-5' : 'w-4 h-4')} />
+          <Search className={cn('shrink-0 text-stone ml-2', isHero ? 'w-5 h-5' : 'w-4 h-4')} />
           <input
             type="text"
             placeholder="Search suburb or postcode…"
@@ -117,12 +117,12 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
             onChange={handleInput}
             onFocus={() => suggestions.length > 0 && setOpen(true)}
             className={cn(
-              'flex-1 min-w-0 bg-transparent outline-none text-[#2c2c2c] placeholder:text-[#6b7280]',
+              'flex-1 min-w-0 bg-transparent outline-none text-ink placeholder:text-stone',
               isHero ? 'text-base py-2 px-1' : 'text-sm py-2 px-1'
             )}
             autoComplete="off"
           />
-          {loading && <Loader2 className="w-4 h-4 text-[#6b7280] animate-spin shrink-0" />}
+          {loading && <Loader2 className="w-4 h-4 text-stone animate-spin shrink-0" />}
           {/* Near me — min 44px tap target */}
           <button
             type="button"
@@ -133,8 +133,8 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
             className={cn(
               'shrink-0 flex items-center gap-1 font-medium rounded-xl transition-colors cursor-pointer disabled:opacity-50 min-h-[44px] min-w-[44px] justify-center',
               isHero
-                ? 'px-3 text-sm text-[#38a5a0] hover:bg-[#edf8f8]'
-                : 'px-2 text-xs text-[#38a5a0] hover:bg-[#edf8f8]'
+                ? 'px-3 text-sm text-rust hover:bg-rust-light'
+                : 'px-2 text-xs text-rust hover:bg-rust-light'
             )}
           >
             {geoLoading
@@ -147,7 +147,7 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
           <button
             type="submit"
             className={cn(
-              'shrink-0 bg-[#4abfc0] text-white font-semibold rounded-xl hover:bg-[#38a5a0] transition-colors cursor-pointer min-h-[44px]',
+              'shrink-0 bg-rust text-paper font-semibold rounded hover:bg-rust-dark transition-colors cursor-pointer min-h-[44px]',
               isHero ? 'px-5 text-sm' : 'px-4 text-sm'
             )}
           >
@@ -157,17 +157,17 @@ export default function SearchBar({ defaultValue = '', className, onSearch, size
       </form>
 
       {open && suggestions.length > 0 && (
-        <ul className="absolute left-0 right-0 top-full mt-2 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden z-30">
+        <ul className="absolute left-0 right-0 top-full mt-2 bg-paper border border-border rounded shadow-lg overflow-hidden z-30">
           {suggestions.map((s) => (
             <li key={s.id}>
               <button
                 type="button"
                 onClick={() => handleSelect(s)}
-                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-[#2c2c2c] hover:bg-[#f7eed9] transition-colors cursor-pointer text-left"
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-ink hover:bg-parchment transition-colors cursor-pointer text-left"
               >
                 {s.type === 'venue'
-                  ? <Store className="w-4 h-4 text-[#4abfc0] shrink-0" />
-                  : <MapPin className="w-4 h-4 text-[#6b7280] shrink-0" />
+                  ? <Store className="w-4 h-4 text-rust shrink-0" />
+                  : <MapPin className="w-4 h-4 text-stone shrink-0" />
                 }
                 <span className="truncate">{s.label}</span>
               </button>
