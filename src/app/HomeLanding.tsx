@@ -14,53 +14,53 @@ interface Props {
 const HOW_IT_WORKS = [
   {
     emoji: '📍',
-    title: 'Add a place you love',
-    desc: 'Sign in free and add a spot in 2 minutes. Your submission goes live after a quick review.',
+    title: 'Add a spot you know',
+    desc: 'Sign in with Google and add a place in about 2 minutes. It goes live after a quick check.',
   },
   {
     emoji: '🔍',
-    title: 'Search your area',
-    desc: 'Find nearby cafes and spots with play areas by suburb or postcode.',
+    title: 'Search your suburb',
+    desc: 'Enter a suburb or postcode to find what\'s nearby. Filter by type of play area.',
   },
   {
     emoji: '📣',
-    title: 'Share with other parents',
-    desc: 'Send the link to your parents group. Every share brings in more places.',
+    title: 'Send it to your group',
+    desc: 'Drop the link in your parents WhatsApp or Facebook group. More people = more spots added.',
   },
 ]
 
 const FAQS = [
   {
-    q: 'What is KidFriendlyEats?',
-    a: 'KidFriendlyEats is a free community directory built by Melbourne parents — a map of cafes, restaurants and venues with real play areas for kids. No ads, no paid listings. Just places real parents have been to and taken the time to share.',
+    q: 'What is this?',
+    a: 'A map of cafes, restaurants and venues in Melbourne where the kids can actually play — not just sit nicely. Places are added by parents who\'ve been there. It\'s free to use and free to add to.',
   },
   {
-    q: 'How do I find kid-friendly venues near me?',
-    a: 'Use the search bar to enter your suburb or postcode. The map will show nearby venues with play areas, which you can filter by type (indoor playground, outdoor run area, adjacent playground, etc.).',
+    q: 'How do I find somewhere near me?',
+    a: 'Type your suburb or postcode into the search bar. You can also filter by type — indoor playgrounds, spots next to a public playground, outdoor run areas, and so on.',
   },
   {
-    q: 'What types of play areas are listed?',
-    a: 'We list five types: indoor playgrounds (built inside the venue), on-site kids play areas (equipment in the venue grounds), venues adjacent to a public playground, outdoor run areas, and dedicated play centres. Each venue is tagged so you can filter for exactly what you\'re after.',
+    q: 'What counts as a "play area"?',
+    a: 'We cover five types: indoor playgrounds built inside the venue, on-site kids\' equipment, venues right next to a public playground, outdoor run areas, and dedicated play centres. Each place is tagged so you can filter.',
   },
   {
-    q: 'Can I add a place that\'s not listed?',
-    a: 'Yes — and we\'d love you to. Sign in free and use the Submit page. It takes about 2 minutes. Every submission is reviewed before going live to keep quality high.',
+    q: 'Can I add a place?',
+    a: 'Yes — that\'s the whole point. Sign in with Google and use the Add page. Takes about 2 minutes. We check each submission before it goes live.',
   },
   {
-    q: 'How do I know the information is accurate?',
-    a: 'Every listing is submitted by a real parent who has visited. We rely on the community to flag anything outdated — use the "Report" button on any listing if something looks wrong.',
+    q: 'How do I know the info is right?',
+    a: 'Places are added by parents who\'ve visited. If something looks outdated — hours changed, play area removed — hit the Report button and we\'ll sort it.',
   },
   {
-    q: 'What areas of Melbourne are covered?',
-    a: 'All of Greater Melbourne. Coverage grows as the community adds more places — if your area is light on listings, you can change that in 2 minutes.',
+    q: 'What parts of Melbourne are on here?',
+    a: 'All of Greater Melbourne, but honestly some suburbs have more coverage than others right now. If your area is thin, adding a place or two would make a real difference.',
   },
   {
-    q: 'Is it free to use?',
-    a: 'Completely free — no ads, no subscriptions. KidFriendlyEats is a community project built by parents for parents.',
+    q: 'Is it free?',
+    a: 'Yes. Browsing, searching, adding places, leaving reviews — all free.',
   },
   {
     q: 'Do venues pay to be listed?',
-    a: 'No. Listings are added by community members who have visited. We do not accept sponsored or promotional content.',
+    a: 'No. Every listing was added by a parent, not the venue. We don\'t take money for listings.',
   },
 ]
 
@@ -75,7 +75,7 @@ const TAG_DESCRIPTIONS: Record<string, string> = {
 function EarlyBadge() {
   return (
     <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-[#f0d8b0] text-[#a07030] text-xs font-semibold px-4 py-2 rounded-full">
-      <span>✨</span> Just launched · Be one of the first to add a spot
+      New — still adding places in Melbourne
     </div>
   )
 }
@@ -126,15 +126,14 @@ export default function HomeLanding({ locations }: Props) {
           </div>
 
           <h1 className="text-[clamp(1.75rem,7vw,3.75rem)] leading-tight font-extrabold text-[#2c2c2c] tracking-tight">
-            The Kid-Friendly Map{' '}
-            <span className="text-[#4abfc0]">Built by Melbourne Parents</span>
+            Melbourne cafes and places{' '}
+            <span className="text-[#4abfc0]">where the kids can actually play</span>
           </h1>
 
           <p className="text-[#5a6b6b] text-base sm:text-lg mt-4 max-w-xl mx-auto leading-relaxed">
-            Finding genuinely good spots with the kids is harder than it should be. We kept sharing
-            them in group chats and thought —{' '}
-            <strong className="text-[#2c2c2c] font-semibold">there should be a proper place for this.</strong>
-            {' '}So we built one. Add the places you love and help other Melbourne parents find them.
+            Good places to go with kids are hard to find. They&apos;re not well-covered on Google Maps
+            and the lists floating around are mostly out of date. This is our attempt at keeping a better one.
+            If you know a spot, add it.
           </p>
 
           {/* Primary CTA — Add a place */}
@@ -167,7 +166,7 @@ export default function HomeLanding({ locations }: Props) {
                 ))}
               </div>
               <p className="text-xs text-[#6b8080]">
-                Recently added by {recentContributors.map(([, name]) => name.split(' ')[0]).slice(0, 3).join(', ')} and others
+                Added by {recentContributors.map(([, name]) => name.split(' ')[0]).slice(0, 3).join(', ')} and others
               </p>
             </div>
           )}
@@ -180,10 +179,10 @@ export default function HomeLanding({ locations }: Props) {
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div>
             <p className="font-semibold text-[#2c2c2c] text-sm">
-              Know a great spot that&apos;s not listed?
+              Know a spot we&apos;ve missed?
             </p>
             <p className="text-xs text-[#7a6040] mt-0.5">
-              Every place you add helps the next parent have a better day out. Takes 2 minutes.
+              Add it — takes about 2 minutes.
             </p>
           </div>
           <Link
@@ -198,8 +197,8 @@ export default function HomeLanding({ locations }: Props) {
       {/* ── How it works ── */}
       <section className="bg-white border-b border-gray-100 px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-center text-xl font-bold text-[#2c2c2c] mb-1">How the community works</h2>
-          <p className="text-center text-sm text-[#6b7280] mb-8">Anyone can contribute — the more parents add, the better it gets for everyone</p>
+          <h2 className="text-center text-xl font-bold text-[#2c2c2c] mb-1">How it works</h2>
+          <p className="text-center text-sm text-[#6b7280] mb-8">Anyone can add a place or search for one</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {HOW_IT_WORKS.map((step, i) => (
               <div key={i} className="flex flex-col items-center text-center px-4">
@@ -220,8 +219,8 @@ export default function HomeLanding({ locations }: Props) {
           <div className="max-w-4xl mx-auto">
             <div className="flex items-baseline justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-[#2c2c2c]">Recently added by the community</h2>
-                <p className="text-sm text-[#6b7280] mt-0.5">Fresh spots from parents who have just been</p>
+                <h2 className="text-xl font-bold text-[#2c2c2c]">Recently added</h2>
+                <p className="text-sm text-[#6b7280] mt-0.5">Spots parents have added lately</p>
               </div>
               <Link href="/search" className="text-sm font-semibold text-[#38a5a0] hover:underline shrink-0 ml-4">
                 See all →
@@ -250,8 +249,8 @@ export default function HomeLanding({ locations }: Props) {
       {/* ── Categories ── */}
       <section className="bg-white px-4 py-12 border-b border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Browse by play type</h2>
-          <p className="text-sm text-[#6b7280] mb-6">Filter by what kind of setup the venue has</p>
+          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Browse by type</h2>
+          <p className="text-sm text-[#6b7280] mb-6">Filter by what kind of play setup the venue has</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {TAGS.map((tag) => (
               <Link
@@ -271,8 +270,8 @@ export default function HomeLanding({ locations }: Props) {
       {/* ── Popular guides ── */}
       <section className="bg-[#faf8f4] px-4 py-12 border-b border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Community guides</h2>
-          <p className="text-sm text-[#6b7280] mb-6">Curated by parents, for parents</p>
+          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Filtered lists</h2>
+          <p className="text-sm text-[#6b7280] mb-6">If you know what you&apos;re after</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
               href="/indoor-playground-cafes"
@@ -304,9 +303,9 @@ export default function HomeLanding({ locations }: Props) {
           <div className="w-14 h-14 rounded-2xl bg-[#fff3ee] flex items-center justify-center text-3xl mx-auto mb-4">
             📣
           </div>
-          <h2 className="text-xl font-bold text-[#2c2c2c]">Know other parents who&apos;d find this useful?</h2>
+          <h2 className="text-xl font-bold text-[#2c2c2c]">Know someone who&apos;d find this useful?</h2>
           <p className="text-sm text-[#6b7280] mt-3 max-w-md mx-auto leading-relaxed">
-            Share KidFriendlyEats in your parents group, your local Facebook group, or with anyone who&apos;s ever asked for a cafe recommendation. The more people share, the more places get added.
+            Drop the link in your parents WhatsApp or local Facebook group. More people finding it means more spots getting added.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
             <a
@@ -332,8 +331,7 @@ export default function HomeLanding({ locations }: Props) {
       {/* ── FAQ ── */}
       <section className="bg-[#faf8f4] px-4 py-12 border-t border-gray-100">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-xl font-bold text-[#2c2c2c] mb-2">Frequently asked questions</h2>
-          <p className="text-sm text-[#6b7280] mb-8">Everything parents want to know</p>
+          <h2 className="text-xl font-bold text-[#2c2c2c] mb-8">Questions</h2>
           <div className="space-y-4">
             {FAQS.map((faq, i) => (
               <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5">
@@ -383,18 +381,10 @@ export default function HomeLanding({ locations }: Props) {
       {/* ── Final CTA ── */}
       <section className="bg-[#2c2c2c] px-4 py-16 text-center">
         <div className="max-w-lg mx-auto">
-          <p className="text-[#a0b0b0] text-xs font-semibold tracking-widest uppercase mb-3">Join the community</p>
-          <h2 className="text-2xl font-bold text-white">Know a great spot? Add it.</h2>
+          <h2 className="text-2xl font-bold text-white">Know a spot? Add it.</h2>
           <p className="text-[#9ab0b0] mt-3 text-sm leading-relaxed max-w-sm mx-auto">
-            Every place you add helps a family have a better day out. Sign in free — it takes 2 minutes.
+            Sign in with Google — takes about 2 minutes. We check it before it goes live.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-3 text-[#6a9090] text-xs font-medium">
-            <span>✓ Free forever</span>
-            <span>·</span>
-            <span>✓ Sign in with Google</span>
-            <span>·</span>
-            <span>✓ Reviewed before going live</span>
-          </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
             <Link
               href="/submit"
