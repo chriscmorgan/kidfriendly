@@ -137,9 +137,10 @@ export default function SubmitForm() {
     if (selectedTags.length === 0) { setError('Select at least one tag'); return }
     if (!description.trim() || description.length < 30) { setError('Description must be at least 30 characters'); return }
 
-    if (!user) return
+    if (!user || !session?.access_token) return
     setSubmitting(true)
-    const supabase = createClient(session?.access_token)
+    const supabase = createClient()
+    const storageUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 
     const locRes = await fetch('/api/submit/location', {
       method: 'POST',
@@ -173,23 +174,30 @@ export default function SubmitForm() {
       const file = photos[i]
       const ext = file.name.split('.').pop()
       const path = `${loc.id}/${i}.${ext}`
-      const { data: uploadData, error: uploadError } = await supabase.storage.from('Photos').upload(path, file, { upsert: true })
-      if (uploadError) {
-        console.error('[photo upload] failed:', uploadError.message, { path, bucket: 'Photos' })
-        setError(`Photo upload failed: ${uploadError.message}`)
+      const uploadRes = await fetch(`${storageUrl}/storage/v1/object/Photos/${path}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': file.type || 'application/octet-stream',
+          'x-upsert': 'true',
+        },
+        body: file,
+      })
+      if (!uploadRes.ok) {
+        const err = await uploadRes.json().catch(() => ({ message: 'Upload failed' }))
+        console.error('[photo upload] failed:', err.message, { path })
+        setError(`Photo upload failed: ${err.message}`)
         setSubmitting(false)
         return
       }
-      if (uploadData) {
-        const { data: urlData } = supabase.storage.from('Photos').getPublicUrl(path)
-        const { error: insertError } = await supabase.from('location_photos').insert({
-          location_id: loc.id,
-          url: urlData.publicUrl,
-          sort_order: i,
-          uploaded_by: user.id,
-        })
-        if (insertError) console.error('[photo insert] failed:', insertError.message)
-      }
+      const publicUrl = `${storageUrl}/storage/v1/object/public/Photos/${path}`
+      const { error: insertError } = await supabase.from('location_photos').insert({
+        location_id: loc.id,
+        url: publicUrl,
+        sort_order: i,
+        uploaded_by: user.id,
+      })
+      if (insertError) console.error('[photo insert] failed:', insertError.message)
     }
 
     setSubmitting(false)
