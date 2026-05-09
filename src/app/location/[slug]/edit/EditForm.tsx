@@ -92,27 +92,22 @@ export default function EditForm({ location: loc }: { location: Location }) {
       await supabase.from('location_photos').delete().eq('id', photoId)
     }
 
-    // Upload new photos
-    const { data: { user } } = await supabase.auth.getUser()
+    // Upload new photos via API route (same as SubmitForm — avoids client-side storage auth issues)
     const nextSort = existingPhotos.length > 0
       ? Math.max(...existingPhotos.map((p) => p.sort_order)) + 1
       : 0
 
     for (let i = 0; i < newPhotos.length; i++) {
-      const file = newPhotos[i]
-      const ext = file.name.split('.').pop()
-      const path = `${loc.id}/${Date.now()}-${i}.${ext}`
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('Photos').upload(path, file, { upsert: true })
-      if (uploadError) { setError(`Photo upload failed: ${uploadError.message}`); setSaving(false); return }
-      if (uploadData) {
-        const { data: urlData } = supabase.storage.from('Photos').getPublicUrl(path)
-        await supabase.from('location_photos').insert({
-          location_id: loc.id,
-          url: urlData.publicUrl,
-          sort_order: nextSort + i,
-          uploaded_by: user?.id,
-        })
+      const fd = new FormData()
+      fd.append('file', newPhotos[i])
+      fd.append('location_id', loc.id)
+      fd.append('sort_order', String(nextSort + i))
+      const res = await fetch('/api/photos', { method: 'POST', body: fd })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Upload failed' }))
+        setError(`Photo upload failed: ${err.error}`)
+        setSaving(false)
+        return
       }
     }
 
