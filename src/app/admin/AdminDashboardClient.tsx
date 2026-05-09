@@ -7,21 +7,23 @@ import { createClient } from '@/lib/supabase/client'
 import { TagBadge } from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import type { Location } from '@/lib/types'
-import type { Report } from './page'
+import type { Report, AdminUser } from './page'
 import { AGE_RANGES } from '@/lib/constants'
-import { CheckCircle, XCircle, Clock, MapPin, User, Eye, Pencil, Flag } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, MapPin, User, Eye, Pencil, Flag, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-type Tab = 'pending' | 'all' | 'reports'
+type Tab = 'pending' | 'all' | 'reports' | 'users'
 
 export default function AdminDashboardClient({
   initialPending,
   initialAll,
   initialReports,
+  initialUsers,
 }: {
   initialPending: Location[]
   initialAll: Location[]
   initialReports: Report[]
+  initialUsers: AdminUser[]
 }) {
   const router = useRouter()
   const supabase = createClient()
@@ -29,6 +31,7 @@ export default function AdminDashboardClient({
   const [pending, setPending] = useState(initialPending)
   const [all, setAll] = useState(initialAll)
   const [reports, setReports] = useState(initialReports)
+  const [users] = useState(initialUsers)
   const [processingId, setProcessingId] = useState<string | null>(null)
   const [rejectNote, setRejectNote] = useState<{ id: string; note: string } | null>(null)
 
@@ -84,9 +87,23 @@ export default function AdminDashboardClient({
           <Flag className="w-3.5 h-3.5" />
           Reports {reports.length > 0 && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{reports.length}</span>}
         </button>
+        <button onClick={() => setTab('users')} className={cn('px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer rounded-t-lg flex items-center gap-1.5', tab === 'users' ? 'text-rust border-b-2 border-rust' : 'text-stone hover:text-ink')}>
+          <Users className="w-3.5 h-3.5" />
+          Users ({users.length})
+        </button>
       </div>
 
-      {tab === 'reports' ? (
+      {tab === 'users' ? (
+        users.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-stone">No users yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {users.map((u) => <UserRow key={u.id} user={u} />)}
+          </div>
+        )
+      ) : tab === 'reports' ? (
         reports.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">✅</div>
@@ -276,6 +293,36 @@ function AllLocationRow({ location: loc, onDelete }: { location: Location; onDel
             <Button variant="ghost" size="sm" onClick={() => setConfirming(false)}>Cancel</Button>
           </>
         )}
+      </div>
+    </div>
+  )
+}
+
+/* ── User row ── */
+
+function UserRow({ user: u }: { user: AdminUser }) {
+  const initials = u.display_name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+  return (
+    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-4 flex items-center gap-4">
+      <div className="relative w-10 h-10 rounded-full overflow-hidden bg-[#f7eed9] shrink-0 flex items-center justify-center">
+        {u.avatar_url ? (
+          <Image src={u.avatar_url} alt={u.display_name} fill className="object-cover" sizes="40px" />
+        ) : (
+          <span className="text-sm font-semibold text-[#9e7c48]">{initials}</span>
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-semibold text-ink truncate">{u.display_name}</span>
+          {u.role === 'admin' && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rust text-paper">Admin</span>
+          )}
+        </div>
+        <p className="text-xs text-stone mt-0.5">
+          Joined {new Date(u.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}
+          {' · '}
+          {u.submission_count === 0 ? 'No submissions' : `${u.submission_count} submission${u.submission_count !== 1 ? 's' : ''}`}
+        </p>
       </div>
     </div>
   )

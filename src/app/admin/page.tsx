@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import AdminDashboardClient from './AdminDashboardClient'
-import type { Location } from '@/lib/types'
+import type { Location, UserRole } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Admin' }
@@ -14,6 +14,15 @@ export interface Report {
   created_at: string
   location: { name: string; slug: string } | null
   reporter: { display_name: string } | null
+}
+
+export interface AdminUser {
+  id: string
+  display_name: string
+  avatar_url: string | null
+  role: UserRole
+  created_at: string
+  submission_count: number
 }
 
 async function getPendingLocations(): Promise<Location[]> {
@@ -68,6 +77,27 @@ async function getReports(): Promise<Report[]> {
   }))
 }
 
+async function getUsers(): Promise<AdminUser[]> {
+  const supabase = await createClient()
+  const { data: users } = await supabase
+    .from('users')
+    .select('id, display_name, avatar_url, role, created_at')
+    .order('created_at', { ascending: false })
+  if (!users || users.length === 0) return []
+
+  const { data: locs } = await supabase
+    .from('locations')
+    .select('submitted_by')
+    .in('submitted_by', users.map((u) => u.id))
+
+  const countMap = new Map<string, number>()
+  for (const loc of locs ?? []) {
+    countMap.set(loc.submitted_by, (countMap.get(loc.submitted_by) ?? 0) + 1)
+  }
+
+  return users.map((u) => ({ ...u, submission_count: countMap.get(u.id) ?? 0 }))
+}
+
 export default async function AdminPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -76,6 +106,6 @@ export default async function AdminPage() {
   const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single()
   if (profile?.role !== 'admin') redirect('/')
 
-  const [pending, all, reports] = await Promise.all([getPendingLocations(), getAllLocations(), getReports()])
-  return <AdminDashboardClient initialPending={pending} initialAll={all} initialReports={reports} />
+  const [pending, all, reports, users] = await Promise.all([getPendingLocations(), getAllLocations(), getReports(), getUsers()])
+  return <AdminDashboardClient initialPending={pending} initialAll={all} initialReports={reports} initialUsers={users} />
 }
