@@ -4,6 +4,10 @@ import { checkRateLimit } from '@/lib/rateLimit'
 import { createClient } from '@/lib/supabase/server'
 import { TAGS, OPEN_TIMES, AGE_RANGES } from '@/lib/constants'
 import { slugify } from '@/lib/utils'
+import { Resend } from 'resend'
+
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'chris.c.morgan.email@gmail.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
 const VALID_TAGS = new Set(TAGS.map((t) => t.value))
 const VALID_OPEN_TIMES = new Set(OPEN_TIMES.map((t) => t.value))
@@ -92,6 +96,27 @@ export async function POST(request: Request) {
   if (error || !loc) {
     console.error('[submit/location]', error?.message, error?.details)
     return NextResponse.json({ error: error?.message ?? 'Insert failed' }, { status: 500 })
+  }
+
+  // Notify admin
+  const resendKey = process.env.RESEND_API_KEY
+  if (resendKey) {
+    const resend = new Resend(resendKey)
+    await resend.emails.send({
+      from: 'KidFriendlyEats <notifications@kidfriendlyeats.space>',
+      to: ADMIN_EMAIL,
+      subject: `New submission: ${(name as string).trim()}`,
+      html: `
+        <p><strong>A new place has been submitted for review.</strong></p>
+        <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
+          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Venue</td><td><strong>${(name as string).trim()}</strong></td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Suburb</td><td>${typeof suburb === 'string' ? suburb : ''}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Address</td><td>${address as string}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Submitted by</td><td>${user.email ?? user.id}</td></tr>
+        </table>
+        <p><a href="${SITE_URL}/admin">Review in admin →</a></p>
+      `,
+    }).catch(() => {})
   }
 
   return NextResponse.json({ id: loc.id })
