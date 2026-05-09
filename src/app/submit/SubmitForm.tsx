@@ -44,10 +44,10 @@ export default function SubmitForm() {
       <div className="bg-parchment border border-border rounded p-8 text-center">
         <h2 className="font-display italic font-700 text-xl text-ink mb-2">Sign in to add a place</h2>
         <p className="text-sm text-stone mb-6 max-w-xs mx-auto leading-relaxed">
-          Know a cafe with a play area? Sign in for free — it takes about 2 minutes to add it to the map.
+          Know a cafe or spot with a play area? Your listing helps another Melbourne family find it — and gives a small local business the kind of word-of-mouth it can&apos;t buy. Free account, takes about 2 minutes.
         </p>
         <Button size="lg" onClick={() => setShowSignIn(true)}>Sign in to add a place</Button>
-        <p className="text-xs text-stone mt-4">Free · No password needed · Reviewed before going live</p>
+        <p className="text-xs text-stone mt-4">Free · Sign up with Google or email · Reviewed before going live</p>
       </div>
       {showSignIn && <SignInModal onClose={() => setShowSignIn(false)} />}
     </>
@@ -201,7 +201,7 @@ export default function SubmitForm() {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. The Grounds of Alexandria"
+          placeholder="e.g. Auction Rooms, Proud Mary…"
           className="w-full border border-border rounded px-3 py-2.5 text-sm outline-none focus:border-rust text-ink placeholder:text-stone"
           maxLength={120}
         />
@@ -368,6 +368,9 @@ export default function SubmitForm() {
         <label className="block text-sm font-semibold text-ink mb-1.5">
           Photos <span className="text-stone font-normal">(optional, max 10, ≤5MB each)</span>
         </label>
+        <p className="text-xs text-stone mb-2.5 leading-relaxed">
+          Photos must be your own — by uploading you confirm you took them and have the right to share them. Please don&apos;t include images where individuals can be identified (faces of adults or children).
+        </p>
 
         {previews.length > 0 && (
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-3">

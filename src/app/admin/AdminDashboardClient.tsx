@@ -179,7 +179,7 @@ function PendingCard({ location: loc, processingId, rejectNote, onApprove, onRej
   const submitter = (loc as unknown as { submitter?: { display_name: string } }).submitter
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+    <div className="bg-white border border-gray-100 rounded shadow-sm overflow-hidden">
       <div className="flex flex-col sm:flex-row">
         <div className="relative w-full sm:w-48 h-40 sm:h-auto bg-[#f7eed9] shrink-0">
           {heroPhoto ? (
@@ -252,7 +252,7 @@ function AllLocationRow({ location: loc, onDelete }: { location: Location; onDel
   const heroPhoto = loc.photos?.[0]
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden flex items-center gap-4 p-4">
+    <div className="bg-white border border-gray-100 rounded shadow-sm overflow-hidden flex items-center gap-4 p-4">
       <div className="relative w-16 h-16 rounded overflow-hidden bg-[#f7eed9] shrink-0">
         {heroPhoto ? (
           <Image src={heroPhoto.url} alt={loc.name} fill className="object-cover" sizes="64px" />
@@ -303,7 +303,7 @@ function AllLocationRow({ location: loc, onDelete }: { location: Location; onDel
 function UserRow({ user: u }: { user: AdminUser }) {
   const initials = u.display_name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-4 flex items-center gap-4">
+    <div className="bg-white border border-gray-100 rounded shadow-sm p-4 flex items-center gap-4">
       <div className="relative w-10 h-10 rounded-full overflow-hidden bg-[#f7eed9] shrink-0 flex items-center justify-center">
         {u.avatar_url ? (
           <Image src={u.avatar_url} alt={u.display_name} fill className="object-cover" sizes="40px" />
@@ -334,7 +334,7 @@ function ReportRow({ report: r, onDismiss }: { report: Report; onDismiss: (id: s
   const [confirming, setConfirming] = useState(false)
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-4 flex flex-col sm:flex-row sm:items-center gap-4">
+    <div className="bg-white border border-gray-100 rounded shadow-sm p-4 flex flex-col sm:flex-row sm:items-center gap-4">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap mb-1">
           <Flag className="w-3.5 h-3.5 text-red-400 shrink-0" />

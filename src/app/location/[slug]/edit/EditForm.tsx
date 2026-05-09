@@ -281,6 +281,9 @@ export default function EditForm({ location: loc }: { location: Location }) {
         <label className="block text-sm font-semibold text-ink mb-1.5">
           Photos <span className="text-stone font-normal">(optional, max 10 total, ≤5MB each)</span>
         </label>
+        <p className="text-xs text-stone mb-2.5 leading-relaxed">
+          Photos must be your own — by uploading you confirm you took them and have the right to share them. Please don&apos;t include images where individuals can be identified (faces of adults or children).
+        </p>
 
         {existingPhotos.length > 0 && (
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-3">

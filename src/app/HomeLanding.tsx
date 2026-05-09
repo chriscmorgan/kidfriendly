@@ -152,7 +152,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-rust-light px-4 py-4">
         <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-sm text-ink">
-            Know a spot we&apos;ve missed? Create a free account with Google or your email and add it — takes about 2 minutes.
+            Small cafes and play centres live on word of mouth. If you&apos;ve been somewhere good, 2 minutes here puts it on the map for every Melbourne parent searching this weekend.
           </p>
           <Link
             href="/submit"
@@ -172,7 +172,7 @@ export default function HomeLanding({ locations }: Props) {
           <div className="space-y-8">
             {STEPS.map((step) => (
               <div key={step.n} className="flex gap-5">
-                <span className="font-display italic text-3xl text-border select-none shrink-0 leading-tight">{step.n}</span>
+                <span className="font-display italic text-3xl text-stone/40 select-none shrink-0 leading-tight">{step.n}</span>
                 <div>
                   <h3 className="text-sm font-semibold text-ink mb-1">{step.title}</h3>
                   <p className="text-sm text-stone leading-relaxed">{step.desc}</p>
@@ -348,7 +348,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-paper px-4 py-14 text-center">
         <div className="max-w-md mx-auto">
           <h2 className="font-display italic font-700 text-3xl text-ink mb-3">Know a spot? Add it.</h2>
-          <p className="text-sm text-stone mb-6">Free account — sign up with Google or your email, then 2 minutes to add a place.</p>
+          <p className="text-sm text-stone mb-6">Your listing helps another family find somewhere good on Saturday — and gives a small local business the kind of exposure it can&apos;t buy. Free account, 2 minutes.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/submit"

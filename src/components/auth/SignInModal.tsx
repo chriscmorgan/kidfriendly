@@ -109,9 +109,9 @@ export default function SignInModal({ onClose }: SignInModalProps) {
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs text-gray-400 font-medium">or</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-xs text-stone font-medium">or</span>
+            <div className="flex-1 h-px bg-border" />
           </div>
 
           {sent ? (
@@ -156,8 +156,12 @@ export default function SignInModal({ onClose }: SignInModalProps) {
           )}
         </div>
 
-        <p className="text-center text-xs text-stone">
-          By continuing you agree to our community guidelines.
+        <p className="text-center text-xs text-stone leading-relaxed">
+          By continuing you agree to our{' '}
+          <a href="/about#rules" className="underline underline-offset-2 hover:text-ink">community guidelines</a>.
+          {tab === 'signup' && (
+            <> Only add real places. Photos must be your own and must not contain identifiable people.</>
+          )}
         </p>
       </div>
     </div>

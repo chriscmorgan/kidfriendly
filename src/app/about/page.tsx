@@ -12,11 +12,11 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16">
-      <h1 className="text-3xl font-bold text-ink mb-2">About</h1>
+      <h1 className="font-display italic font-700 text-3xl text-ink mb-8">About</h1>
 
       <div className="space-y-8 text-[15px] leading-relaxed text-ink">
 
-        <div className="bg-[#fff8ee] border border-[#f0d8b0] rounded-2xl p-6 space-y-4 text-base leading-relaxed">
+        <div className="bg-[#fff8ee] border border-[#f0d8b0] rounded p-6 space-y-4 text-base leading-relaxed">
           <p>
             When I had my first kid, finding a cafe where they could actually run around — not just sit quietly
             and behave — was way harder than I expected. Google Maps doesn&apos;t filter for &quot;has a play area&quot;.
@@ -34,16 +34,16 @@ export default function AboutPage() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-3">Adding a place</h2>
+          <h2 className="font-display italic font-700 text-xl text-ink mb-3">Adding a place</h2>
           <p className="text-stone">
-            Sign in with Google and hit the Add button. Takes about 2 minutes. We do a quick check on each
+            Create a free account with Google or your email and hit the Add button. Takes about 2 minutes. We do a quick check on each
             submission before it goes live — just to make sure it&apos;s a real place that fits.
             If something looks outdated on an existing listing, hit the Report button and we&apos;ll look at it.
           </p>
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-3">Ratings</h2>
+          <h2 className="font-display italic font-700 text-xl text-ink mb-3">Ratings</h2>
           <p className="text-stone">
             Rather than a single star rating, you can rate the things that actually matter when you&apos;re
             going out with kids — how safe the play area is, noise level, parking, whether it suits
@@ -52,7 +52,7 @@ export default function AboutPage() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-3">A few ground rules</h2>
+          <h2 id="rules" className="font-display italic font-700 text-xl text-ink mb-3">A few ground rules</h2>
           <ul className="space-y-2 text-stone">
             <li className="flex items-start gap-2">
               <span className="text-rust mt-0.5">–</span>
@@ -74,7 +74,7 @@ export default function AboutPage() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-3">Get in touch</h2>
+          <h2 className="font-display italic font-700 text-xl text-ink mb-3">Get in touch</h2>
           <p className="text-stone">
             Questions or spotted something wrong?{' '}
             <a href="mailto:support@kidfriendlyeats.space" className="text-rust hover:underline">

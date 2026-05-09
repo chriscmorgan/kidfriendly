@@ -133,7 +133,7 @@ function ListStrip({
               href="/submit"
               className="inline-flex items-center gap-1.5 bg-rust hover:bg-rust-dark text-paper font-semibold text-xs px-4 py-2.5 rounded transition-colors"
             >
-              📍 Add a place
+              + Add a place
             </a>
           </div>
         ) : (
