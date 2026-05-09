@@ -263,8 +263,17 @@ export default async function LocationPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="px-1">
+          <div className="px-1 space-y-3">
             <ReportButton locationId={loc.id} />
+            <p className="text-xs text-stone leading-relaxed">
+              Are you the owner?{' '}
+              <a
+                href={`mailto:support@kidfriendlyeats.space?subject=Listing enquiry: ${encodeURIComponent(loc.name)}`}
+                className="underline underline-offset-2 hover:text-ink"
+              >
+                Contact us to update or remove this listing.
+              </a>
+            </p>
           </div>
         </aside>
       </div>

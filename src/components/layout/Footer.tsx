@@ -13,6 +13,8 @@ export default function Footer() {
             <Link href="/search" className="hover:text-ink transition-colors py-3 min-h-[44px] flex items-center">Explore</Link>
             <Link href="/submit" className="hover:text-ink transition-colors py-3 min-h-[44px] flex items-center">Add a place</Link>
             <a href="mailto:support@kidfriendlyeats.space" className="hover:text-ink transition-colors py-3 min-h-[44px] flex items-center">Contact</a>
+            <Link href="/privacy" className="hover:text-ink transition-colors py-3 min-h-[44px] flex items-center">Privacy</Link>
+            <Link href="/terms" className="hover:text-ink transition-colors py-3 min-h-[44px] flex items-center">Terms</Link>
           </nav>
           <p className="text-xs text-stone">
             © {new Date().getFullYear()} KidFriendlyEats

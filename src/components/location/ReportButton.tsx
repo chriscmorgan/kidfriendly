@@ -5,9 +5,11 @@ import { useAuth } from '@/components/auth/AuthProvider'
 import SignInModal from '@/components/auth/SignInModal'
 
 const QUICK_REASONS = [
-  { label: '🚫 Venue is closed or no longer open', value: 'Venue is closed or no longer open' },
-  { label: '🛝 Play area is closed or unavailable', value: 'Play area is closed or unavailable' },
-  { label: '📝 Information is incorrect', value: 'Information is incorrect' },
+  { label: 'Venue is closed or no longer open', value: 'Venue is closed or no longer open' },
+  { label: 'Play area is closed or unavailable', value: 'Play area is closed or unavailable' },
+  { label: 'Information is incorrect', value: 'Information is incorrect' },
+  { label: 'Review is defamatory or fake', value: 'Review is defamatory or fake' },
+  { label: 'Photo contains an identifiable person', value: 'Photo contains an identifiable person without consent' },
 ]
 
 export default function ReportButton({ locationId }: { locationId: string }) {

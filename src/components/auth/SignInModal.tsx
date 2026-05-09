@@ -158,7 +158,9 @@ export default function SignInModal({ onClose }: SignInModalProps) {
 
         <p className="text-center text-xs text-stone leading-relaxed">
           By continuing you agree to our{' '}
-          <a href="/about#rules" className="underline underline-offset-2 hover:text-ink">community guidelines</a>.
+          <a href="/terms" className="underline underline-offset-2 hover:text-ink">Terms of Service</a>
+          {' '}and{' '}
+          <a href="/privacy" className="underline underline-offset-2 hover:text-ink">Privacy Policy</a>.
           {tab === 'signup' && (
             <> Only add real places. Photos must be your own and must not contain identifiable people.</>
           )}
