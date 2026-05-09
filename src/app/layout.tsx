@@ -16,23 +16,22 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.sp
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Kid-Friendly Cafes with Play Areas in Australia | KidFriendlyEats',
+    default: 'Kid-Friendly Cafes & Play Areas in Melbourne | KidFriendlyEats',
     template: '%s | KidFriendlyEats',
   },
-  description: 'Find cafes, restaurants and venues with kids play areas across Australia — reviewed by local parents. Discover indoor playgrounds, spots next to parks, and family-friendly cafes in Melbourne, Sydney, Brisbane and beyond.',
-  keywords: ['kids play area', 'cafe with play area', 'family cafe Australia', 'indoor playground cafe', 'kid friendly cafe Melbourne', 'kid friendly cafe Sydney', 'cafes next to playgrounds', 'family restaurant Australia'],
+  description: 'Find cafes, restaurants and venues in Melbourne with real kids play areas — added and reviewed by local parents. Search by suburb or filter by indoor playground, park-side cafe, and more.',
   openGraph: {
     siteName: 'KidFriendlyEats',
     type: 'website',
     url: SITE_URL,
     locale: 'en_AU',
-    title: 'Kid-Friendly Cafes with Play Areas in Australia | KidFriendlyEats',
-    description: 'Find cafes, restaurants and venues with kids play areas across Australia — reviewed by local parents. Discover indoor playgrounds, spots next to parks, and family-friendly cafes in Melbourne, Sydney, Brisbane and beyond.',
+    title: 'Kid-Friendly Cafes & Play Areas in Melbourne | KidFriendlyEats',
+    description: 'Find cafes, restaurants and venues in Melbourne with real kids play areas — added and reviewed by local parents.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kid-Friendly Cafes with Play Areas in Australia | KidFriendlyEats',
-    description: 'Find cafes, restaurants and venues with kids play areas across Australia — reviewed by local parents.',
+    title: 'Kid-Friendly Cafes & Play Areas in Melbourne | KidFriendlyEats',
+    description: 'Find cafes and venues in Melbourne with kids play areas — added by local parents.',
   },
 }
 

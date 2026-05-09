@@ -1,6 +1,21 @@
 export const dynamic = 'force-dynamic'
 
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
+
+export const metadata: Metadata = {
+  title: 'Kid-Friendly Cafes & Play Areas in Melbourne | KidFriendlyEats',
+  description: 'The Melbourne map of cafes and places where kids can actually play — indoor playgrounds, spots next to parks, and run-around spaces. Added by local parents, free to use.',
+  alternates: { canonical: SITE_URL },
+  openGraph: {
+    title: 'Kid-Friendly Cafes & Play Areas in Melbourne',
+    description: 'The Melbourne map of cafes and places where kids can actually play. Added by local parents, free to use.',
+    url: SITE_URL,
+    type: 'website',
+  },
+}
 import HomeLanding from './HomeLanding'
 import type { Location, LocationPhoto, AvgRatings } from '@/lib/types'
 

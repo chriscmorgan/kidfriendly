@@ -9,12 +9,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.sp
 const USE_MOCK = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true
 
 export const metadata: Metadata = {
-  title: 'Cafes Next to Playgrounds in Australia',
-  description: 'Find cafes and restaurants in Australia right next to playgrounds — grab a coffee while the kids play outside. Reviewed by local parents.',
+  title: 'Cafes Next to Playgrounds in Melbourne',
+  description: 'Find Melbourne cafes right next to a playground — grab a coffee while the kids play outside. Added and reviewed by local parents.',
   alternates: { canonical: `${SITE_URL}/cafes-next-to-playgrounds` },
   openGraph: {
-    title: 'Cafes Next to Playgrounds in Australia | KidFriendlyEats',
-    description: 'Find cafes right next to playgrounds — grab a coffee while the kids play outside.',
+    title: 'Cafes Next to Playgrounds in Melbourne | KidFriendlyEats',
+    description: 'Melbourne cafes right next to a playground — grab a coffee while the kids play outside.',
     url: `${SITE_URL}/cafes-next-to-playgrounds`,
   },
 }

@@ -44,11 +44,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const photos = (loc.photos ?? []).sort((a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order)
   const heroPhoto = photos[0]
   const tagLabels = (loc.tags ?? []).map((t: Tag) => TAGS.find(x => x.value === t)?.label).filter(Boolean).join(', ')
-  const title = `${loc.name} — Kid-Friendly Cafe in ${loc.suburb}`
-  const description = `${loc.description.slice(0, 150).trimEnd()}…`
+  const title = `${loc.name} — Kid-Friendly ${tagLabels ? tagLabels.split(',')[0] : 'Venue'} in ${loc.suburb}`
+  const rawDesc = loc.description.slice(0, 140).trimEnd()
+  const description = `${loc.name} in ${loc.suburb}, Melbourne — ${tagLabels}. ${rawDesc}…`
 
   return {
-    title: `${loc.name} — Kid-Friendly Venue in ${loc.suburb}`,
+    title,
     description,
     alternates: { canonical: `${SITE_URL}/location/${loc.slug}` },
     openGraph: {
@@ -64,7 +65,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       images: heroPhoto ? [heroPhoto.url] : [],
     },
-    keywords: [`${loc.name}`, `${loc.suburb} cafe kids`, `kid friendly ${loc.suburb}`, tagLabels, 'cafe with play area Australia'],
   }
 }
 
@@ -114,6 +114,7 @@ export default async function LocationPage({ params }: Props) {
       '@type': 'PostalAddress',
       streetAddress: loc.address,
       addressLocality: loc.suburb,
+      addressRegion: 'VIC',
       addressCountry: 'AU',
     },
     geo: {

@@ -9,12 +9,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.sp
 const USE_MOCK = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true
 
 export const metadata: Metadata = {
-  title: 'Cafes with Indoor Playgrounds in Australia',
-  description: 'Find cafes and restaurants in Australia with indoor playgrounds inside — where you can enjoy a coffee while the kids play. Reviewed by parents.',
+  title: 'Cafes with Indoor Playgrounds in Melbourne',
+  description: 'Find Melbourne cafes with indoor playgrounds — where you can drink your coffee while the kids play inside. Added and reviewed by local parents.',
   alternates: { canonical: `${SITE_URL}/indoor-playground-cafes` },
   openGraph: {
-    title: 'Cafes with Indoor Playgrounds in Australia | KidFriendlyEats',
-    description: 'Find cafes with indoor playgrounds where you can enjoy a coffee while the kids play.',
+    title: 'Cafes with Indoor Playgrounds in Melbourne | KidFriendlyEats',
+    description: 'Melbourne cafes with indoor playgrounds — drink your coffee while the kids play inside.',
     url: `${SITE_URL}/indoor-playground-cafes`,
   },
 }
