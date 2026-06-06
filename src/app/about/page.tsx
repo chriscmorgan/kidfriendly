@@ -18,18 +18,17 @@ export default function AboutPage() {
 
         <div className="bg-[#fff8ee] border border-[#f0d8b0] rounded p-6 space-y-4 text-base leading-relaxed">
           <p>
-            When I had my first kid, finding a cafe where they could actually run around — not just sit quietly
-            and behave — was way harder than I expected. Google Maps doesn&apos;t filter for &quot;has a play area&quot;.
-            The lists you find online are usually a few years old and half the places have changed.
-            Most of the time I ended up asking in a WhatsApp group and hoping someone had been recently.
+            Eating out got a lot harder after we had our first kid, our little guy loved to run around and
+            just wouldn&apos;t sit still. We soon found that dining at places with a kids&apos; play area made
+            life so much less stressful.
           </p>
           <p>
-            I wanted somewhere to keep track of the good spots and actually share them properly.
-            So I built this.
+            But finding those spots was way harder than it should be. Google Maps doesn&apos;t filter for play areas,
+            and online lists are always outdated or tough to navigate when you&apos;re exploring a new area.
           </p>
           <p>
-            It&apos;s pretty simple — anyone can add a place they know, anyone can search for somewhere nearby.
-            The more people add to it, the more useful it gets. That&apos;s genuinely it.
+            We built this webpage to change that. It&apos;s simple: anyone can pin a great family-friendly spot,
+            and anyone can search for one nearby. The more we add, the better it gets.
           </p>
         </div>
 
@@ -43,15 +42,6 @@ export default function AboutPage() {
         </div>
 
         <div>
-          <h2 className="font-display italic font-700 text-xl text-ink mb-3">Ratings</h2>
-          <p className="text-stone">
-            Rather than a single star rating, you can rate the things that actually matter when you&apos;re
-            going out with kids — how safe the play area is, noise level, parking, whether it suits
-            toddlers vs older kids, and so on. Gives a more useful picture than just &quot;four stars&quot;.
-          </p>
-        </div>
-
-        <div>
           <h2 id="rules" className="font-display italic font-700 text-xl text-ink mb-3">A few ground rules</h2>
           <ul className="space-y-2 text-stone">
             <li className="flex items-start gap-2">
@@ -61,10 +51,6 @@ export default function AboutPage() {
             <li className="flex items-start gap-2">
               <span className="text-rust mt-0.5">–</span>
               Photos should be your own
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-rust mt-0.5">–</span>
-              Reviews should be honest — if a place wasn&apos;t great, say so
             </li>
             <li className="flex items-start gap-2">
               <span className="text-rust mt-0.5">–</span>
