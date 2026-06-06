@@ -120,6 +120,12 @@ export default function ProfileClient() {
               <div key={loc.id} className="relative">
                 <LocationCard location={loc} />
                 <StatusBadge status={loc.status} />
+                <Link
+                  href={`/location/${loc.slug}/edit`}
+                  className="absolute bottom-3 right-3 text-xs bg-paper border border-border text-stone hover:text-ink px-2.5 py-1 rounded transition-colors"
+                >
+                  Edit
+                </Link>
               </div>
             ))}
           </div>

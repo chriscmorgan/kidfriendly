@@ -34,10 +34,53 @@ export default async function globalSetup() {
     userId = created.user.id
   }
 
-  // Ensure a public.users row exists (submitted_by / uploaded_by FK)
+  // Ensure a public.users row exists (submitted_by / uploaded_by FK), with admin role
   await admin
     .from('users')
-    .upsert({ id: userId, display_name: 'Playwright Test' }, { onConflict: 'id' })
+    .upsert({ id: userId, display_name: 'Playwright Test', role: 'admin' }, { onConflict: 'id' })
+
+  // Ensure a foreign submitter auth user exists (for admin photo upload test)
+  const FOREIGN_EMAIL = 'playwright-foreign@kidfriendlyeats.com.au'
+  let foreignUserId = list?.users.find((u) => u.email === FOREIGN_EMAIL)?.id
+  if (!foreignUserId) {
+    const { data: created } = await admin.auth.admin.createUser({
+      email: FOREIGN_EMAIL,
+      email_confirm: true,
+    })
+    foreignUserId = created?.user?.id
+  }
+  if (!foreignUserId) throw new Error('Could not create foreign submitter user')
+
+  // Upsert the foreign location (submitted_by = foreignUserId, not the test user)
+  const { data: existingLoc } = await admin
+    .from('locations')
+    .select('id')
+    .eq('slug', 'playwright-foreign-location')
+    .single()
+
+  let foreignLocationId = existingLoc?.id as string | undefined
+  if (!foreignLocationId) {
+    const { data: newLoc, error: locErr } = await admin.from('locations').insert({
+      name: 'Playwright Foreign Location',
+      slug: 'playwright-foreign-location',
+      description: 'Test location created by Playwright for admin photo upload tests. Do not remove.',
+      address: '1 Test St, Melbourne VIC 3000',
+      lat: -37.8136,
+      lng: 144.9631,
+      suburb: 'Melbourne',
+      tags: ['kids_play_area'],
+      open_times: [],
+      age_ranges: [],
+      status: 'approved',
+      submitted_by: foreignUserId,
+    }).select('id').single()
+    if (locErr) throw new Error(`Could not create foreign location: ${locErr.message}`)
+    foreignLocationId = newLoc!.id
+  }
+
+  // Write test data for use in specs
+  const TEST_DATA_FILE = path.join(__dirname, '.auth', 'test-data.json')
+  fs.writeFileSync(TEST_DATA_FILE, JSON.stringify({ foreignLocationId }))
 
   // Generate a magic link (no captcha required for admin-generated links)
   const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({

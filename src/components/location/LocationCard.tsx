@@ -10,24 +10,9 @@ interface LocationCardProps {
   location: Location
   className?: string
   compact?: boolean
-  showContributor?: boolean
 }
 
-const AVATAR_PALETTES = [
-  'bg-[#f4d4c8] text-[#7a2a14]',
-  'bg-[#c8e4d4] text-[#1a4a2e]',
-  'bg-[#d4d0c8] text-[#3a3428]',
-  'bg-[#f0e4c8] text-[#6a4a10]',
-  'bg-[#c8d4e4] text-[#1a2e4a]',
-]
-
-function avatarPalette(seed: string) {
-  let hash = 0
-  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) | 0
-  return AVATAR_PALETTES[Math.abs(hash) % AVATAR_PALETTES.length]
-}
-
-export default function LocationCard({ location, className, compact = false, showContributor = false }: LocationCardProps) {
+export default function LocationCard({ location, className, compact = false }: LocationCardProps) {
   const heroPhoto = location.photos?.[0]
   const ageLabels = AGE_RANGES
     .filter((a) => location.age_ranges.includes(a.value))
@@ -96,16 +81,6 @@ export default function LocationCard({ location, className, compact = false, sho
           </div>
         )}
 
-        {showContributor && location.submitter && (
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
-            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0 ${avatarPalette(location.submitted_by)}`}>
-              {location.submitter.display_name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)}
-            </div>
-            <span className="text-[11px] text-stone">
-              {location.submitter.display_name}
-            </span>
-          </div>
-        )}
       </div>
     </Link>
   )

@@ -16,9 +16,10 @@ interface AddressData {
   suburb: string
 }
 
-export default function EditForm({ location: loc }: { location: Location }) {
+export default function EditForm({ location: loc, isAdmin }: { location: Location; isAdmin: boolean }) {
   const router = useRouter()
   const supabase = createClient()
+  const backHref = isAdmin ? '/admin' : '/profile'
 
   const [name, setName] = useState(loc.name)
   const [address, setAddress] = useState<AddressData>({
@@ -71,6 +72,15 @@ export default function EditForm({ location: loc }: { location: Location }) {
   function removeNewPhoto(i: number) {
     setNewPhotos((p) => p.filter((_, idx) => idx !== i))
     setNewPreviews((p) => p.filter((_, idx) => idx !== i))
+  }
+
+  async function handleDelete() {
+    if (!confirm(`Delete "${loc.name}"? This cannot be undone.`)) return
+    setSaving(true)
+    const { error } = await supabase.from('locations').delete().eq('id', loc.id)
+    if (error) { setError(`Delete failed: ${error.message}`); setSaving(false); return }
+    router.push(backHref)
+    router.refresh()
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -132,7 +142,7 @@ export default function EditForm({ location: loc }: { location: Location }) {
 
     if (updateError) { setError(`Update failed: ${updateError.message}`); setSaving(false); return }
 
-    router.push('/admin')
+    router.push(backHref)
     router.refresh()
   }
 
@@ -338,8 +348,14 @@ export default function EditForm({ location: loc }: { location: Location }) {
         <Button type="submit" size="lg" className="flex-1 justify-center" loading={saving}>
           Save changes
         </Button>
-        <Button type="button" variant="ghost" size="lg" onClick={() => router.push('/admin')}>
+        <Button type="button" variant="ghost" size="lg" onClick={() => router.push(backHref)}>
           Cancel
+        </Button>
+      </div>
+
+      <div className="border-t border-border pt-6">
+        <Button type="button" variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={handleDelete} disabled={saving}>
+          Delete this place
         </Button>
       </div>
     </form>

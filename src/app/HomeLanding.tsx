@@ -197,7 +197,7 @@ export default function HomeLanding({ locations }: Props) {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {locations.map((loc) => (
-                <LocationCard key={loc.id} location={loc} showContributor />
+                <LocationCard key={loc.id} location={loc} />
               ))}
             </div>
             <p className="text-sm text-stone mt-8">

@@ -17,7 +17,7 @@ export default async function EditPage({ params }: Props) {
   if (!user) redirect('/')
 
   const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single()
-  if (profile?.role !== 'admin') redirect('/')
+  const isAdmin = profile?.role === 'admin'
 
   const { data: loc } = await supabase
     .from('locations')
@@ -26,6 +26,7 @@ export default async function EditPage({ params }: Props) {
     .single()
 
   if (!loc) notFound()
+  if (!isAdmin && loc.submitted_by !== user.id) redirect('/')
 
   const location = {
     ...loc,
@@ -35,11 +36,13 @@ export default async function EditPage({ params }: Props) {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <a href="/admin" className="text-sm text-rust hover:underline">← Back to admin</a>
+        <a href={isAdmin ? '/admin' : '/profile'} className="text-sm text-rust hover:underline">
+          ← Back to {isAdmin ? 'admin' : 'my places'}
+        </a>
         <h1 className="font-display italic font-700 text-2xl text-ink mt-3">Edit location</h1>
         <p className="text-sm text-stone mt-1">{loc.name}</p>
       </div>
-      <EditForm location={location} />
+      <EditForm location={location} isAdmin={isAdmin} />
     </div>
   )
 }

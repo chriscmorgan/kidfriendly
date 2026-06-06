@@ -44,6 +44,7 @@ export async function POST(request: Request) {
 
   if (insertError) {
     console.error('[photos] insert failed:', insertError.message)
+    return NextResponse.json({ error: insertError.message }, { status: 500 })
   }
 
   return NextResponse.json({ url: urlData.publicUrl })

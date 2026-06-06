@@ -9,7 +9,7 @@ import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
 import type { Location, Review, AvgRatings, Tag, OpenTime } from '@/lib/types'
 import { AGE_RANGES, TAGS } from '@/lib/constants'
 import { safeJsonLd } from '@/lib/utils'
-import { MapPin, Navigation, User, Calendar, ExternalLink } from 'lucide-react'
+import { MapPin, Navigation, ExternalLink } from 'lucide-react'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
@@ -247,23 +247,7 @@ export default async function LocationPage({ params }: Props) {
             </div>
           )}
 
-          <div className="bg-paper border border-border rounded p-4">
-            <h3 className="text-sm font-semibold text-ink mb-3">Submitted by</h3>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-parchment flex items-center justify-center">
-                <User className="w-4 h-4 text-stone" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-ink">{loc.submitter?.display_name ?? 'Community member'}</p>
-                <p className="text-xs text-stone flex items-center gap-1 mt-0.5">
-                  <Calendar className="w-3 h-3" />
-                  {new Date(loc.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="px-1 space-y-3">
+<div className="px-1 space-y-3">
             <ReportButton locationId={loc.id} />
             <p className="text-xs text-stone leading-relaxed">
               Are you the owner?{' '}
