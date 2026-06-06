@@ -111,7 +111,7 @@ export default function HomeLanding({ locations }: Props) {
           </p>
 
           <h1 className="font-display italic font-700 text-[clamp(2.4rem,8vw,4.5rem)] leading-[1.05] text-ink">
-            Melbourne cafes and places where the kids can actually play
+            Find kid-friendly restaurants and cafes with play areas near you
           </h1>
 
           <div className="mt-6 max-w-xl">
