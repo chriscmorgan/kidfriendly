@@ -34,7 +34,7 @@ async function getLocations(): Promise<Location[]> {
       *,
       photos:location_photos(id, url, sort_order),
       reviews(rating_food, rating_noise, rating_safety, rating_cleanliness, rating_access, rating_weather, rating_age_suitability),
-      submitter:profiles!submitted_by(display_name, avatar_url)
+      submitter:users!submitted_by(display_name, avatar_url)
     `)
     .eq('status', 'approved')
     .order('approved_at', { ascending: false })
