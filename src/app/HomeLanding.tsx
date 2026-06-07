@@ -103,7 +103,7 @@ export default function HomeLanding({ locations }: Props) {
               href="/submit"
               className="text-sm font-medium text-rust hover:text-rust-dark underline underline-offset-2 min-h-[44px] flex items-center w-fit"
             >
-              + Add a place — free
+              + Add a place · no login · quick
             </Link>
           </div>
 

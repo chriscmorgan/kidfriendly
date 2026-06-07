@@ -185,15 +185,9 @@ export default function HomeMapSection({ locations }: { locations: Location[] })
         <h2 className="font-display italic font-700 text-2xl text-ink mb-2">
           All spots, on the map
         </h2>
-        <p className="text-sm text-stone max-w-md mx-auto mb-3">
+        <p className="text-sm text-stone max-w-md mx-auto">
           Browse every kid-friendly place in Melbourne — tap a pin or scroll the list.
         </p>
-        <a
-          href="/submit"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-rust hover:text-rust-dark underline underline-offset-2"
-        >
-          + Add a place · no login · quick
-        </a>
       </div>
 
       <div className="relative" style={{ height: 'calc(100vh - 56px)' }}>
