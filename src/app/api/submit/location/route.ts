@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { checkRateLimit } from '@/lib/rateLimit'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { TAGS, OPEN_TIMES, AGE_RANGES } from '@/lib/constants'
 import { slugify } from '@/lib/utils'
 import { Resend } from 'resend'
@@ -97,8 +98,9 @@ export async function POST(request: Request) {
 
   const slug = slugify((name as string).trim()) + '-' + Math.random().toString(36).slice(2, 7)
 
-  // supabase client is anon when user is null — RLS policy allows submitted_by IS NULL
-  const { data: loc, error } = await supabase
+  // Use service role for anonymous inserts to bypass RLS entirely
+  const db = user ? supabase : createServiceClient()
+  const { data: loc, error } = await db
     .from('locations')
     .insert({
       slug,
