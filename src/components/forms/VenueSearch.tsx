@@ -37,13 +37,6 @@ export default function VenueSearch({ onSelect }: VenueSearchProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    navigator.geolocation?.getCurrentPosition(
-      (pos) => setUserLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => {} // fall back to Melbourne
-    )
-  }, [])
-
-  useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false)
     }

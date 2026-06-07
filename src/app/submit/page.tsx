@@ -5,7 +5,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.sp
 
 export const metadata: Metadata = {
   title: 'Add a Kid-Friendly Place',
-  description: 'Know a cafe or venue in Australia with a kids play area? Add it to the map in 2 minutes — help other parents find it.',
+  description: 'Know a cafe or venue in Australia with a kids play area? Add it to the map in seconds — help other parents find it.',
   alternates: { canonical: `${SITE_URL}/submit` },
 }
 
@@ -15,7 +15,7 @@ export default function SubmitPage() {
       <div className="mb-8">
         <h1 className="font-display italic font-700 text-3xl text-ink">Add a place</h1>
         <p className="text-stone mt-2">
-          Know a cafe, restaurant or venue with a kids play area? Add it to the map in 2 minutes — every submission is reviewed before going live.
+          Know a cafe, restaurant or venue with a kids play area? Add it to the map in seconds — every submission is reviewed before going live.
         </p>
       </div>
       <SubmitForm />

@@ -20,7 +20,7 @@ const STEPS = [
   {
     n: '1',
     title: 'Add a spot you know',
-    desc: 'No account needed — add a place in about 2 minutes. It goes live after a quick check.',
+    desc: 'No account needed — add a place in seconds. It goes live after a quick check.',
   },
   {
     n: '2',
@@ -49,7 +49,7 @@ const FAQS = [
   },
   {
     q: 'Can I add a place?',
-    a: 'Yes — that\'s the whole point. No account needed. Use the Add page — takes about 2 minutes. We check each submission before it goes live.',
+    a: 'Yes — that\'s the whole point. No account needed. Use the Add page — takes seconds. We check each submission before it goes live.',
   },
   {
     q: 'How do I know the info is right?',
@@ -105,7 +105,7 @@ export default function HomeLanding({ locations }: Props) {
               href="/submit"
               className="text-sm font-medium text-rust hover:text-rust-dark underline underline-offset-2 min-h-[44px] flex items-center w-fit"
             >
-              + Add a place — free, 2 min
+              + Add a place — free
             </Link>
           </div>
 
@@ -142,7 +142,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-rust-light px-4 py-4">
         <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-sm text-ink">
-            Small cafes and play centres live on word of mouth. If you&apos;ve been somewhere good, 2 minutes here puts it on the map for every Melbourne parent searching this weekend.
+            Small cafes and play centres live on word of mouth. If you&apos;ve been somewhere good, adding it here puts it on the map for every Melbourne parent searching this weekend.
           </p>
           <Link
             href="/submit"
@@ -193,7 +193,7 @@ export default function HomeLanding({ locations }: Props) {
             <p className="text-sm text-stone mt-8">
               Don&apos;t see your suburb?{' '}
               <Link href="/submit" className="text-rust hover:text-rust-dark underline underline-offset-2">
-                Add a place — it takes about 2 minutes.
+                Add a place — it only takes seconds.
               </Link>
             </p>
           </div>
@@ -338,7 +338,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-paper px-4 py-14 text-center">
         <div className="max-w-md mx-auto">
           <h2 className="font-display italic font-700 text-3xl text-ink mb-3">Know a spot? Add it.</h2>
-          <p className="text-sm text-stone mb-6">Your listing helps another family find somewhere good on Saturday — and gives a small local business the kind of exposure it can&apos;t buy. Free, 2 minutes.</p>
+          <p className="text-sm text-stone mb-6">Your listing helps another family find somewhere good on Saturday — and gives a small local business the kind of exposure it can&apos;t buy. Free, takes seconds.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/submit"

@@ -35,7 +35,7 @@ export default function AboutPage() {
         <div>
           <h2 className="font-display italic font-700 text-xl text-ink mb-3">Adding a place</h2>
           <p className="text-stone">
-            Create a free account with Google or your email and hit the Add button. Takes about 2 minutes. We do a quick check on each
+            Hit the Add button — no account needed. It only takes seconds. We do a quick check on each
             submission before it goes live — just to make sure it&apos;s a real place that fits.
             If something looks outdated on an existing listing, hit the Report button and we&apos;ll look at it.
           </p>

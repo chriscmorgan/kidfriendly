@@ -309,7 +309,7 @@ export default function HomeMapClient({ locations }: Props) {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-rust leading-tight">Add a place</p>
-                    <p className="text-[10px] text-stone mt-0.5">Free · 2 min</p>
+                    <p className="text-[10px] text-stone mt-0.5">Free · quick</p>
                   </div>
                 </Link>
               </div>
