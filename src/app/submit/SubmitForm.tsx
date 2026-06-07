@@ -138,7 +138,7 @@ export default function SubmitForm() {
     })
 
     if (!locRes.ok) {
-      const data = await locRes.json()
+      const data = await locRes.json().catch(() => ({ error: `Server error (${locRes.status})` }))
       setError(`Submission failed: ${data.error ?? 'unknown error'}`)
       setSubmitting(false)
       return

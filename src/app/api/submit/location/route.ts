@@ -99,7 +99,12 @@ export async function POST(request: Request) {
   const slug = slugify((name as string).trim()) + '-' + Math.random().toString(36).slice(2, 7)
 
   // Use service role for anonymous submissions (no session = no RLS auth.uid())
-  const db = user ? supabase : createServiceClient()
+  let db
+  try {
+    db = user ? supabase : createServiceClient()
+  } catch {
+    return NextResponse.json({ error: 'Server configuration error — please contact the site admin' }, { status: 500 })
+  }
 
   const { data: loc, error } = await db
     .from('locations')
