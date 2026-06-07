@@ -169,5 +169,5 @@ const RAW_MOCK_LOCATIONS: Location[] = [
 
 export const mockLocations: Location[] = RAW_MOCK_LOCATIONS.map((loc) => ({
   ...loc,
-  submitter: MOCK_SUBMITTERS[loc.submitted_by] ?? { display_name: 'A parent', avatar_url: null },
+  submitter: loc.submitted_by ? (MOCK_SUBMITTERS[loc.submitted_by] ?? { display_name: 'A parent', avatar_url: null }) : { display_name: 'A parent', avatar_url: null },
 }))

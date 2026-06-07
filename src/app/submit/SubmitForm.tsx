@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth/AuthProvider'
-import SignInModal from '@/components/auth/SignInModal'
+import { Turnstile } from '@marsidev/react-turnstile'
 import AddressSearch from '@/components/forms/AddressSearch'
 import VenueSearch, { type PlaceResult } from '@/components/forms/VenueSearch'
 import Button from '@/components/ui/Button'
@@ -10,6 +10,8 @@ import { TAGS, OPEN_TIMES, AGE_RANGES } from '@/lib/constants'
 import type { Tag, OpenTime, AgeRange } from '@/lib/types'
 import { Upload, X, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 
 interface AddressData {
   place_name: string
@@ -21,7 +23,6 @@ interface AddressData {
 export default function SubmitForm() {
   const { user } = useAuth()
   const router = useRouter()
-  const [showSignIn, setShowSignIn] = useState(false)
 
   const [name, setName] = useState('')
   const [address, setAddress] = useState<AddressData | null>(null)
@@ -35,23 +36,12 @@ export default function SubmitForm() {
   const [venueSelected, setVenueSelected] = useState(false)
   const [photos, setPhotos] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
+  const [submitterName, setSubmitterName] = useState('')
+  const [submitterEmail, setSubmitterEmail] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
-
-  if (!user) return (
-    <>
-      <div className="bg-parchment border border-border rounded p-8 text-center">
-        <h2 className="font-display italic font-700 text-xl text-ink mb-2">Sign in to add a place</h2>
-        <p className="text-sm text-stone mb-6 max-w-xs mx-auto leading-relaxed">
-          Know a cafe or spot with a play area? Your listing helps another Melbourne family find it — and gives a small local business the kind of word-of-mouth it can&apos;t buy. Free account, takes about 2 minutes.
-        </p>
-        <Button size="lg" onClick={() => setShowSignIn(true)}>Sign in to add a place</Button>
-        <p className="text-xs text-stone mt-4">Free · Sign up with Google or email · Reviewed before going live</p>
-      </div>
-      {showSignIn && <SignInModal onClose={() => setShowSignIn(false)} />}
-    </>
-  )
 
   if (done) return (
     <div className="bg-parchment border border-border rounded p-8 text-center">
@@ -62,7 +52,8 @@ export default function SubmitForm() {
         <Button onClick={() => {
           setDone(false); setName(''); setAddress(null); setSelectedTags([])
           setSelectedOpenTimes([]); setDescription(''); setTips(''); setAgeRanges([])
-          setPhotos([]); setPreviews([])
+          setPhotos([]); setPreviews([]); setSubmitterName(''); setSubmitterEmail('')
+          setTurnstileToken(null)
         }}>
           Add another
         </Button>
@@ -122,7 +113,6 @@ export default function SubmitForm() {
     if (selectedTags.length === 0) { setError('Select at least one tag'); return }
     if (!description.trim() || description.length < 30) { setError('Description must be at least 30 characters'); return }
 
-    if (!user) return
     setSubmitting(true)
 
     const locRes = await fetch('/api/submit/location', {
@@ -141,6 +131,9 @@ export default function SubmitForm() {
         tips: tips.trim() || null,
         website: website.trim() || null,
         opening_hours: openingHours.trim() || null,
+        turnstile_token: turnstileToken ?? '',
+        submitter_name: !user ? (submitterName.trim() || null) : null,
+        submitter_email: !user ? (submitterEmail.trim() || null) : null,
       }),
     })
 
@@ -177,6 +170,36 @@ export default function SubmitForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Anonymous submitter info — only shown when not signed in */}
+      {!user && (
+        <div className="bg-parchment border border-border rounded p-4 space-y-3">
+          <p className="text-sm font-semibold text-ink">Your details <span className="text-stone font-normal">(optional)</span></p>
+          <p className="text-xs text-stone leading-relaxed">So we can credit you and follow up if we have questions. Never shown publicly.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-stone mb-1">Your name</label>
+              <input
+                value={submitterName}
+                onChange={(e) => setSubmitterName(e.target.value)}
+                placeholder="e.g. Sarah"
+                maxLength={120}
+                className="w-full border border-border rounded px-3 py-2 text-sm outline-none focus:border-rust text-ink placeholder:text-stone"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-stone mb-1">Email</label>
+              <input
+                value={submitterEmail}
+                onChange={(e) => setSubmitterEmail(e.target.value)}
+                placeholder="you@example.com"
+                type="email"
+                className="w-full border border-border rounded px-3 py-2 text-sm outline-none focus:border-rust text-ink placeholder:text-stone"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Venue search shortcut */}
       <div className="bg-parchment border border-border rounded p-4">
         <label className="block text-sm font-semibold text-ink mb-1">
@@ -405,6 +428,16 @@ export default function SubmitForm() {
         )}
       </div>
 
+      {/* Turnstile bot check — invisible by default, renders only when site key is configured */}
+      {TURNSTILE_SITE_KEY && (
+        <Turnstile
+          siteKey={TURNSTILE_SITE_KEY}
+          onSuccess={(token) => setTurnstileToken(token)}
+          onExpire={() => setTurnstileToken(null)}
+          options={{ size: 'invisible' }}
+        />
+      )}
+
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded px-4 py-3 text-sm">
           {error}
@@ -414,6 +447,7 @@ export default function SubmitForm() {
       <Button type="submit" size="lg" className="w-full justify-center" loading={submitting}>
         Submit for review
       </Button>
+      <p className="text-xs text-stone text-center -mt-4">Free · No account needed · Reviewed before going live</p>
     </form>
   )
 }

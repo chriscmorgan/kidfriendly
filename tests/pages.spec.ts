@@ -235,7 +235,7 @@ test.describe('authenticated', () => {
   test('profile: shows user name', async ({ page }) => {
     await page.goto('/profile', GOTO)
     await page.waitForTimeout(1000)
-    await expect(page.locator('text=Playwright Test')).toBeVisible()
+    await expect(page.locator('h1', { hasText: 'Playwright Test' })).toBeVisible()
   })
 
   test('profile: Places tab is present', async ({ page }) => {
@@ -247,13 +247,13 @@ test.describe('authenticated', () => {
   test('profile: submission cards have Edit link', async ({ page }) => {
     await page.goto('/profile', GOTO)
     await page.waitForTimeout(1000)
-    await expect(page.locator('a', { hasText: 'Edit' }).first()).toBeVisible()
+    await expect(page.locator('a[href*="/edit"]').first()).toBeVisible()
   })
 
   test('profile: Edit link goes to correct edit page', async ({ page }) => {
     await page.goto('/profile', GOTO)
     await page.waitForTimeout(1000)
-    const editLink = page.locator('a', { hasText: 'Edit' }).first()
+    const editLink = page.locator('a[href*="/edit"]').first()
     const href = await editLink.getAttribute('href')
     expect(href).toMatch(/\/location\/.+\/edit/)
   })

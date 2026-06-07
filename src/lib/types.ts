@@ -39,7 +39,9 @@ export interface Location {
   website?: string | null
   opening_hours?: string | null
   status: LocationStatus
-  submitted_by: string
+  submitted_by: string | null
+  submitter_name?: string | null
+  submitter_email?: string | null
   rejection_note: string | null
   created_at: string
   approved_at: string | null
@@ -62,7 +64,7 @@ export interface LocationPhoto {
   location_id: string
   url: string
   sort_order: number
-  uploaded_by: string
+  uploaded_by: string | null
 }
 
 export interface Review {

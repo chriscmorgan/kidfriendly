@@ -78,6 +78,49 @@ export default async function globalSetup() {
     foreignLocationId = newLoc!.id
   }
 
+  // Ensure a test location submitted by the test user exists (for profile edit link test)
+  const OWN_SLUG = 'playwright-own-location'
+  const { data: existingOwn } = await admin.from('locations').select('id').eq('slug', OWN_SLUG).single()
+  if (!existingOwn) {
+    await admin.from('locations').insert({
+      name: 'Playwright Own Location',
+      slug: OWN_SLUG,
+      description: 'A test venue created by the automated setup. Used for profile edit link tests — do not remove.',
+      address: '3 Own St, Melbourne VIC 3000',
+      lat: -37.815,
+      lng: 144.965,
+      suburb: 'Melbourne',
+      tags: ['kids_play_area'],
+      open_times: [],
+      age_ranges: [],
+      status: 'approved',
+      submitted_by: userId,
+    })
+  }
+
+  // Ensure a pending location exists so the admin Approve button test has something to show
+  const PENDING_SLUG = 'playwright-pending-location'
+  const { data: existingPending } = await admin.from('locations').select('id, status').eq('slug', PENDING_SLUG).single()
+  if (!existingPending) {
+    await admin.from('locations').insert({
+      name: 'Playwright Pending Location',
+      slug: PENDING_SLUG,
+      description: 'A test venue kept in pending state for admin dashboard tests. Do not approve or reject.',
+      address: '4 Pending St, Melbourne VIC 3000',
+      lat: -37.816,
+      lng: 144.966,
+      suburb: 'Melbourne',
+      tags: ['kids_play_area'],
+      open_times: [],
+      age_ranges: [],
+      status: 'pending',
+      submitted_by: foreignUserId,
+    })
+  } else if (existingPending.status !== 'pending') {
+    // Reset to pending if it was approved or rejected by a previous test run
+    await admin.from('locations').update({ status: 'pending', approved_at: null, rejection_note: null }).eq('slug', PENDING_SLUG)
+  }
+
   // Write test data for use in specs
   const TEST_DATA_FILE = path.join(__dirname, '.auth', 'test-data.json')
   fs.writeFileSync(TEST_DATA_FILE, JSON.stringify({ foreignLocationId }))

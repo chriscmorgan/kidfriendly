@@ -94,8 +94,8 @@ export default function HomeLanding({ locations }: Props) {
   const recentContributors = Array.from(
     new Map(
       locations
-        .filter((l) => l.submitter)
-        .map((l) => [l.submitted_by, l.submitter!.display_name])
+        .filter((l) => l.submitter && l.submitted_by !== null)
+        .map((l) => [l.submitted_by!, l.submitter!.display_name])
     ).entries()
   ).slice(0, 5)
 

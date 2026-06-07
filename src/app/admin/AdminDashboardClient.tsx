@@ -177,6 +177,15 @@ function PendingCard({ location: loc, processingId, rejectNote, onApprove, onRej
   const heroPhoto = loc.photos?.[0]
   const ageLabels = AGE_RANGES.filter((a) => loc.age_ranges?.includes(a.value)).map((a) => a.label)
   const submitter = (loc as unknown as { submitter?: { display_name: string } }).submitter
+  const anonName = loc.submitter_name ?? null
+  const anonEmail = loc.submitter_email ?? null
+  const submitterLine = submitter
+    ? submitter.display_name
+    : anonName
+      ? `${anonName}${anonEmail ? ` (${anonEmail})` : ''} · anonymous`
+      : anonEmail
+        ? `${anonEmail} · anonymous`
+        : 'Anonymous'
 
   return (
     <div className="bg-white border border-gray-100 rounded shadow-sm overflow-hidden">
@@ -196,12 +205,10 @@ function PendingCard({ location: loc, processingId, rejectNote, onApprove, onRej
           <div className="flex items-center gap-1.5 text-sm text-stone mt-1">
             <MapPin className="w-3.5 h-3.5" />{loc.address}
           </div>
-          {submitter && (
-            <div className="flex items-center gap-1.5 text-xs text-stone mt-1">
-              <User className="w-3 h-3" />
-              Submitted by {submitter.display_name} · {new Date(loc.created_at).toLocaleDateString('en-AU')}
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 text-xs text-stone mt-1">
+            <User className="w-3 h-3" />
+            {submitterLine} · {new Date(loc.created_at).toLocaleDateString('en-AU')}
+          </div>
           <p className="text-sm text-stone mt-3 line-clamp-3">{loc.description}</p>
           {ageLabels.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-3">
