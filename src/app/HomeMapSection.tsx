@@ -10,7 +10,7 @@ import { Star, MapPin, ArrowLeft, X } from 'lucide-react'
 
 const MapView = dynamic(() => import('@/components/map/MapView'), { ssr: false })
 
-const MELBOURNE = { lat: -37.8136, lng: 144.9631 }
+const MELBOURNE = { lat: -37.9764, lng: 145.0951 }
 const SNAP_PEEK = 72
 const snapStrip = () => Math.round(window.innerHeight * 0.45)
 const snapDetail = () => Math.round(window.innerHeight * 0.65)
