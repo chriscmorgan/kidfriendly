@@ -16,12 +16,12 @@ const VALID_AGE_RANGES = new Set(AGE_RANGES.map((a) => a.value))
 
 async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
   if (!TURNSTILE_SECRET) return true // dev/test mode — skip verification
-  const res = await fetch('https://challenges.cloudflare.com/turnstile/v1/siteverify', {
+  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ secret: TURNSTILE_SECRET, response: token, remoteip: ip }),
   })
-  const data = await res.json() as { success: boolean }
+  const data = await res.json().catch(() => ({ success: false })) as { success: boolean }
   return data.success === true
 }
 
