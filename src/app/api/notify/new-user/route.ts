@@ -7,9 +7,8 @@ const WEBHOOK_SECRET = process.env.NOTIFY_WEBHOOK_SECRET ?? ''
 // Supabase database webhook — fires when a row is inserted into the users table.
 // Secured by checking the Authorization header matches NOTIFY_WEBHOOK_SECRET.
 export async function POST(request: Request) {
-  // Verify the secret token set in the Supabase webhook config
   const auth = request.headers.get('authorization') ?? ''
-  if (WEBHOOK_SECRET && auth !== `Bearer ${WEBHOOK_SECRET}`) {
+  if (!WEBHOOK_SECRET || auth !== `Bearer ${WEBHOOK_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

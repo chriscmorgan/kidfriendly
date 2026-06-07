@@ -111,7 +111,7 @@ export default function SubmitForm() {
     if (!name.trim()) { setError('Name is required'); return }
     if (!address) { setError('Address is required'); return }
     if (selectedTags.length === 0) { setError('Select at least one tag'); return }
-    if (!description.trim() || description.length < 30) { setError('Description must be at least 30 characters'); return }
+    if (description.trim() && description.length < 30) { setError('Description must be at least 30 characters if provided'); return }
 
     setSubmitting(true)
 
@@ -303,7 +303,7 @@ export default function SubmitForm() {
       {/* Description */}
       <div>
         <label className="block text-sm font-semibold text-ink mb-1.5">
-          Description <span className="text-red-500">*</span>
+          Description <span className="text-stone font-normal">(optional)</span>
         </label>
         <textarea
           value={description}
@@ -313,7 +313,7 @@ export default function SubmitForm() {
           className="w-full border border-border rounded px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-rust text-ink placeholder:text-stone"
         />
         <div className="flex justify-between text-xs text-stone mt-1">
-          <span>{description.length < 30 ? `${30 - description.length} more characters needed` : '✓ Good to go'}</span>
+          <span>{description.length > 0 && description.length < 30 ? `${30 - description.length} more characters needed` : ''}</span>
           <span>{description.length}/1000</span>
         </div>
       </div>

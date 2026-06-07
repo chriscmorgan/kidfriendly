@@ -11,6 +11,15 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'chris.c.morgan.email@gmail.com'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 const VALID_TAGS = new Set(TAGS.map((t) => t.value))
 const VALID_OPEN_TIMES = new Set(OPEN_TIMES.map((t) => t.value))
 const VALID_AGE_RANGES = new Set(AGE_RANGES.map((a) => a.value))
@@ -61,8 +70,11 @@ export async function POST(request: Request) {
   if (!name || typeof name !== 'string' || !name.trim() || name.length > 120) {
     return NextResponse.json({ error: 'Invalid name' }, { status: 400 })
   }
-  if (!description || typeof description !== 'string' || description.trim().length < 30 || description.length > 1000) {
-    return NextResponse.json({ error: 'Description must be 30–1000 characters' }, { status: 400 })
+  if (description !== null && description !== undefined && (typeof description !== 'string' || description.length > 1000)) {
+    return NextResponse.json({ error: 'Description must be under 1000 characters' }, { status: 400 })
+  }
+  if (typeof description === 'string' && description.trim().length > 0 && description.trim().length < 30) {
+    return NextResponse.json({ error: 'Description must be at least 30 characters if provided' }, { status: 400 })
   }
   if (!address || typeof address !== 'string') {
     return NextResponse.json({ error: 'Invalid address' }, { status: 400 })
@@ -105,7 +117,7 @@ export async function POST(request: Request) {
     .insert({
       slug,
       name: (name as string).trim(),
-      description: (description as string).trim(),
+      description: typeof description === 'string' ? description.trim() || null : null,
       address,
       lat,
       lng,
@@ -147,10 +159,10 @@ export async function POST(request: Request) {
       html: `
         <p><strong>A new place has been submitted for review.</strong></p>
         <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
-          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Venue</td><td><strong>${(name as string).trim()}</strong></td></tr>
-          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Suburb</td><td>${typeof suburb === 'string' ? suburb : ''}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Address</td><td>${address as string}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Submitted by</td><td>${submitterDisplay}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Venue</td><td><strong>${escapeHtml((name as string).trim())}</strong></td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Suburb</td><td>${escapeHtml(typeof suburb === 'string' ? suburb : '')}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Address</td><td>${escapeHtml(address as string)}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Submitted by</td><td>${escapeHtml(submitterDisplay)}</td></tr>
         </table>
         <p><a href="${SITE_URL}/admin">Review in admin →</a></p>
       `,

@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 
+const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp'])
+
 export async function POST(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -21,9 +24,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing file or location_id' }, { status: 400 })
   }
 
+  const ext = (file.name.split('.').pop() ?? '').toLowerCase()
+  if (!ALLOWED_MIME_TYPES.has(file.type) || !ALLOWED_EXTENSIONS.has(ext)) {
+    return NextResponse.json({ error: 'Only JPEG, PNG, and WEBP images are allowed' }, { status: 400 })
+  }
+
   if (user) {
-    // Authenticated: upload using user's session (RLS enforces ownership)
-    const ext = file.name.split('.').pop()
+    // Authenticated: verify the user owns this location (or is admin)
+    const { data: loc } = await supabase.from('locations').select('submitted_by').eq('id', locationId).single()
+    const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single()
+    if (!loc || (loc.submitted_by !== user.id && profile?.role !== 'admin')) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
     const path = `${locationId}/${sortOrder}.${ext}`
 
     const { error: uploadError } = await supabase.storage
@@ -67,7 +80,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not an anonymous pending submission' }, { status: 403 })
   }
 
-  const ext = file.name.split('.').pop()
   const path = `${locationId}/${sortOrder}.${ext}`
 
   const { error: uploadError } = await service.storage
