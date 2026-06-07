@@ -117,7 +117,7 @@ export async function POST(request: Request) {
     .insert({
       slug,
       name: (name as string).trim(),
-      description: typeof description === 'string' ? description.trim() || null : null,
+      description: typeof description === 'string' ? description.trim() : '',
       address,
       lat,
       lng,
