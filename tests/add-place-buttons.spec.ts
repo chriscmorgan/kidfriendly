@@ -116,21 +116,13 @@ test('/?auth=required — sign-in modal opens automatically', async ({ page }) =
   await expect(googleBtn).toBeVisible()
 })
 
-test('/submit directly — shows sign-in gate or redirects to modal', async ({ page }) => {
+test('/submit directly — anonymous users see the form', async ({ page }) => {
   await page.goto('/submit')
   await settle(page)
   await page.screenshot({ path: `${DIR}/09-submit-direct.png` })
 
   const url = page.url()
-  const onSubmit = url.includes('/submit')
-  const googleBtn = await page.locator('button:has-text("Google"), a:has-text("Google")').isVisible().catch(() => false)
-  const signInGate = await page.locator('button:has-text("Sign in to add a place")').isVisible().catch(() => false)
-
-  console.log('URL:', url, '| gate:', signInGate, '| google:', googleBtn)
-
-  // Whether it stays on /submit (mock mode) or redirects (real Supabase), sign-in must be reachable
-  expect(onSubmit || googleBtn || signInGate).toBe(true)
-  // Either way, the form fields should NOT be visible to unauthed users
-  const nameInput = page.locator('input[placeholder*="venue"], input[name="name"]')
-  await expect(nameInput).not.toBeVisible()
+  expect(url).toContain('/submit')
+  // Anonymous users should see the form directly — no sign-in required
+  await expect(page.locator('text=Place name').first()).toBeVisible()
 })

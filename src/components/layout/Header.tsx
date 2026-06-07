@@ -112,12 +112,12 @@ export default function Header() {
                       </div>
                     </>
                   ) : (
-                    <button
-                      onClick={() => setShowSignIn(true)}
-                      className="inline-flex items-center gap-1.5 bg-rust text-paper text-sm font-medium px-4 py-2 rounded hover:bg-rust-dark transition-colors min-h-[36px] cursor-pointer"
+                    <Link
+                      href="/submit"
+                      className="hidden sm:inline-flex items-center gap-1.5 bg-rust text-paper text-sm font-medium px-4 py-2 rounded hover:bg-rust-dark transition-colors min-h-[36px]"
                     >
                       + Add a place
-                    </button>
+                    </Link>
                   )}
                 </>
               )}
