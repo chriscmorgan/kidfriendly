@@ -1,9 +1,14 @@
+'use client'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import SearchBar from '@/components/search/SearchBar'
 import LocationCard from '@/components/location/LocationCard'
 import { TAGS } from '@/lib/constants'
 import type { Location } from '@/lib/types'
 import { safeJsonLd } from '@/lib/utils'
+
+const MapView = dynamic(() => import('@/components/map/MapView'), { ssr: false })
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
@@ -15,7 +20,7 @@ const STEPS = [
   {
     n: '1',
     title: 'Add a spot you know',
-    desc: 'Create a free account with Google or your email and add a place in about 2 minutes. It goes live after a quick check.',
+    desc: 'No account needed — add a place in about 2 minutes. It goes live after a quick check.',
   },
   {
     n: '2',
@@ -44,7 +49,7 @@ const FAQS = [
   },
   {
     q: 'Can I add a place?',
-    a: 'Yes — that\'s the whole point. Create a free account with Google or your email and use the Add page. Takes about 2 minutes. We check each submission before it goes live.',
+    a: 'Yes — that\'s the whole point. No account needed. Use the Add page — takes about 2 minutes. We check each submission before it goes live.',
   },
   {
     q: 'How do I know the info is right?',
@@ -72,32 +77,9 @@ const TAG_DESCRIPTIONS: Record<string, string> = {
   play_centre: 'Dedicated play venue',
 }
 
-function ContributorInitial({ name, seed }: { name: string; seed: string }) {
-  const palettes = [
-    'bg-[#f4d4c8] text-[#7a2a14]',
-    'bg-[#c8e4d4] text-[#1a4a2e]',
-    'bg-[#d4d0c8] text-[#3a3428]',
-    'bg-[#f0e4c8] text-[#6a4a10]',
-    'bg-[#c8d4e4] text-[#1a2e4a]',
-  ]
-  let hash = 0
-  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) | 0
-  const initials = name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
-  return (
-    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0 ring-2 ring-paper ${palettes[Math.abs(hash) % palettes.length]}`}>
-      {initials}
-    </div>
-  )
-}
-
 export default function HomeLanding({ locations }: Props) {
-  const recentContributors = Array.from(
-    new Map(
-      locations
-        .filter((l) => l.submitter && l.submitted_by !== null)
-        .map((l) => [l.submitted_by!, l.submitter!.display_name])
-    ).entries()
-  ).slice(0, 5)
+  const router = useRouter()
+  const recentCards = locations.slice(0, 6)
 
   return (
     <div className="flex flex-col">
@@ -118,22 +100,10 @@ export default function HomeLanding({ locations }: Props) {
             <SearchBar size="hero" />
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-            {recentContributors.length > 0 && (
-              <div className="flex items-center gap-3">
-                <div className="flex -space-x-1.5">
-                  {recentContributors.map(([id, name]) => (
-                    <ContributorInitial key={id} name={name} seed={id} />
-                  ))}
-                </div>
-                <p className="text-xs text-stone">
-                  Added by {recentContributors.map(([, n]) => n.split(' ')[0]).slice(0, 3).join(', ')} and others
-                </p>
-              </div>
-            )}
+          <div className="mt-4">
             <Link
               href="/submit"
-              className="text-sm font-medium text-rust hover:text-rust-dark underline underline-offset-2 min-h-[44px] flex items-center"
+              className="text-sm font-medium text-rust hover:text-rust-dark underline underline-offset-2 min-h-[44px] flex items-center w-fit"
             >
               + Add a place — free, 2 min
             </Link>
@@ -143,6 +113,26 @@ export default function HomeLanding({ locations }: Props) {
             Good places to go with kids are hard to find. They&apos;re not well-covered on Google Maps
             and the lists floating around are mostly out of date. This is parents adding what they know.
           </p>
+        </div>
+      </section>
+
+      {/* ── Map ── */}
+      <section>
+        <div className="max-w-2xl mx-auto px-4 pt-10 pb-6 text-center">
+          <h2 className="font-display italic font-700 text-2xl text-ink mb-2">
+            All spots, on the map
+          </h2>
+          <p className="text-sm text-stone max-w-md mx-auto">
+            Browse every kid-friendly place in Melbourne. Tap a pin to see details.
+          </p>
+        </div>
+        <div className="h-screen w-full">
+          <MapView
+            locations={locations}
+            center={{ lat: -37.8136, lng: 144.9631 }}
+            zoom={11}
+            onLocationClick={(loc) => router.push(`/location/${loc.slug}`)}
+          />
         </div>
       </section>
 
@@ -186,7 +176,7 @@ export default function HomeLanding({ locations }: Props) {
       <div className="border-t border-border" />
 
       {/* ── Recently added ── */}
-      {locations.length > 0 && (
+      {recentCards.length > 0 && (
         <section className="bg-parchment px-4 py-12">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-baseline justify-between mb-6 max-w-5xl">
@@ -196,7 +186,7 @@ export default function HomeLanding({ locations }: Props) {
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {locations.map((loc) => (
+              {recentCards.map((loc) => (
                 <LocationCard key={loc.id} location={loc} />
               ))}
             </div>
@@ -348,7 +338,7 @@ export default function HomeLanding({ locations }: Props) {
       <section className="bg-paper px-4 py-14 text-center">
         <div className="max-w-md mx-auto">
           <h2 className="font-display italic font-700 text-3xl text-ink mb-3">Know a spot? Add it.</h2>
-          <p className="text-sm text-stone mb-6">Your listing helps another family find somewhere good on Saturday — and gives a small local business the kind of exposure it can&apos;t buy. Free account, 2 minutes.</p>
+          <p className="text-sm text-stone mb-6">Your listing helps another family find somewhere good on Saturday — and gives a small local business the kind of exposure it can&apos;t buy. Free, 2 minutes.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/submit"

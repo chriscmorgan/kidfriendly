@@ -38,7 +38,7 @@ async function getLocations(): Promise<Location[]> {
     `)
     .eq('status', 'approved')
     .order('approved_at', { ascending: false })
-    .limit(6)
+    .limit(50)
 
   if (!data) return []
   return data.map(enrichLocation)
