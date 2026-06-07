@@ -1,14 +1,13 @@
 'use client'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import SearchBar from '@/components/search/SearchBar'
 import LocationCard from '@/components/location/LocationCard'
 import { TAGS } from '@/lib/constants'
 import type { Location } from '@/lib/types'
 import { safeJsonLd } from '@/lib/utils'
 
-const MapView = dynamic(() => import('@/components/map/MapView'), { ssr: false })
+const HomeMapSection = dynamic(() => import('./HomeMapSection'), { ssr: false })
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
@@ -78,7 +77,6 @@ const TAG_DESCRIPTIONS: Record<string, string> = {
 }
 
 export default function HomeLanding({ locations }: Props) {
-  const router = useRouter()
   const recentCards = locations.slice(0, 6)
 
   return (
@@ -116,25 +114,8 @@ export default function HomeLanding({ locations }: Props) {
         </div>
       </section>
 
-      {/* ── Map ── */}
-      <section>
-        <div className="max-w-2xl mx-auto px-4 pt-10 pb-6 text-center">
-          <h2 className="font-display italic font-700 text-2xl text-ink mb-2">
-            All spots, on the map
-          </h2>
-          <p className="text-sm text-stone max-w-md mx-auto">
-            Browse every kid-friendly place in Melbourne. Tap a pin to see details.
-          </p>
-        </div>
-        <div className="h-screen w-full">
-          <MapView
-            locations={locations}
-            center={{ lat: -37.8136, lng: 144.9631 }}
-            zoom={11}
-            onLocationClick={(loc) => router.push(`/location/${loc.slug}`)}
-          />
-        </div>
-      </section>
+      {/* ── Interactive map ── */}
+      <HomeMapSection locations={locations} />
 
       <div className="border-t border-border" />
 
