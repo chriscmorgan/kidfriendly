@@ -35,7 +35,7 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const protectedPaths = ['/submit', '/profile']
+  const protectedPaths = ['/profile']
   const adminPaths = ['/admin']
   const pathname = request.nextUrl.pathname
 
