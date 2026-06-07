@@ -88,7 +88,6 @@ export default function EditForm({ location: loc, isAdmin }: { location: Locatio
     setError('')
     if (!name.trim()) { setError('Name is required'); return }
     if (selectedTags.length === 0) { setError('Select at least one tag'); return }
-    if (description.trim() && description.length < 30) { setError('Description must be at least 30 characters if provided'); return }
 
     setSaving(true)
 
@@ -222,7 +221,7 @@ export default function EditForm({ location: loc, isAdmin }: { location: Locatio
           className="w-full border border-border rounded px-3 py-2.5 text-sm resize-none h-32 outline-none focus:border-rust text-ink"
         />
         <div className="flex justify-between text-xs text-stone mt-1">
-          <span>{description.length > 0 && description.length < 30 ? `${30 - description.length} more characters needed` : ''}</span>
+          <span></span>
           <span>{description.length}/1000</span>
         </div>
       </div>

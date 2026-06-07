@@ -73,9 +73,6 @@ export async function POST(request: Request) {
   if (description !== null && description !== undefined && (typeof description !== 'string' || description.length > 1000)) {
     return NextResponse.json({ error: 'Description must be under 1000 characters' }, { status: 400 })
   }
-  if (typeof description === 'string' && description.trim().length > 0 && description.trim().length < 30) {
-    return NextResponse.json({ error: 'Description must be at least 30 characters if provided' }, { status: 400 })
-  }
   if (!address || typeof address !== 'string') {
     return NextResponse.json({ error: 'Invalid address' }, { status: 400 })
   }
