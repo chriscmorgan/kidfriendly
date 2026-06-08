@@ -197,7 +197,7 @@ export default function HomeMapSection({ locations }: { locations: Location[] })
           <MapView
             locations={filtered}
             center={MELBOURNE}
-            zoom={11}
+            zoom={10}
             selectedId={selectedId}
             onLocationClick={handlePinClick}
             bottomPadding={sheetPx}
