@@ -181,7 +181,7 @@ export default function HomeMapSection({ locations }: { locations: Location[] })
 
   return (
     <section>
-      <div className="max-w-2xl mx-auto px-4 pt-10 pb-6 text-center">
+      <div className="max-w-2xl mx-auto px-4 pt-2 pb-4 text-center">
         <h2 className="font-display italic font-700 text-2xl text-ink mb-2">
           All spots, on the map
         </h2>

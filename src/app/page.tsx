@@ -1,7 +1,9 @@
-export const dynamic = 'force-dynamic'
+// ISR: serve cached HTML from the CDN, regenerate at most hourly.
+// Uses the cookieless public client so the page can actually be cached.
+export const revalidate = 3600
 
 import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kidfriendlyeats.space'
 
@@ -19,6 +21,7 @@ export const metadata: Metadata = {
 import HomeLanding from './HomeLanding'
 import type { Location, LocationPhoto, AvgRatings } from '@/lib/types'
 
+
 const USE_MOCK = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true
 
 async function getLocations(): Promise<Location[]> {
@@ -27,7 +30,7 @@ async function getLocations(): Promise<Location[]> {
     return mockLocations.slice().reverse().slice(0, 6)
   }
 
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('locations')
     .select(`

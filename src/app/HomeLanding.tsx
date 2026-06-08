@@ -83,14 +83,14 @@ export default function HomeLanding({ locations }: Props) {
     <div className="flex flex-col">
 
       {/* ── Hero ── */}
-      <section className="bg-parchment px-4 pt-14 pb-12 sm:pt-20 sm:pb-16">
+      <section className="bg-parchment px-4 pt-6 pb-6 sm:pt-10 sm:pb-8">
         <div className="max-w-2xl mx-auto">
 
-          <p className="text-xs font-medium text-stone tracking-wide uppercase mb-6">
+          <p className="text-xs font-medium text-stone tracking-wide uppercase mb-4">
             Melbourne · new, still adding places
           </p>
 
-          <h1 className="font-display italic font-700 text-[clamp(2.4rem,8vw,4.5rem)] leading-[1.05] text-ink">
+          <h1 className="font-display italic font-700 text-[clamp(1.5rem,4vw,2.25rem)] leading-[1.1] text-ink">
             Find kid-friendly restaurants and cafes with play areas near you
           </h1>
 
