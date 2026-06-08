@@ -1,6 +1,7 @@
 'use client'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { Plus } from 'lucide-react'
 import SearchBar from '@/components/search/SearchBar'
 import LocationCard from '@/components/location/LocationCard'
 import { TAGS } from '@/lib/constants'
@@ -98,12 +99,22 @@ export default function HomeLanding({ locations }: Props) {
             <SearchBar size="hero" />
           </div>
 
-          <div className="mt-4">
+          <div className="mt-5">
             <Link
               href="/submit"
-              className="text-sm font-medium text-rust hover:text-rust-dark underline underline-offset-2 min-h-[44px] flex items-center w-fit"
+              className="group inline-flex items-center gap-2.5 border border-border bg-paper rounded pl-2.5 pr-4 py-2.5 hover:border-rust hover:bg-rust-light transition-colors"
             >
-              + Add a place · no login · quick
+              <span className="shrink-0 w-8 h-8 rounded-full bg-rust text-paper flex items-center justify-center group-hover:bg-rust-dark transition-colors">
+                <Plus className="w-4 h-4" />
+              </span>
+              <span className="flex flex-col leading-tight">
+                <span className="text-[15px] font-semibold text-ink group-hover:text-rust transition-colors">
+                  Add a venue
+                </span>
+                <span className="text-xs text-stone mt-0.5">
+                  Help grow the map for every Melbourne parent
+                </span>
+              </span>
             </Link>
           </div>
 
