@@ -50,7 +50,7 @@ export default function SubmitForm() {
         <Button variant="secondary" onClick={() => router.push('/')}>Go home</Button>
         <Button onClick={() => {
           setDone(false); setName(''); setAddress(null); setSelectedTags([])
-          setSelectedOpenTimes([]); setDescription(''); setTips(''); setAgeRanges([])
+          setSelectedOpenTimes([]); setDescription(''); setAgeRanges([])
           setPhotos([]); setPreviews([]); setSubmitterName(''); setSubmitterEmail('')
           setTurnstileToken(null)
         }}>
