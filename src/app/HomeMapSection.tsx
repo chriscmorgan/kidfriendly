@@ -12,10 +12,11 @@ import { Star, MapPin, ArrowLeft, X, Navigation, ExternalLink } from 'lucide-rea
 
 const MapView = dynamic(() => import('@/components/map/MapView'), { ssr: false })
 
-const MELBOURNE = { lat: -37.9764, lng: 145.0951 }
+const MELBOURNE = { lat: -37.9500, lng: 145.0800 }
 const SNAP_PEEK = 72
 const snapStrip = () => Math.round(window.innerHeight * 0.45)
-const snapDetail = () => Math.round(window.innerHeight * 0.65)
+// Cap detail at 60% so at least 25% of the map (and the selected pin) stays visible
+const snapDetail = () => Math.round(window.innerHeight * 0.6)
 
 function avgRating(loc: Location): number {
   if (!loc.avg_ratings) return 0
@@ -226,7 +227,7 @@ export default function HomeMapSection({ locations }: { locations: Location[] })
   function onHandlePointerMove(e: React.PointerEvent<HTMLButtonElement>) {
     if (!draggingRef.current) return
     const delta = dragStartY.current - e.clientY
-    const maxH = Math.round(window.innerHeight * 0.9)
+    const maxH = Math.round(window.innerHeight * 0.75)
     setSheetPx(Math.max(SNAP_PEEK, Math.min(maxH, dragStartH.current + delta)))
   }
 
@@ -282,7 +283,7 @@ export default function HomeMapSection({ locations }: { locations: Location[] })
           <MapView
             locations={filtered}
             center={MELBOURNE}
-            zoom={9}
+            zoom={11}
             selectedId={selectedId}
             onLocationClick={handlePinClick}
             bottomPadding={sheetPx}

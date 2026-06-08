@@ -4,12 +4,14 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import SearchBar from '@/components/search/SearchBar'
-import { TagBadge, OpenTimeBadge } from '@/components/ui/Badge'
+import { TagBadge, OpenTimeBadge, Badge } from '@/components/ui/Badge'
+import PhotoCarousel from '@/components/location/PhotoCarousel'
+import ReportButton from '@/components/location/ReportButton'
 import { createClient } from '@/lib/supabase/client'
 import type { Location, Tag, SortOption } from '@/lib/types'
-import { TAGS, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from '@/lib/constants'
+import { TAGS, AGE_RANGES, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from '@/lib/constants'
 import { cn, getPrimaryTagMeta } from '@/lib/utils'
-import { Star, MapPin, ArrowLeft, X, Search } from 'lucide-react'
+import { Star, MapPin, ArrowLeft, X, Search, Navigation, ExternalLink } from 'lucide-react'
 import BodyScrollLock from '@/components/ui/BodyScrollLock'
 
 const MapView = dynamic(() => import('@/components/map/MapView'), { ssr: false })
@@ -26,7 +28,8 @@ const IS_MOCK = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ??
 // Sheet snap heights (fractions of innerHeight)
 const SNAP_PEEK = 72
 const snapStrip = () => Math.round(window.innerHeight * 0.5)
-const snapDetail = () => Math.round(window.innerHeight * 0.75)
+// Cap detail at 60% so at least 25% of the map (and the selected pin) stays visible
+const snapDetail = () => Math.round(window.innerHeight * 0.6)
 
 function TagPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
@@ -148,6 +151,9 @@ function ListStrip({
 
 function DetailPanel({ loc, onBack, onClose }: { loc: Location; onBack: () => void; onClose: () => void }) {
   const rating = avgRating(loc)
+  const ageLabels = AGE_RANGES.filter((a) => loc.age_ranges?.includes(a.value)).map((a) => a.label)
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(loc.address)}`
+  const mapsUrl = `https://maps.google.com/?q=${loc.lat},${loc.lng}`
   return (
     <div className="flex flex-col flex-1 min-h-0">
       <div className="flex items-center gap-2 px-4 pb-2 shrink-0">
@@ -167,51 +173,123 @@ function DetailPanel({ loc, onBack, onClose }: { loc: Location; onBack: () => vo
           <X className="w-4 h-4 text-stone" />
         </button>
       </div>
-      <div className="flex-1 overflow-y-auto overscroll-contain">
-        {loc.photos?.[0] && (
-          <div className="relative w-full h-44 bg-gray-100">
-            <Image src={loc.photos[0].url} alt={loc.name} fill className="object-cover" sizes="100vw" />
+      <div className="flex-1 overflow-y-auto overscroll-contain px-5 pb-10">
+        {/* Photos — full carousel, same as the listing page */}
+        {(loc.photos?.length ?? 0) > 0 && (
+          <div className="pt-1">
+            <PhotoCarousel photos={loc.photos ?? []} locationName={loc.name} />
           </div>
         )}
-        <div className="px-5 pt-4 pb-6">
-          <h2 className="text-xl font-bold text-ink leading-tight">{loc.name}</h2>
-          <div className="flex items-center gap-3 mt-1 text-sm text-stone">
-            <span className="flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5" />
-              {loc.suburb}
+
+        {/* Title + rating */}
+        <h2 className="text-xl font-bold text-ink leading-tight mt-4">{loc.name}</h2>
+        <div className="flex items-center gap-3 mt-1 text-sm text-stone">
+          <span className="flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 shrink-0" />
+            {loc.suburb}
+          </span>
+          {loc.distance_km != null && (
+            <span className="text-rust font-medium">{loc.distance_km.toFixed(1)}km away</span>
+          )}
+          {rating > 0 && (
+            <span className="flex items-center gap-1 ml-auto font-medium text-ink">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              {rating.toFixed(1)}
+              {loc.review_count != null && (
+                <span className="text-stone font-normal">({loc.review_count})</span>
+              )}
             </span>
-            {loc.distance_km != null && (
-              <span className="text-rust font-medium">{loc.distance_km.toFixed(1)}km away</span>
-            )}
-            {rating > 0 && (
-              <span className="flex items-center gap-1 ml-auto font-medium text-ink">
-                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                {rating.toFixed(1)}
-                {loc.review_count != null && (
-                  <span className="text-stone font-normal">({loc.review_count})</span>
-                )}
-              </span>
-            )}
+          )}
+        </div>
+
+        {/* Address */}
+        <div className="flex items-start gap-1.5 mt-2 text-sm text-stone">
+          <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+          <span>{loc.address}</span>
+        </div>
+
+        {/* Tags + open times */}
+        {((loc.tags?.length ?? 0) > 0 || (loc.open_times?.length ?? 0) > 0) && (
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {(loc.tags ?? []).map((tag) => <TagBadge key={tag} tag={tag} />)}
+            {(loc.open_times ?? []).map((t) => <OpenTimeBadge key={t} time={t} />)}
           </div>
-          {(loc.tags?.length ?? 0) > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              {(loc.tags ?? []).map((tag) => <TagBadge key={tag} tag={tag} />)}
-              {(loc.open_times ?? []).map((t) => <OpenTimeBadge key={t} time={t} />)}
-            </div>
-          )}
-          <p className="text-sm text-stone leading-relaxed mt-4">{loc.description}</p>
-          {loc.tips && (
-            <div className="mt-4 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
-              <p className="text-xs font-semibold text-amber-700 mb-1">💡 Tip</p>
-              <p className="text-sm text-amber-900 leading-relaxed">{loc.tips}</p>
-            </div>
-          )}
-          <a
-            href={`/location/${loc.slug}`}
-            className="flex items-center justify-center gap-2 mt-5 w-full bg-rust hover:bg-rust-dark text-paper font-semibold text-sm py-3 rounded transition-colors"
-          >
-            View full details →
+        )}
+
+        {/* Action links */}
+        <div className="flex flex-col gap-2.5 mt-4">
+          <a href={directionsUrl} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm text-rust hover:text-rust-dark font-medium transition-colors">
+            <Navigation className="w-3.5 h-3.5" /> Get directions
           </a>
+          <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm text-rust hover:text-rust-dark font-medium transition-colors">
+            <MapPin className="w-3.5 h-3.5" /> View on Google Maps
+          </a>
+          {loc.website && (
+            <a href={loc.website} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-rust hover:text-rust-dark font-medium transition-colors">
+              <ExternalLink className="w-3.5 h-3.5" /> Visit website
+            </a>
+          )}
+        </div>
+
+        {/* About */}
+        {loc.description && (
+          <section className="mt-5">
+            <h3 className="text-sm font-semibold text-ink mb-1">About</h3>
+            <p className="text-sm text-ink leading-relaxed whitespace-pre-line">{loc.description}</p>
+          </section>
+        )}
+
+        {/* Opening hours */}
+        {loc.opening_hours && (
+          <section className="mt-5">
+            <h3 className="text-sm font-semibold text-ink mb-1">Opening hours</h3>
+            <p className="text-sm text-stone whitespace-pre-line">{loc.opening_hours}</p>
+          </section>
+        )}
+
+        {/* Visitor tips */}
+        {loc.tips && (
+          <section className="mt-5 bg-parchment border border-border rounded p-3">
+            <h3 className="text-xs font-semibold text-stone mb-1">Visitor tips</h3>
+            <p className="text-sm text-ink">{loc.tips}</p>
+          </section>
+        )}
+
+        {/* Best for ages */}
+        {ageLabels.length > 0 && (
+          <section className="mt-5">
+            <h3 className="text-sm font-semibold text-ink mb-2">👶 Best for</h3>
+            <div className="flex flex-wrap gap-2">
+              {ageLabels.map((label) => (
+                <Badge key={label} bgColor="bg-[#f7eed9]" color="text-[#9e7c48]">{label}</Badge>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Full details CTA */}
+        <a
+          href={`/location/${loc.slug}`}
+          className="flex items-center justify-center gap-2 mt-6 w-full bg-rust hover:bg-rust-dark text-paper font-semibold text-sm py-3 rounded transition-colors"
+        >
+          View full details →
+        </a>
+
+        {/* Report + owner */}
+        <div className="mt-4 pt-4 border-t border-border space-y-3">
+          <ReportButton locationId={loc.id} />
+          <p className="text-xs text-stone leading-relaxed">
+            Are you the owner?{' '}
+            <a
+              href={`mailto:support@kidfriendlyeats.space?subject=Listing enquiry: ${encodeURIComponent(loc.name)}`}
+              className="underline underline-offset-2 hover:text-ink"
+            >
+              Contact us to update or remove this listing.
+            </a>
+          </p>
         </div>
       </div>
     </div>
@@ -257,7 +335,7 @@ export default function SearchResultsClient() {
   function onHandlePointerMove(e: React.PointerEvent<HTMLButtonElement>) {
     if (!draggingRef.current) return
     const delta = dragStartY.current - e.clientY
-    const maxH = Math.round(window.innerHeight * 0.9)
+    const maxH = Math.round(window.innerHeight * 0.75)
     setSheetPx(Math.max(SNAP_PEEK, Math.min(maxH, dragStartH.current + delta)))
   }
 
