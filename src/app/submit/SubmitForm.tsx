@@ -29,7 +29,6 @@ export default function SubmitForm() {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([])
   const [selectedOpenTimes, setSelectedOpenTimes] = useState<OpenTime[]>([])
   const [description, setDescription] = useState('')
-  const [tips, setTips] = useState('')
   const [website, setWebsite] = useState('')
   const [openingHours, setOpeningHours] = useState('')
   const [ageRanges, setAgeRanges] = useState<AgeRange[]>([])
@@ -127,7 +126,6 @@ export default function SubmitForm() {
         open_times: selectedOpenTimes,
         age_ranges: ageRanges,
         description: description.trim(),
-        tips: tips.trim() || null,
         website: website.trim() || null,
         opening_hours: openingHours.trim() || null,
         turnstile_token: turnstileToken ?? '',
@@ -315,21 +313,6 @@ export default function SubmitForm() {
           <span></span>
           <span>{description.length}/1000</span>
         </div>
-      </div>
-
-      {/* Tips */}
-      <div>
-        <label className="block text-sm font-semibold text-ink mb-1.5">
-          Tips <span className="text-stone font-normal">(optional)</span>
-        </label>
-        <textarea
-          value={tips}
-          onChange={(e) => setTips(e.target.value)}
-          maxLength={280}
-          placeholder="e.g. 'Bring your own food', 'Parking tricky on weekends', 'Arrive before 10am'…"
-          className="w-full border border-border rounded px-3 py-2.5 text-sm resize-none h-20 outline-none focus:border-rust text-ink placeholder:text-stone"
-        />
-        <p className="text-xs text-stone mt-1 text-right">{tips.length}/280</p>
       </div>
 
       {/* Website */}
